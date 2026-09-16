@@ -19,7 +19,7 @@ cmake -S tests -B build-asan \
   -DQWEN_ENABLE_ASAN=ON
 cmake --build build-asan -j 4
 
-/home/msganzy/vllm-shared/base-env/bin/python tests/validate.py \
+/home/msganzy/vllm-shared/base-env/bin/python tests/validate.py --legacy-operators \
   --model /home/msganzy/vllm-shared/models/Qwen3-0.6B \
   --build-dir build-check --asan-build-dir build-asan \
   --output build-check/validation

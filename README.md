@@ -3,6 +3,24 @@
 面向 **Qwen3-0.6B BF16 单 GPU、单请求、batch=1** 的 CUDA/C++ 推理项目，
 用于学习推理内核、验证数值正确性和考察实习生的 HPC 优化能力。当前不支持请求并发。
 
+## 实习生优化与融合验收
+
+V0 已配套 [快速迭代流程](docs/FAST_ITERATION.md)。仅增加测试基础设施，不改变 V0 推理实现。
+默认 `tests/validate.py` 检查模型输出和 CPU 回归，**不要求旧的独立 CUDA 算子接口**。
+快速迭代用 `tests/iterate.py check` / `bench`，失败后用 `diagnose`。
+旧算子、逐层和 Transformers 诊断只有显式添加 `--legacy-operators` 才运行。
+
+本机已构建并准备参考包，可运行：
+
+```bash
+/home/msganzy/vllm-shared/base-env/bin/python tests/iterate.py check --output build-iteration/check-001
+/home/msganzy/vllm-shared/base-env/bin/python tests/validate.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --build-dir build-iteration --asan-build-dir build-release-asan --output build-iteration/validation-001
+```
+
+全新 clone 先按快速迭代说明构建并准备可信参考包。参考包需在优化前冻结，不能用
+实习生的候选输出覆盖；模型权重和大体积参考数组不随仓库发布。下文旧逐层验收
+配置保留用于历史复现，不作为融合实现的通用结构要求。
+
 ## 当前状态与 V0 / V1
 
 - **V0**：完成必要正确性修复、验收后交给实习生的优化起点，并在其上测量性能基线。
@@ -54,14 +72,14 @@ cmake --build build-release-check -j 4
 本机一行运行完整回归（先完成上述构建和独立 ASan 构建）：
 
 ```bash
-/home/msganzy/vllm-shared/base-env/bin/python tests/validate.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --build-dir build-release-check --asan-build-dir build-release-asan --output build-release-check/validation-strengthened
+/home/msganzy/vllm-shared/base-env/bin/python tests/validate.py --legacy-operators --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --build-dir build-release-check --asan-build-dir build-release-asan --output build-release-check/validation-strengthened
 ```
 
 终端和 JSON 报告记录检查结果。`REGRESSION_CHECKS_PASS_NUMERICAL_REVIEW_REQUIRED`
 表示约定回归通过、模型数值仍待验收；失败显示 FAIL 并返回非零退出码。
 覆盖、参考版本和诊断数据说明见 [tests/README.md](tests/README.md)。
 
-实习生的优化版本还需与冻结 V0 比较，以下条件在**每个采样向量上同时满足**：
+以下保留旧逐层验收配置，用于历史复现。当前默认以最终 logits 判定，层输出和独立算子用于诊断；旧配置要求在**每个采样向量上同时满足**：
 
 | 指标 | V1 相对冻结 V0 的上限 |
 | --- | --- |
@@ -79,7 +97,7 @@ cmake --build build-release-check -j 4
 优化后重新构建测试探针，再追加 V0 对照：
 
 ```bash
-/home/msganzy/vllm-shared/base-env/bin/python tests/validate.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --build-dir build-release-check --asan-build-dir build-release-asan --output build-release-check/v1-validation --optimization-baseline build-v0-reference
+/home/msganzy/vllm-shared/base-env/bin/python tests/validate.py --legacy-operators --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --build-dir build-release-check --asan-build-dir build-release-asan --output build-release-check/v1-validation --optimization-baseline build-v0-reference
 ```
 
 ## Benchmark

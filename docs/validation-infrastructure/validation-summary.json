@@ -1,0 +1,78 @@
+{
+  "status": "MODEL_LOGITS_AND_CPU_REGRESSIONS_PASS_NUMERICAL_REVIEW_REQUIRED",
+  "numerical_acceptance": "PENDING",
+  "scope": "at most 8192 tokens, defined regression corpus only",
+  "steps": [
+    {
+      "name": "export",
+      "exit_code": 0,
+      "log": "export.log"
+    },
+    {
+      "name": "tokenizer",
+      "exit_code": 0,
+      "log": "tokenizer.log"
+    },
+    {
+      "name": "edges",
+      "exit_code": 0,
+      "log": "edges.log"
+    },
+    {
+      "name": "model_logits",
+      "exit_code": 0,
+      "log": "model_logits.log"
+    }
+  ],
+  "profile": "model_boundary",
+  "python": "3.10.20 (main, Jun 11 2026, 15:17:37) [GCC 14.3.0]",
+  "platform": "Linux-3.10.0-1160.119.1.el7.x86_64-x86_64-with-glibc2.28",
+  "python_versions": {
+    "torch": "2.11.0+cu129",
+    "transformers": "5.14.1",
+    "tokenizers": "0.22.2",
+    "numpy": "2.2.6",
+    "jinja2": "3.1.6",
+    "safetensors": "0.8.0",
+    "huggingface-hub": "1.26.0"
+  },
+  "version_drift": {},
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "compute_capability": [
+    8,
+    6
+  ],
+  "torch_cuda": "12.9",
+  "native_libraries": {
+    "address_sanitizer": true,
+    "pcre2": "10.42 2022-12-11",
+    "icu": "73.1"
+  },
+  "version_profile": "REFERENCE_LIBRARIES",
+  "probe_sha256": {
+    "tokenizer": "2a9dd2ba7182d14c3fcced3ce286e199c56b154ea0cda88cf5f7fde081ae91c8",
+    "edges": "a708b76c57d9b81ff24daed643f19f2697fde1b8771326353c3fe6b0df7d3bfa",
+    "forward": "81093de833640802b741aa67a749230ae21d67b984105ea6277d96de6eeb2619"
+  },
+  "cmake_configuration": [
+    "CMAKE_BUILD_TYPE:STRING=Release",
+    "CMAKE_CUDA_ARCHITECTURES:UNINITIALIZED=86",
+    "CMAKE_CUDA_COMPILER:FILEPATH=/usr/local/cuda/bin/nvcc",
+    "CMAKE_CXX_COMPILER:FILEPATH=/opt/rh/devtoolset-8/root/usr/bin/c++"
+  ],
+  "driver": "NVIDIA GeForce RTX 3090, 550.54.15",
+  "git_commit": "b5c18694aa7ab2524974d32b142fa500149f41f2",
+  "git_status": " M CMakeLists.txt\n M tests/validate.py\n?? tests/acceptance_contract.json\n?? tests/iterate.py\n?? tests/iteration_probe.cu\n?? tests/test_iteration_gate.py\n",
+  "model_sha256": {
+    "config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+    "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "generation_config.json": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+    "model.safetensors": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+  },
+  "iteration_baseline": "/home/msganzy/workspace/AI_inf/qwen600/build-iteration-reference",
+  "additional_release_checks": [
+    "CUDA memcheck on optimized path",
+    "free-generation regression"
+  ]
+}

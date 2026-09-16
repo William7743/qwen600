@@ -31,3 +31,13 @@ endif()
 if (QWEN_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
+
+# Build independently of legacy per-kernel probes, including for fused implementations.
+option(QWEN_BUILD_ITERATION "Build model-boundary iteration probe" OFF)
+if (QWEN_BUILD_ITERATION)
+    add_executable(iteration_probe tests/iteration_probe.cu)
+    target_include_directories(iteration_probe PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
+    target_link_libraries(iteration_probe PRIVATE CUDA::cublas)
+    target_compile_options(iteration_probe PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-O3>)
+    set_target_properties(iteration_probe PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+endif()

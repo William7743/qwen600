@@ -1,4 +1,4 @@
-"""Portable regression entry point. Exit 0: scoped regressions pass, 1: tests fail, 2: setup fails.
+"""Model-boundary and CPU regression entry point; legacy operators are opt-in. Exit 0: scoped regressions pass, 1: tests fail, 2: setup fails.
 
 The source model directory is read-only. Generated tokenizer files live in OUTPUT/model.
 Numerical acceptance remains pending even when this command exits 0.
@@ -26,21 +26,28 @@ def sha256(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", type=Path, required=True, help="Local pinned HF model directory")
-    parser.add_argument("--build-dir", type=Path, required=True, help="CMake build containing bin/correctness_probe")
+    parser.add_argument("--build-dir", type=Path, required=True, help="CMake build containing bin/iteration_probe (legacy: correctness_probe/operator_probe)")
     parser.add_argument("--asan-build-dir", type=Path, help="Separate CPU ASan build if needed")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--optimization-baseline", type=Path,
                         help="Frozen V0 artifact directory; enforce optimization equivalence")
     parser.add_argument("--allow-version-drift", action="store_true",
                         help="Explore different Python/Unicode library versions; marked non-reference")
+    parser.add_argument("--legacy-operators", action="store_true",
+                        help="Reproduce historical operator/hidden-state/HF checks; not required for fusion")
+    parser.add_argument("--iteration-baseline", type=Path, default=ROOT / "build-iteration-reference",
+                        help="Trusted model-boundary reference pack for default validation")
     args = parser.parse_args()
+    if args.optimization_baseline and not args.legacy_operators:
+        parser.error("--optimization-baseline is legacy; add --legacy-operators or use --iteration-baseline with the new reference pack")
     model = args.model.resolve(); build = args.build_dir.resolve()
     cpu = (args.asan_build_dir or args.build_dir).resolve()
     output = args.output.resolve(); output.mkdir(parents=True, exist_ok=True)
     lock = json.loads((ROOT / "tests/reference.json").read_text())
     env = dict(os.environ, HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
     summary = {"status": "SETUP_IN_PROGRESS", "numerical_acceptance": "PENDING",
-               "scope": "at most 8192 tokens, defined regression corpus only", "steps": []}
+               "scope": "at most 8192 tokens, defined regression corpus only", "steps": [],
+               "profile": "legacy" if args.legacy_operators else "model_boundary"}
     summary["python"] = sys.version
     summary["platform"] = platform.platform()
 
@@ -72,9 +79,13 @@ def main():
         summary["torch_cuda"] = torch.version.cuda
         if torch.cuda.get_device_capability(0)[0] < 8:
             raise RuntimeError("These BF16 checks require an Ampere-or-newer CUDA GPU")
-        probes = {"forward": build / "bin/correctness_probe",
-                  "operators": build / "bin/operator_probe",
-                  "tokenizer": cpu / "bin/tokenizer_probe", "edges": cpu / "bin/edge_probe"}
+        probes = {"tokenizer": cpu / "bin/tokenizer_probe", "edges": cpu / "bin/edge_probe"}
+        if args.legacy_operators:
+            probes.update(forward=build / "bin/correctness_probe", operators=build / "bin/operator_probe")
+        else:
+            probes["forward"] = build / "bin/iteration_probe"
+            if not (args.iteration_baseline / "manifest.json").is_file():
+                raise RuntimeError("Missing trusted iteration reference pack; prepare it on unmodified V0 using tests/iterate.py prepare (see docs/FAST_ITERATION.md)")
         for path in probes.values():
             if not path.is_file(): raise RuntimeError(f"Build the test target first: {path}")
         metadata = subprocess.run([str(probes["edges"]), "--build-info"], cwd=ROOT, env=env,
@@ -124,14 +135,23 @@ def main():
         checks = [
             ("tokenizer", "run_tokenizer.py", probes["tokenizer"], 180),
             ("edges", "run_edges.py", probes["edges"], 180),
-            ("operators", "run_operators.py", probes["operators"], 1800),
-            ("extended_model", "run_model_extended.py", probes["forward"], 1800),
-            ("model", "run_correctness.py", probes["forward"], 1800),
         ]
+        if args.legacy_operators:
+            checks.extend([
+                ("operators", "run_operators.py", probes["operators"], 1800),
+                ("extended_model", "run_model_extended.py", probes["forward"], 1800),
+                ("model", "run_correctness.py", probes["forward"], 1800),
+            ])
         failed = False
         for name, script, probe, timeout in checks:
             failed |= run(name, [sys.executable, ROOT / "tests" / script, "--model", stage,
                                 "--probe", probe, "--output", output / "results"], timeout) != 0
+        if not args.legacy_operators:
+            failed |= run("model_logits", [sys.executable, ROOT / "tests/iterate.py", "full",
+                "--baseline", args.iteration_baseline.resolve(), "--model", stage,
+                "--build-dir", build, "--output", output / "model-logits"], 1900) != 0
+            summary["iteration_baseline"] = str(args.iteration_baseline.resolve())
+            summary["additional_release_checks"] = ["CUDA memcheck on optimized path", "free-generation regression"]
         if args.optimization_baseline:
             failed |= run("optimization", [sys.executable, ROOT / "tests/check_optimization.py", "compare",
                 "--baseline", args.optimization_baseline.resolve(), "--candidate", output / "results",
@@ -139,8 +159,12 @@ def main():
             summary["optimization_baseline"] = str(args.optimization_baseline.resolve())
         summary["status"] = "FAIL" if failed else ("OPTIMIZATION_EQUIVALENCE_PASS_NUMERICAL_REVIEW_REQUIRED"
             if args.optimization_baseline else "REGRESSION_CHECKS_PASS_NUMERICAL_REVIEW_REQUIRED")
+        if not args.legacy_operators and not failed:
+            summary["status"] = "MODEL_LOGITS_AND_CPU_REGRESSIONS_PASS_NUMERICAL_REVIEW_REQUIRED"
         save()
         print(summary["status"], flush=True)
+        if not args.legacy_operators:
+            print("GPU memory and free-generation checks remain separate release requirements.", flush=True)
         print("Full numerical correctness is NOT certified. Summary:", output / "summary.json", flush=True)
         return 1 if failed else 0
     except Exception as error:

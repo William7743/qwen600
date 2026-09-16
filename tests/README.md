@@ -1,5 +1,7 @@
 # 从全新 clone 复现正确性回归
 
+**默认入口已更新：**请先看 [融合兼容的测试流程](../docs/FAST_ITERATION.md)。`validate.py` 默认不运行独立 CUDA 算子或逐层诊断；以下旧流程通过 `--legacy-operators` 显式启用。数值阈值没有放宽。
+
 本流程对照本项目与 Hugging Face Transformers，限定输入与生成累计不超过
 8192 token。它验证分词、内存边界、采样和指定生成用例；**前向数值差异的完整
 验收仍未完成**。退出码 0 不代表模型的所有数学计算已经认证正确。
@@ -128,7 +130,7 @@ ASan 仅作用于 CPU 测试程序，不给 CUDA 模型探针添加 sanitizer。
 ## 4. 一条命令运行回归
 
 ```bash
-python tests/validate.py \
+python tests/validate.py --legacy-operators \
   --model "$QWEN_MODEL_DIR" \
   --build-dir build-check \
   --output build-check/validation
@@ -187,7 +189,7 @@ cmake -S tests -B build-asan \
   -DCMAKE_CXX_COMPILER=/path/to/asan-capable/clang++ \
   -DQWEN_ENABLE_ASAN=ON
 cmake --build build-asan -j 4
-python tests/validate.py --model "$QWEN_MODEL_DIR" \
+python tests/validate.py --legacy-operators --model "$QWEN_MODEL_DIR" \
   --build-dir build-check --asan-build-dir build-asan --output build-check/validation
 ```
 

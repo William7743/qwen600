@@ -1,4 +1,6 @@
-# 实习生优化的数值验收规则（版本 1）
+# 旧逐层数值验收规则（版本 1，历史复现）
+
+**默认入口已更新：**请先看 [融合兼容的测试流程](FAST_ITERATION.md)。`validate.py` 默认不运行独立 CUDA 算子或逐层诊断；以下旧流程通过 `--legacy-operators` 显式启用。数值阈值没有放宽。
 
 本规则验收 **优化后的 V1 与冻结 V0 的数值等价性**。V0 相对 Transformers 的
 已有误差不因此被认证正确，也不能被当作 V1 继续增加误差的预算。两边使用相同
@@ -51,7 +53,7 @@ python tests/check_optimization.py freeze --results /path/to/v0/results --baseli
 重新构建优化版探针后，在项目根目录运行全部测试并追加 V0 对照：
 
 ```bash
-/home/msganzy/vllm-shared/base-env/bin/python tests/validate.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --build-dir build-release-check --asan-build-dir build-release-asan --output build-release-check/v1-validation --optimization-baseline build-v0-reference
+/home/msganzy/vllm-shared/base-env/bin/python tests/validate.py --legacy-operators --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --build-dir build-release-check --asan-build-dir build-release-asan --output build-release-check/v1-validation --optimization-baseline build-v0-reference
 ```
 
 如果已经生成 V1 的加强版结果，可以只运行数值等价性对照：
