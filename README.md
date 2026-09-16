@@ -1,13 +1,131 @@
 # qwen600.cu
 
-**正确性复现：**clone 后请按照 [tests/README.md](tests/README.md) 安装参考依赖、
-获取锁定版本的模型、构建测试并运行 `tests/validate.py`。
-验证范围为最多 8192 token 的指定用例；当前回归通过不等于前向数值已全面验收。
+面向 **Qwen3-0.6B BF16 单 GPU、单请求、batch=1** 的 CUDA/C++ 推理项目，
+用于学习推理内核、验证数值正确性和考察实习生的 HPC 优化能力。当前不支持请求并发。
 
-**单 batch 性能计时：**默认使用 100 条内容多样、长度随机抽取后固定保存的负载，
-输入/输出长度均小于 1024；原 9 组可通过 `--dataset fixed9` 选择。一行运行命令见
-[benchmarks/README.md](benchmarks/README.md)。提供 TTFT、TPOT、prefill、decode 吞吐
-和总耗时；数值验收完成前的测量不标记为正式 V0 基线。
+## 当前状态与 V0 / V1
+
+- **V0**：完成必要正确性修复、验收后交给实习生的优化起点，并在其上测量性能基线。
+- **V1**：在 V0 上进行 HPC 优化后的版本，必须满足固定误差范围，再比较性能。
+  当前尚未实现 V1，也尚未完成正式 V0 性能基线。
+- 已修复分词中的缩进/连续空白差异、`<` 和 `top-k=0` 越界、`top-p=1` 概率问题，
+  以及 Attention 超过 1024 token 时漏算分数的问题。当前配置总上下文上限为 **8192 token**。
+- 加强版独立算子 **287 项检查通过**；模型对照已采集 logits 和逐层 hidden states。
+  新增的 192 步相同历史预测中，188 步 top-1 一致，4 步不同。
+  **模型相对 Transformers 的完整数值验收仍未完成**，不能将回归通过理解为全面正确。
+
+本机的 `build-v0-reference` 是当前实现的冻结数值输出快照，供优化版对照；
+它不是 V1，也不代表正式 V0 已完成验收。该目录被 Git 忽略，没有随仓库发布，
+清理构建缓存时应保留。其他机器需要从可信的 V0 结果生成并保管自己的参考快照。
+
+## 环境与构建
+
+需要 Linux、支持 BF16 的 NVIDIA Ampere 或更新 GPU、兼容驱动与 CUDA Toolkit、
+cuBLAS/CUB、C++17 编译器、CMake ≥3.20，以及 PCRE2 8-bit 和 ICU uc 开发库。
+推理程序不依赖 Python；导出分词器、执行 Transformers 参考测试需要 Python 环境，
+内存边界验证还需要 CPU AddressSanitizer。
+
+优先使用已有模型和环境。测试入口不会自动安装依赖或下载权重，版本及模型哈希要求见
+[正确性测试说明](tests/README.md)。本机使用 RTX 3090 24GB、CUDA Toolkit 12.4，
+已有环境的完整构建命令（含独立 ASan 构建）见 [本机验证说明](docs/LOCAL_VALIDATION.md)。
+
+以下命令均在项目根目录执行；绝对路径是本机示例，其他机器应替换为自己的路径。
+构建正确性探针：
+
+```bash
+cmake -S . -B build-release-check -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=86 -DCMAKE_PREFIX_PATH=/opt/anaconda3 -DQWEN_BUILD_TESTS=ON -DQWEN_ENABLE_ASAN=OFF
+cmake --build build-release-check -j 4
+```
+
+这里关闭的是主构建中的 CPU ASan；完整验证仍需按本机验证说明准备
+`build-release-asan`，不能省略内存检查。
+
+## 正确性测试与优化验收
+
+| 检查对象 | 参考与覆盖 |
+| --- | --- |
+| 分词 token ID / 聊天模板 | 与 Hugging Face 分词器对照，包含 842 条扩展分词文本 |
+| 内存边界、随机采样 | CPU ASan、top-k 边界、top-p 截断与采样频率检查 |
+| 独立算子 | 287 项，对照量化输入上的 CPU float64 参考；Attention 覆盖长度 1～8192 |
+| 模型 logits | Transformers BF16 参考；新增 33 条用例、296 个位置的全词表向量 |
+| hidden states | 新增用例的 embedding、28 层输出及最终归一化，共 1980 个向量 |
+| 生成 token ID | 保留三组严格贪心生成回归；新增 192 步相同参考历史预测诊断 |
+
+本机一行运行完整回归（先完成上述构建和独立 ASan 构建）：
+
+```bash
+/home/msganzy/vllm-shared/base-env/bin/python tests/validate.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --build-dir build-release-check --asan-build-dir build-release-asan --output build-release-check/validation-strengthened
+```
+
+终端和 JSON 报告记录检查结果。`REGRESSION_CHECKS_PASS_NUMERICAL_REVIEW_REQUIRED`
+表示约定回归通过、模型数值仍待验收；失败显示 FAIL 并返回非零退出码。
+覆盖、参考版本和诊断数据说明见 [tests/README.md](tests/README.md)。
+
+实习生的优化版本还需与冻结 V0 比较，以下条件在**每个采样向量上同时满足**：
+
+| 指标 | V1 相对冻结 V0 的上限 |
+| --- | --- |
+| logits 平均 / 最大绝对误差 | 0.05 / 0.5 |
+| softmax 概率总变差 | 0.02 |
+| top-1 分数损失 | `max(V0_logits) - V0_logits[argmax(V1_logits)] ≤ 0.125` |
+| hidden-state 相对 L2 误差 | 0.01 |
+| hidden-state 最大绝对误差 | `0.002 + 0.02 * max(abs(V0))` |
+| embedding / 非有限值 | embedding 完全一致；不允许 NaN/Inf |
+
+还必须通过原有回归和全部独立算子检查。这些是本项目的工程验收阈值，
+不认证 V0 相对 Transformers 的已有误差，也不保证自由生成全文逐字相同。
+完整定义及快照冻结方法见 [优化验收规则](docs/OPTIMIZATION_ACCEPTANCE.md)。
+
+优化后重新构建测试探针，再追加 V0 对照：
+
+```bash
+/home/msganzy/vllm-shared/base-env/bin/python tests/validate.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --build-dir build-release-check --asan-build-dir build-release-asan --output build-release-check/v1-validation --optimization-baseline build-v0-reference
+```
+
+## Benchmark
+
+正确性测试集和性能负载集分别维护，性能负载不含标准答案。
+
+| 选择参数 | 请求数 | 输入 / 输出 token 长度 |
+| --- | ---: | --- |
+| `--dataset diverse100`（默认） | 100 | 内容多样的固定合成输入；两种长度均小于 1024 |
+| `--dataset sharegpt100` | 100 | 补充 ShareGPT 子集；两种长度均小于 1024，输出数取原回复的 token 长度 |
+| `--dataset fixed9` | 9 | 输入和输出分别取 16、256、1024，组成九种组合 |
+
+长度包含输入聊天模板。集合已保存，运行时不再随机抽样。ShareGPT 是固定前缀筛选
+的子集，不代表完整数据分布，来源和许可证见 [子集说明](benchmarks/sharegpt100/README.md)。
+
+构建计时程序：
+
+```bash
+cmake -S . -B build-benchmark -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=86 -DCMAKE_PREFIX_PATH=/opt/anaconda3 -DQWEN_BUILD_BENCHMARKS=ON
+cmake --build build-benchmark --target benchmark_probe -j 4
+```
+
+默认先执行 **1 次真实请求预热**，再对 100 条负载各测 1 次，最后输出均值：
+
+```bash
+/home/msganzy/vllm-shared/base-env/bin/python benchmarks/run_benchmark.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --output build-benchmark/results-diverse100
+```
+
+补充测量 ShareGPT：
+
+```bash
+/home/msganzy/vllm-shared/base-env/bin/python benchmarks/run_benchmark.py --dataset sharegpt100 --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --output build-benchmark/results-sharegpt100
+```
+
+结果目录必须为空。模型只加载一次，采用贪心采样、忽略 EOS，严格生成指定数量。
+计时不含分词、文本解码、打印和模型加载；包含请求内的数据传输与采样。
+
+- **Prefill**：处理全部输入并使最后一份 logits 在主机可用的耗时。
+- **TTFT**：从请求开始到首个输出 token ID 可用，包含 prefill 和首次采样。
+- **TPOT**：后续 decode 耗时除以 `输出 token 数 − 1`。
+- **总耗时**：TTFT + decode 耗时；另外记录 decode tokens/s、模型加载时间和显存观测峰值。
+
+终端输出逐请求指标及均值；`results.csv` 保存正式测量，`aggregate.json` 保存均值及
+按 token 加权的 TPOT/吞吐，`raw.jsonl` 保留原始记录。预热不计入汇总。
+单次测量不能判断运行波动；V0/V1 必须使用相同负载、环境及测量规则。
+详细计时边界见 [benchmarks/README.md](benchmarks/README.md)。当前测量不会被标为正式 V0 成绩。
 
 ## 项目来源与致谢 / Attribution
 
@@ -40,6 +158,10 @@ and describe the original author's results, not new measurements by this reposit
 升级后需要重新编译程序，并重新运行 `tools/export.py <model_dir>`，生成
 带 `QTK2` 标识的新 `tokenizer.bin`。旧导出文件不能供新程序使用，旧程序也不能
 读取新格式；模型权重无需重新下载。正确性复测步骤见 [tests/README.md](tests/README.md)。
+
+## 上游项目介绍与历史实验
+
+以下保留上游介绍及实验记录；本仓库当前构建、验证和计时流程以本文前面的说明为准。
 
 <p align="center">
   <img src="assets/banner.png" width="429" height="139" alt="banner_">
@@ -87,6 +209,9 @@ qwen600/
 ├── layers/     # sampling operations
 ├── utils/      # tokenizer and safetensors loading
 ├── tools/      # tokenizer export helpers
+├── tests/      # correctness probes and V0-relative acceptance
+├── benchmarks/ # fixed workloads and timing interface
+├── docs/       # validation records and acceptance rules
 └── config.h    # compile-time model and runtime constants
 ```
 
