@@ -15,7 +15,12 @@ Python 主要依赖版本保存在 [requirements-reference.txt](requirements-ref
 完整的基线元数据及模型哈希保存在 [reference.json](reference.json)。这不是完整的
 操作系统镜像或全部传递依赖锁文件，不能保证任意操作系统/GPU 上得到逐位相同数值。
 
-在新 Python 3.10 虚拟环境中准备参考依赖：
+优先复用已有 Python 环境和本地模型：直接使用该环境的 Python 执行第 4 节命令，
+验证入口会检查依赖版本，缺失或不符时会报告错误，不会自动安装或下载。
+本机已有环境的完整命令见 [LOCAL_VALIDATION.md](../docs/LOCAL_VALIDATION.md)。
+
+仅在没有可用环境、且需要自行安装时，在新 Python 3.10 虚拟环境中准备参考依赖
+（以下安装命令会下载软件包）：
 
 ```bash
 python3.10 -m venv .venv
