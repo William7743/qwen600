@@ -1,0 +1,62 @@
+Explain the code and review the surrounding implementation notes.
+Record 23.1: def count_items(values):
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+The input may be empty or contain repeated items. Dictionary keys must be hashable. The caller owns the input and expects it to remain unchanged. Discuss the time cost and useful edge cases before proposing changes.
+Record 23.2: def count_items(values):
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+The input may be empty or contain repeated items. Dictionary keys must be hashable. The caller owns the input and expects it to remain unchanged. Discuss the time cost and useful edge cases before proposing changes.
+Record 23.3: def count_items(values):
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+The input may be empty or contain repeated items. Dictionary keys must be hashable. The caller owns the input and expects it to remain unchanged. Discuss the time cost and useful edge cases before proposing changes.
+Record 23.4: def count_items(values):
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+The input may be empty or contain repeated items. Dictionary keys must be hashable. The caller owns the input and expects it to remain unchanged. Discuss the time cost and useful edge cases before proposing changes.
+Record 23.5: def count_items(values):
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+The input may be empty or contain repeated items. Dictionary keys must be hashable. The caller owns the input and expects it to remain unchanged. Discuss the time cost and useful edge cases before proposing changes.
+Record 23.6: def count_items(values):
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+The input may be empty or contain repeated items. Dictionary keys must be hashable. The caller owns the input and expects it to remain unchanged. Discuss the time cost and useful edge cases before proposing changes.
+Record 23.7: def count_items(values):
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+The input may be empty or contain repeated items. Dictionary keys must be hashable. The caller owns the input and expects it to remain unchanged. Discuss the time cost and useful edge cases before proposing changes.
+Record 23.8: def count_items(values):
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+The input may be empty or contain repeated items. Dictionary keys must be hashable. The caller owns the input and expects it to remain unchanged. Discuss the time cost and useful edge cases before proposing changes.
+Record 23.9: def count_items(values):
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+The input may be empty or contain repeated items. Dictionary keys must be hashable. The caller owns the input and expects it to remain unchanged. Discuss the time cost and useful edge cases before proposing changes.
+Record 23.10: def count_items(values):
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    return counts
+The input may be empty or contain repeated items. Dictionary keys must be hashable. The caller owns the input and expects it to remain unchanged. Discuss the time cost and useful edge cases before proposing changes.
+Record 

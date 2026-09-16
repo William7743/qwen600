@@ -37,16 +37,21 @@ def main():
     parser.add_argument('--model', required=True, type=Path)
     parser.add_argument('--build-dir', type=Path, default=ROOT.parent/'build-benchmark')
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--case', action='append', help='Select case ID; repeat to select several; default all nine')
+    parser.add_argument('--dataset', choices=('diverse100', 'fixed9'), default='diverse100',
+                        help='Frozen workload collection; default diverse100')
+    parser.add_argument('--case', action='append', help='Select case ID; repeat to select several; default entire dataset')
     parser.add_argument('--warmup', type=int, default=2)
     parser.add_argument('--repeats', type=int, default=5)
     args = parser.parse_args()
     if args.warmup < 0 or args.repeats < 1:
         parser.error('warmup >= 0 and repeats >= 1 required')
-    manifest = json.loads((ROOT/'manifest.json').read_text())
+    dataset_root = ROOT/'diverse100' if args.dataset == 'diverse100' else ROOT
+    manifest = json.loads((dataset_root/'manifest.json').read_text())
     cases = [c for c in manifest['cases'] if not args.case or c['id'] in args.case]
     if not cases or (args.case and set(args.case)-{c['id'] for c in cases}):
-        parser.error('Unknown case; use e.g. p16_g16 or p1024_g1024')
+        parser.error('Unknown case; diverse100 uses d001..d100; fixed9 uses e.g. p16_g16')
+    print(f'Dataset: {manifest["dataset"]}; {len(cases)} cases; '
+          f'{args.warmup} warmups + {args.repeats} measurements per case', flush=True)
     probe = args.build_dir.resolve()/'bin/benchmark_probe'
     if not probe.is_file():
         parser.error(f'Missing {probe}; build with -DQWEN_BUILD_BENCHMARKS=ON')
@@ -61,14 +66,19 @@ def main():
     inputs = {i['name']: i for i in manifest['inputs']}
     for item in inputs.values():
         for key, rel in item['files'].items():
-            if sha(ROOT/rel) != item['sha256'][key]:
+            if sha(dataset_root/rel) != item['sha256'][key]:
                 raise RuntimeError(f'Input hash mismatch: {rel}')
-        ids = list(map(int, (ROOT/item['files']['ids']).read_text().split()))
+        ids = list(map(int, (dataset_root/item['files']['ids']).read_text().split()))
         if len(ids) != item['prompt_tokens'] or any(t < 0 or t >= 151936 for t in ids):
             raise RuntimeError('Invalid input token IDs')
+    for c in cases:
+        if c['prompt_tokens'] != inputs[c['input']]['prompt_tokens'] or c['output_tokens'] < 2:
+            raise RuntimeError('Invalid case lengths')
+        if args.dataset == 'diverse100' and not (0 < c['prompt_tokens'] < 1024 and c['output_tokens'] < 1024):
+            raise RuntimeError('diverse100 lengths must be strictly below 1024')
     output.mkdir(parents=True, exist_ok=True)
     plan = output/'plan.txt'
-    plan.write_text(''.join(f'{c["id"]} {json.dumps(str(ROOT/inputs[c["input"]]["files"]["ids"]))} {c["output_tokens"]}\n' for c in cases))
+    plan.write_text(''.join(f'{c["id"]} {json.dumps(str(dataset_root/inputs[c["input"]]["files"]["ids"]))} {c["output_tokens"]}\n' for c in cases))
     cache = args.build_dir.resolve()/'CMakeCache.txt'
     build_info = [line for line in cache.read_text().splitlines()
                   if line.startswith(('CMAKE_BUILD_TYPE:', 'CMAKE_CUDA_ARCHITECTURES:',
@@ -78,7 +88,8 @@ def main():
                'repeats': args.repeats, 'case_ids': [c['id'] for c in cases],
                'git_commit': capture(['git', 'rev-parse', 'HEAD']),
                'git_status': capture(['git', 'status', '--short']),
-               'probe_sha256': sha(probe), 'manifest_sha256': sha(ROOT/'manifest.json'),
+               'probe_sha256': sha(probe), 'manifest_sha256': sha(dataset_root/'manifest.json'),
+               'dataset': manifest['dataset'], 'dataset_directory': str(dataset_root),
                'build_configuration': build_info, 'cuda_visible_devices': os.environ.get('CUDA_VISIBLE_DEVICES'),
                'nvcc': capture(['nvcc', '--version']),
                'gpu_before': capture(['nvidia-smi', '--query-gpu=index,name,driver_version,temperature.gpu,clocks.sm,power.draw', '--format=csv,noheader']),
@@ -116,7 +127,7 @@ def main():
             monitor = threading.Thread(target=memory_monitor, daemon=True)
             monitor.start()
             rows = []
-            print('case          run   prefill(ms)   TTFT(ms)   TPOT(ms)   decode(tok/s)   total(ms)', flush=True)
+            print('case          P/G       run   prefill(ms)   TTFT(ms)   TPOT(ms)   decode(tok/s)   total(ms)', flush=True)
             for line in process.stdout:
                 raw.write(line); raw.flush()
                 row = json.loads(line)
@@ -137,14 +148,16 @@ def main():
                     if not math.isclose(row['total_ms'], row['ttft_ms']+row['decode_ms'], rel_tol=1e-8):
                         raise RuntimeError('Timing boundaries inconsistent')
                     rows.append(row)
-                    print(f'{row["case"]:14} {row["iteration"]+1:2} {row["prefill_ms"]:12.2f} {row["ttft_ms"]:10.2f} {row["tpot_ms"]:10.3f} {row["decode_tokens_per_second"]:15.2f} {row["total_ms"]:11.2f}', flush=True)
+                    lengths = f'{row["prompt_tokens"]}/{row["output_tokens"]}'
+                    print(f'{row["case"]:14} {lengths:9} {row["iteration"]+1:2} {row["prefill_ms"]:12.2f} {row["ttft_ms"]:10.2f} {row["tpot_ms"]:10.3f} {row["decode_tokens_per_second"]:15.2f} {row["total_ms"]:11.2f}', flush=True)
             if process.wait() != 0:
                 raise RuntimeError('Engine failed; see stderr.log')
             for c in cases:
                 selected = [r for r in rows if r['case'] == c['id']]
                 if sorted(r['iteration'] for r in selected) != list(range(args.repeats)):
                     raise RuntimeError('Missing or duplicate measured iterations')
-                summary['cases'].append({'case': c['id'], **{key: {
+                summary['cases'].append({'case': c['id'], 'prompt_tokens': c['prompt_tokens'],
+                    'output_tokens': c['output_tokens'], **{key: {
                     'median': statistics.median(r[key] for r in selected),
                     'min': min(r[key] for r in selected), 'max': max(r[key] for r in selected)
                 } for key in METRICS}, 'generated_ids_repeatable': all(

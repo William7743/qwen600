@@ -1,5 +1,27 @@
 # V0/V1 单请求性能负载
 
+**当前默认集合为 `diverse100`**：100 条固定请求，prompt 内容可读且多样，输入及
+输出长度在构建时用种子 20260916 抽取，运行时不再随机。两种长度都严格小于
+1024 token。原 9 组保留为 `fixed9`，其中包含等于 1024 的长度，不能与新集合混淆。
+
+`diverse_topics.json` 保存 10 类中英文自编主题（系统设计、园艺、代码审查、物流、
+实验笔记、会议整理、图书馆、信息提取、行程规划、算法解释）。每类 10 条，共
+50 条英文、50 条中文。正文是带编号的合成笔记，存在重复段落，不冒充真实用户
+请求分布或质量评测集。完整任务指令和聊天模板保留，只裁剪辅助正文；末尾可能
+在句中结束，必要时补标点以达到精确 token 数。
+
+新集合在 `diverse100/manifest.json` 及 `diverse100/inputs/`，路径相对该集合目录。
+prompt 目标长度从 `[max(32, 指令及模板长度+8),1023]` 均匀抽取，以保留有效正文；
+output 从 `[2,1023]` 均匀抽取。实际范围为 prompt 40～1010、output 4～1021。
+每份输入、模板文本及 ID 文件均保存 SHA256，输入 ID 不重复。
+
+重建或逐字节验证新集合（使用本机已有环境，不下载）：
+
+```bash
+/home/msganzy/vllm-shared/base-env/bin/python benchmarks/build_diverse_dataset.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B
+/home/msganzy/vllm-shared/base-env/bin/python benchmarks/build_diverse_dataset.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --check
+```
+
 这是固定工作量的性能输入集，不是数值正确性测试集，也不包含标准答案。
 计时入口为 `run_benchmark.py`，调用独立的 `benchmark_probe`，直接复用生产
 `forward()` 和贪心采样，不修改生产推理路径。生成器与计时器分离，计时器仅依赖
@@ -15,14 +37,15 @@ cmake -S . -B build-benchmark -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTU
 cmake --build build-benchmark --target benchmark_probe -j 4
 ```
 
-一行运行全部九组，每组预热 2 次、测量 5 次：
+一行运行默认 100 条，每条预热 2 次、测量 5 次（共 700 次请求执行）：
 
 ```bash
-/home/msganzy/vllm-shared/base-env/bin/python benchmarks/run_benchmark.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --output build-benchmark/results
+/home/msganzy/vllm-shared/base-env/bin/python benchmarks/run_benchmark.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --output build-benchmark/results-diverse100
 ```
 
 `--build-dir` 默认是仓库的 `build-benchmark`。结果目录必须为空，避免覆盖历史成绩。
-只测试一组可添加 `--case p16_g16`；多组选项可重复。`--warmup`、`--repeats` 可调整，
+只测试一条可添加 `--case d001`；多组选项可重复。切回原 9 组添加 `--dataset fixed9`，
+该集合使用 `--case p16_g16` 等旧名称。`--warmup`、`--repeats` 可调整，
 但非默认次数只能作为调试结果，不能混入默认方案成绩。退出码 0 表示计时工作完成，
 并不表示数值正确性通过；引擎失败或结果不完整时非零退出并记录失败状态。
 
@@ -39,7 +62,7 @@ cmake --build build-benchmark --target benchmark_probe -j 4
 不冒充单个请求的精确峰值。未暂停在加载完成边界采样，因此不提供独立的加载后
 进程显存数值。`nvidia-smi` 不可用或无法获得该进程的数据时，峰值为 null 并附原因。
 
-## 数据与复现
+## 原 fixed9 数据与复现
 
 - `source.txt`：本项目自编英文工程笔记，无需下载外部数据。
 - `inputs/p{16,256,1024}.user.txt`：实际 user 内容；按 token 前缀裁剪，可能在句中结束。
@@ -67,7 +90,7 @@ cmake --build build-benchmark --target benchmark_probe -j 4
 分词相关依赖版本，不下载依赖或权重。manifest 记录权重哈希，但生成器不读取权重；
 未来计时入口仍需核验实际模型权重。
 
-## 九组工作量
+## 原 fixed9 九组工作量
 
 | Prompt tokens | Output tokens |
 | ---: | --- |

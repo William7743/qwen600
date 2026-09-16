@@ -1,0 +1,5 @@
+Extract the constraints and propose a delivery schedule from these notes.
+Record 24.1: A warehouse groups packages by destination before loading vehicles. Fragile items require separate handling. The morning route has a narrow arrival window while the afternoon route allows flexible unloading. A delayed shipment should not block unrelated packages. Record estimated and actual arrival times and explain any assumptions in the schedule.
+Record 24.2: A warehouse groups packages by destination before loading vehicles. Fragile items require separate handling. The morning route has a narrow arrival window while the afternoon route allows flexible unloading. A delayed shipment should not block unrelated packages. Record estimated and actual arrival times and explain any assumptions in the schedule.
+Record 24.3: A warehouse groups packages by destination before loading vehicles. Fragile items require separate handling. The morning route has a narrow arrival window while the afternoon route allows flexible unloading. A delayed shipment should not block unrelated packages. Record estimated and actual arrival times and explain any assumptions in the schedule.
+Record 

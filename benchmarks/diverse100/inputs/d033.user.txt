@@ -1,0 +1,5 @@
+Explain the code and review the surrounding implementation notes.
+Record 33.1: def count_items(values):
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0)
