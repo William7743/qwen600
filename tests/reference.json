@@ -27,6 +27,6 @@
     "compute_capability": "8.6",
     "driver": "550.54.15"
   },
-  "max_context_tokens": 1024,
+  "max_context_tokens": 8192,
   "numerical_acceptance": "pending; no full numerical correctness certification"
 }

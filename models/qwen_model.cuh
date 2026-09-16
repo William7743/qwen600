@@ -647,6 +647,9 @@ float* forward(
     // copy the token embedding into the main activation buffer s->x
     bf16* token_embedding_ptr = w->token_embedding_table + (size_t)token * DIM;
     cudaMemcpy(s->x, token_embedding_ptr, (size_t)DIM * sizeof(bf16), cudaMemcpyDeviceToDevice);
+#ifdef QWEN_VALIDATION_TRACE
+    QWEN_VALIDATION_TRACE(s->x, pos, 0);
+#endif
 
     for (int l = 0; l < N_LAYERS; l++)
     {
@@ -694,6 +697,9 @@ float* forward(
 
         // 10. final FFN Down Projection matmul and residual connection (fused)
         matmul_cublas(handle, s->x, layer.ffn.down_proj_weight, s->hb, DIM, HIDDEN_DIM, 1.0f, 1.0f);
+#ifdef QWEN_VALIDATION_TRACE
+        QWEN_VALIDATION_TRACE(s->x, pos, l + 1);
+#endif
         // add_residual_gpu(s->x, s->xb, DIM);
     }
 
@@ -702,6 +708,9 @@ float* forward(
     // 11. final RMSNorm
     // in-place operation on s->x
     rmsnorm_gpu(s->x, s->x, w->final_norm_weight, DIM);
+#ifdef QWEN_VALIDATION_TRACE
+    QWEN_VALIDATION_TRACE(s->x, pos, N_LAYERS + 1);
+#endif
 
     // 12. classifier Matmul
     matmul_cublas(handle, s->logits, w->output_head_weight, s->x, VOCAB_SIZE, DIM);

@@ -1,4 +1,7 @@
-// Exercise the production implementation without changing its inference code.
+// Test-only tracing is compiled out of the production CLI and benchmark.
+#include <cuda_bf16.h>
+void capture_validation_state(const __nv_bfloat16*, int, int);
+#define QWEN_VALIDATION_TRACE capture_validation_state
 #define main qwen600_cli_main
 #include "engine/main.cu"
 #undef main
@@ -6,6 +9,18 @@
 #include <iterator>
 #include <set>
 #include <sstream>
+
+static std::ofstream* trace_output = nullptr;
+static std::set<int> trace_positions;
+void capture_validation_state(const __nv_bfloat16* x, int pos, int stage) {
+    if (!trace_output || !trace_positions.count(pos)) return;
+    std::vector<bf16> values(DIM);
+    CUDA_CHECK(cudaMemcpy(values.data(), x, DIM*sizeof(bf16), cudaMemcpyDeviceToHost));
+    for (auto value : values) {
+        float f = __bfloat162float(value);
+        trace_output->write(reinterpret_cast<char*>(&f), sizeof(f));
+    }
+}
 
 constexpr int VALIDATION_MAX_TOKENS = SEQ_LEN;
 static_assert(SEQ_LEN >= VALIDATION_MAX_TOKENS, "Validation exceeds allocated context");
@@ -88,8 +103,8 @@ int main(int argc, char** argv) {
             }
             CUDA_CHECK(cudaFree(q)); CUDA_CHECK(cudaFree(k)); CUDA_CHECK(cudaFree(att));
             return failed ? 1 : 0;
-        } else if (mode == "forward" || mode == "greedy") {
-            if (argc != 6) throw std::runtime_error("forward/greedy MODEL IDS_FILE OUTPUT POSITIONS/COUNT");
+        } else if (mode == "forward" || mode == "greedy" || mode == "trace") {
+            if (argc != 6) throw std::runtime_error("forward/greedy/trace MODEL IDS_FILE OUTPUT POSITIONS/COUNT");
             auto ids = read_ids(argv[3]);
             int generation_count = mode == "greedy" ? std::stoi(argv[5]) : 0;
             if (mode == "greedy" && (generation_count < 1 ||
@@ -103,7 +118,7 @@ int main(int argc, char** argv) {
             std::ofstream out(argv[4], std::ios::binary);
             if (!out) throw std::runtime_error("Cannot open output");
             std::set<int> positions;
-            if (mode == "forward") {
+            if (mode == "forward" || mode == "trace") {
                 std::istringstream stream(argv[5]);
                 int pos;
                 while (stream >> pos) {
@@ -111,13 +126,15 @@ int main(int argc, char** argv) {
                     positions.insert(pos);
                 }
             }
+            if (mode == "trace") { trace_output = &out; trace_positions = positions; }
             float* logits = nullptr;
             for (int pos = 0; pos < int(ids.size()); ++pos) {
                 logits = forward(&model, ids[pos], pos);
                 CUDA_CHECK(cudaGetLastError());
-                if (positions.count(pos))
+                if (mode == "forward" && positions.count(pos))
                     out.write(reinterpret_cast<char*>(logits), VOCAB_SIZE*sizeof(float));
             }
+            trace_output = nullptr;
             if (mode == "greedy") {
                 int count = generation_count;
                 for (int i = 0; i < count; ++i) {

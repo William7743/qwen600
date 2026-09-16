@@ -71,6 +71,7 @@ def main():
         if torch.cuda.get_device_capability(0)[0] < 8:
             raise RuntimeError("These BF16 checks require an Ampere-or-newer CUDA GPU")
         probes = {"forward": build / "bin/correctness_probe",
+                  "operators": build / "bin/operator_probe",
                   "tokenizer": cpu / "bin/tokenizer_probe", "edges": cpu / "bin/edge_probe"}
         for path in probes.values():
             if not path.is_file(): raise RuntimeError(f"Build the test target first: {path}")
@@ -121,6 +122,8 @@ def main():
         checks = [
             ("tokenizer", "run_tokenizer.py", probes["tokenizer"], 180),
             ("edges", "run_edges.py", probes["edges"], 180),
+            ("operators", "run_operators.py", probes["operators"], 1800),
+            ("extended_model", "run_model_extended.py", probes["forward"], 1800),
             ("model", "run_correctness.py", probes["forward"], 1800),
         ]
         failed = False

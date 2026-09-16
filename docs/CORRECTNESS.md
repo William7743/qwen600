@@ -1,5 +1,22 @@
 # 正确性验证基线：2026-09-16
 
+## 加强版测试更新
+
+已新增并运行 287 项独立算子检查，全部通过。参考为 BF16 量化输入上的 CPU
+float64 计算，覆盖活跃自定义 kernel 和六种实际矩阵乘法形状。Attention 不再只
+检查全 1 分数，还对照非均匀数据的分数、概率、V 加权结果以及完整 dispatcher。
+8192 长度的独立 Attention 路径经 CUDA memcheck 检查为 0 errors。
+
+模型新增 24 条文本和 9 条长度边界序列，采样 296 个 logits 位置、1980 个逐层
+hidden-state 向量；有限值及 embedding 精确一致检查通过。24 条文本各对照 8 步
+参考历史下的预测，192 步中 188 步 top-1 相同，4 步差异保留为待定位。
+原三组短生成回归结果保持不变。这次没有重跑原有整段 8192 模型对照。
+
+逐层采集是测试探针专用的编译开关，不改变生产 CLI/benchmark 的计算过程。
+模型级数值验收仍未完成；不能把独立算子通过等同于整个模型正确。
+结果摘要见 [strengthened-summary.json](correctness/strengthened-summary.json)，
+用例及误差判定规则见 [tests/README.md](../tests/README.md)。
+
 ## 更新：修复 1024 之后的 Attention 分数漏写
 
 `attention_qk_kernel` 改用 `t += blockDim.x` 循环覆盖历史位置，保持

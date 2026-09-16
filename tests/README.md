@@ -4,6 +4,47 @@
 8192 token。它验证分词、内存边界、采样和指定生成用例；**前向数值差异的完整
 验收仍未完成**。退出码 0 不代表模型的所有数学计算已经认证正确。
 
+## 加强版覆盖
+
+统一入口现在额外运行 `run_operators.py` 和 `run_model_extended.py`，需要重新构建
+测试目标以生成 `bin/operator_probe` 和支持 trace 的 `bin/correctness_probe`。
+
+- **算子级 287 项检查**：普通/逐 head RMSNorm、RoPE、SwiGLU、类型转换、独立
+  softmax、Attention 的 QK 分数/概率/V 加权结果/dispatcher，以及 6 种实际 GEMV
+  形状（包括 beta=1 残差、完整词表投影）。参考为 CPU float64，输入先量化为 BF16。
+- **Attention**：18 种长度覆盖 1～8192，包含 warp、block 和旧 1024 边界两侧；
+  不同 head、位置的非均匀 Q/K/V，另外覆盖零 Q、较尖锐的分布和未来 cache 数据。
+  检查未来分数槽位未被改写。独立 softmax 包含均匀、随机、极端峰值、大负值。
+- **模型级新增 33 条**：`model_cases.json` 的 24 条中英文、代码、JSON、Unicode、
+  空白、空输入、system/thinking 用例，加 9 条 127～1025 token 的边界序列。
+  对照多个位置的全词表 logits，24 条文本另检查 8 步相同参考历史下的预测。
+- **逐层 hidden states**：每条新增用例在第一个和最后一个输入位置，各保存 30 组
+  向量：embedding、28 层输出、最终 RMSNorm，共 1980 个向量快照。只在测试探针
+  定义 `QWEN_VALIDATION_TRACE` 时采集；生产 CLI 和 benchmark 不包含这些回传调用。
+
+算子判定采用逐元素 `abs(actual-reference) <= atol + rtol*abs(reference)`，同时拒绝
+非有限值。BF16 输出默认 atol=2e-4、rtol=1/128；RoPE atol=2e-3；Attention 分数
+atol=rtol=3e-5，概率 atol=3e-6、rtol=3e-5；独立 softmax atol=2e-6、rtol=2e-5；
+类型转换和未写入槽位要求精确相等。每项实际阈值均记录在报告中。这些是指定算子
+测试的容差，不是整个模型的误差预算，也不意味着允许任意降低模型精度。
+
+新增模型测试对所有采样 logits/hidden states 检查有限值，并要求 embedding 精确
+一致；其余层误差、top-1 差异及首次不完全相同的阶段用于定位，整体数值容差仍待
+验收。因此模型输出的 `DIAGNOSTICS_COMPLETE_NUMERICAL_REVIEW_REQUIRED` **不是**
+逐层数值全部通过。原来的三组贪心生成严格回归仍保留。
+
+只运行新增部分（本机已有构建目录）：
+
+```bash
+/home/msganzy/vllm-shared/base-env/bin/python tests/run_operators.py --probe build-release-check/bin/operator_probe --output build-release-check/strengthened
+/home/msganzy/vllm-shared/base-env/bin/python tests/run_model_extended.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --probe build-release-check/bin/correctness_probe --output build-release-check/strengthened
+```
+
+结果为 `operators-report.json` 和 `extended-model-report.json`。新增模型对照同时
+保存 native/reference 的 float32 二进制 logits 和 trace，形状分别为
+`[已采样位置数,151936]`、`[2,30,1024]`；输入 ID 分别保存在 `*.forward.ids` 和
+`*.trace.ids`。报告中的 position/stage 指明向量含义。
+
 ## 1. 环境与版本
 
 需要 Linux、支持 BF16 的 NVIDIA Ampere 或更新 GPU、可用 CUDA Toolkit/nvcc、
@@ -77,7 +118,7 @@ cmake --build build-check -j 4
 
 如依赖不在系统路径，在配置命令中追加 `-DCMAKE_PREFIX_PATH=...`。
 如 nvcc 需要特定 host compiler，可追加 `-DCMAKE_CUDA_HOST_COMPILER=/path/to/g++`。
-构建产物包括 `qwen600` 与 `bin/{correctness_probe,tokenizer_probe,edge_probe}`。
+构建产物包括 `qwen600` 与 `bin/{correctness_probe,operator_probe,tokenizer_probe,edge_probe}`。
 ASan 仅作用于 CPU 测试程序，不给 CUDA 模型探针添加 sanitizer。
 
 ## 4. 一条命令运行回归
