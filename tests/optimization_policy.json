@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "scope": "V1 equivalence to frozen V0, not certification against Transformers",
+  "logits": {
+    "mean_absolute_error_max": 0.05,
+    "max_absolute_error_max": 0.5,
+    "probability_total_variation_max": 0.02,
+    "baseline_top1_regret_max": 0.125
+  },
+  "hidden_states": {
+    "relative_l2_error_max": 0.01,
+    "max_absolute_error_atol": 0.002,
+    "max_absolute_error_scale": 0.02,
+    "embedding_exact": true
+  },
+  "all_sampled_positions_must_pass": true,
+  "all_values_must_be_finite": true,
+  "operator_checks_must_pass": true
+}

@@ -6,6 +6,10 @@
 
 ## 加强版覆盖
 
+实习生优化的固定误差范围及 V0/V1 自动 PASS/FAIL 验收，见
+[OPTIMIZATION_ACCEPTANCE.md](../docs/OPTIMIZATION_ACCEPTANCE.md)。它与下文的
+Transformers 数值诊断分开，不能通过放宽原实现对 Transformers 的误差来掩盖优化引入的误差。
+
 统一入口现在额外运行 `run_operators.py` 和 `run_model_extended.py`，需要重新构建
 测试目标以生成 `bin/operator_probe` 和支持 trace 的 `bin/correctness_probe`。
 

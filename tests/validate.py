@@ -29,6 +29,8 @@ def main():
     parser.add_argument("--build-dir", type=Path, required=True, help="CMake build containing bin/correctness_probe")
     parser.add_argument("--asan-build-dir", type=Path, help="Separate CPU ASan build if needed")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--optimization-baseline", type=Path,
+                        help="Frozen V0 artifact directory; enforce optimization equivalence")
     parser.add_argument("--allow-version-drift", action="store_true",
                         help="Explore different Python/Unicode library versions; marked non-reference")
     args = parser.parse_args()
@@ -130,7 +132,13 @@ def main():
         for name, script, probe, timeout in checks:
             failed |= run(name, [sys.executable, ROOT / "tests" / script, "--model", stage,
                                 "--probe", probe, "--output", output / "results"], timeout) != 0
-        summary["status"] = "FAIL" if failed else "REGRESSION_CHECKS_PASS_NUMERICAL_REVIEW_REQUIRED"
+        if args.optimization_baseline:
+            failed |= run("optimization", [sys.executable, ROOT / "tests/check_optimization.py", "compare",
+                "--baseline", args.optimization_baseline.resolve(), "--candidate", output / "results",
+                "--output", output / "results/optimization-report.json"], 180) != 0
+            summary["optimization_baseline"] = str(args.optimization_baseline.resolve())
+        summary["status"] = "FAIL" if failed else ("OPTIMIZATION_EQUIVALENCE_PASS_NUMERICAL_REVIEW_REQUIRED"
+            if args.optimization_baseline else "REGRESSION_CHECKS_PASS_NUMERICAL_REVIEW_REQUIRED")
         save()
         print(summary["status"], flush=True)
         print("Full numerical correctness is NOT certified. Summary:", output / "summary.json", flush=True)
