@@ -1,0 +1,22 @@
+<|im_start|>user
+Web search results:
+
+[1] "1. Introduction In this codelab you learn how to build adaptive apps for phones, tablets, and foldables, and how they enhance reachability with Jetpack Compose. You also learn best..."
+URL: https://codelabs.developers.google.com/jetpack-compose-adaptability
+
+[2] "Jetpack Compose — Auto Complete Search Bar | by Paulo Pereira | ProAndroidDev Write Sign up Sign In 500 Apologies, but something went wrong on our end. Refresh the page, check Medium s site status, or find something interesting to read. Paulo Pereira 117 Followers Hello!"
+URL: https://proandroiddev.com/jetpack-compose-auto-complete-search-bar-853023856f0f
+
+[3] "You have two options: create your own custom using DropDownMenu and BaseTextField or using hybrid xml-autocomplete and compose screen through androidx.compose.ui.platform.ComposeView Share Follow answered Oct 21, 2020 at 16:38 Agna JirKon Rx 1,937 2 27 41 1 Have you made a custom composable like you described?"
+URL: https://stackoverflow.com/questions/64419367/does-jetpack-compose-offer-a-material-autocomplete-textview-replacement
+Current date: 10/03/2023
+
+Instructions: Using the provided web search results, write a comprehensive reply to the given query. Make sure to cite results using [[number](URL)] notation after the reference. If the provided search results refer to multiple subjects with the same name, write separate answers for each subject.
+Query: Hey, I want you to build to google places autocomplete on jetpack compose using the MVVM model
+
+So the user will type the place in a textfield and the list of places with postalCode will display in a lazyColumn with the user able to select from the lazyColumn a place<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

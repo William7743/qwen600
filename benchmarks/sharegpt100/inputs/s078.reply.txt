@@ -1,0 +1,1 @@
+The current Python version is 3.8.10, which was compiled with GCC 9.4.0.

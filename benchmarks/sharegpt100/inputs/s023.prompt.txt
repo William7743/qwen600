@@ -1,0 +1,7 @@
+<|im_start|>user
+Tell me about the negatives of farming meat<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

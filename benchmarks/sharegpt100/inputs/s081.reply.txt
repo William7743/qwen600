@@ -1,0 +1,4 @@
+The error is occurring because the variable 'api' is not defined in the code. The correct variable to use in this case is 'api\_url' instead of 'api.\_url'. To fix the error, simply replace 'api.\_url' with 'api\_url' in the requests.get() function.
+
+So the correct code would be:
+api\_request = requests.get(api\_url, params=params, headers=headers)

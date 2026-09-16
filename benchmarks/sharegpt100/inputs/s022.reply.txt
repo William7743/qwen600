@@ -1,0 +1,62 @@
+I can provide you with a Python script that uses the `requests` and `beautifulsoup4` libraries to download portrait sketch images from Pinterest. However, scraping Pinterest may violate their terms of service, so use this code responsibly and ensure you have permission to do so.
+
+First, you'll need to install the required libraries if you haven't already:
+```bash
+pip install requests beautifulsoup4
+```
+Then, you can use the following Python code to download the images:
+```python
+import os
+import re
+import json
+import requests
+from bs4 import BeautifulSoup
+
+query = "portrait+sketch"
+base_url = f"https://www.pinterest.com/search/pins/?q={query}"
+image_folder = "portrait_sketch_images"
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+
+os.makedirs(image_folder, exist_ok=True)
+
+def download_image(url, file_path):
+    response = requests.get(url, headers=headers, stream=True)
+    if response.status_code == 200:
+        with open(file_path, 'wb') as file:
+            for chunk in response.iter_content(1024):
+                file.write(chunk)
+
+def get_image_links(soup):
+    script_tags = soup.find_all('script', {'id': 'initial-state'})
+    for script_tag in script_tags:
+        data = json.loads(script_tag.contents[0])
+        resource_data = data['resources']['data']
+        images = []
+        for key in resource_data:
+            if key.startswith('PinResource'):
+                pin = resource_data[key]['data']
+                if pin and 'images' in pin:
+                    images.append(pin['images']['orig']['url'])
+        return images
+
+count = 0
+while count < 2000:
+    response = requests.get(base_url, headers=headers)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, 'html.parser')
+        image_links = get_image_links(soup)
+        for link in image_links:
+            image_filename = os.path.join(image_folder, f"image_{count}.jpg")
+            download_image(link, image_filename)
+            print(f"Downloaded image {count}: {image_filename}")
+            count += 1
+            if count >= 2000:
+                break
+        base_url = soup.find('a', {'class': 'Button Module ShowMoreButton'})['href']
+    else:
+        print("Failed to fetch the page.")
+        break
+```
+Please note that this script may not work as expected due to changes in the Pinterest website structure or limitations enforced by Pinterest. Also, it doesn't guarantee the resolution of the images downloaded. Make sure to review and respect Pinterest's terms of service before using this script.

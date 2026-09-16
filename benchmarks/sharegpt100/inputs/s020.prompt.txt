@@ -1,0 +1,7 @@
+<|im_start|>user
+Damage to which nerve causes numbness of the palmar surface of the 5th digit/little finger<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

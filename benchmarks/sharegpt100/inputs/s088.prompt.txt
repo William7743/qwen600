@@ -1,0 +1,7 @@
+<|im_start|>user
+Rewrite the following script in C++<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

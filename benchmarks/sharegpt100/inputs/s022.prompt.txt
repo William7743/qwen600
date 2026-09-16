@@ -1,0 +1,7 @@
+<|im_start|>user
+Hi, can you help me download 2000 portrait sketch images from Pinterest website with resolution at least 512 \* 512? using python code<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

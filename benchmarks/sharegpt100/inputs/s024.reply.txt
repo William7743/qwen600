@@ -1,0 +1,5 @@
+The photograph filter you are describing is called a black and white or grayscale filter. It converts the colors in an image to various shades of gray, resulting in a monochromatic image.
+
+To apply a grayscale filter to an image, you can use photo editing software such as Adobe Photoshop or GIMP. Many smartphone cameras also have a grayscale or black and white filter option that you can use to convert an image to monochrome.
+
+Grayscale filters can be used to create a dramatic or vintage look in an image, or to emphasize texture and form in a photograph. They can also be used to create a more timeless or classic look, or to draw attention to specific elements in an image.

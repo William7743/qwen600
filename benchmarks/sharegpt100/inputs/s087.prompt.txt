@@ -1,0 +1,7 @@
+<|im_start|>user
+how to load csv file to sql server without bulkadmin permission?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

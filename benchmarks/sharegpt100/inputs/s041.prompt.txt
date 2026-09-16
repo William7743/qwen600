@@ -1,0 +1,7 @@
+<|im_start|>user
+can you provide and ideas for a series of articles for a product design blog<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

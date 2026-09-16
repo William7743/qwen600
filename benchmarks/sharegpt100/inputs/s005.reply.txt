@@ -1,0 +1,5 @@
+The `dummy` variable in the given C++ function is being used to consume the newline character left in the input stream after the `player_gold` integer is read using the `cin` statement.
+
+This is because when an integer is read using `cin`, it only reads the integer value and leaves the newline character (`\n`) in the input stream. So when the `getline` function is called to read the `player_sex` string, it immediately reads the newline character left in the input stream and stops reading, resulting in an empty string being stored in the `player_sex` variable.
+
+To avoid this issue, the `getline` function is called again after reading the integer value, this time storing the input in the `dummy` variable. Since `dummy` is not used anywhere else in the function, it serves only to consume the leftover newline character and allow the next `getline` call to read the correct input.

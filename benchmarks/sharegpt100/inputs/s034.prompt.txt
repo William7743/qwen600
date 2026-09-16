@@ -1,0 +1,7 @@
+<|im_start|>user
+Hello friend. My task for today is to engage in a debate with you. Will you humor me in this regard?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

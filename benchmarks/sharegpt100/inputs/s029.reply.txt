@@ -1,0 +1,7 @@
+Sure, here is the table for the topics and subtopics you have specified:
+
+| Number | Topic | Subtopic | Status | Resume |
+| --- | --- | --- | --- | --- |
+| 1 | N/A | N/A | N/A | N/A |
+
+Let's start filling in the information. What topics would you like to include in the table?

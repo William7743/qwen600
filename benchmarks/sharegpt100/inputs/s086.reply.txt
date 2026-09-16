@@ -1,0 +1,14 @@
+To load an image using Python, you can use the `PIL` (Python Imaging Library) package. You can install it by running `pip install pillow` in your command line. Once you have PIL installed, you can use the `Image.open()` function to open an image file and assign it to a variable. Here is an example of how you can open an image called "example.jpg" and display it:
+```
+from PIL import Image
+
+img = Image.open("example.jpg")
+img.show()
+```
+This will open the image in the default image viewer associated with your system. If you want to open image in Jupyter notebook, you need to import `IPython.display` library and use `Image` function to show image like this :
+```
+from PIL import Image
+from IPython.display import Image
+
+Image(filename='example.jpg')
+```

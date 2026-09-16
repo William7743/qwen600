@@ -1,0 +1,7 @@
+<|im_start|>user
+where did the nationalists meet in 1786 to discuss the issues regarding the united states government<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

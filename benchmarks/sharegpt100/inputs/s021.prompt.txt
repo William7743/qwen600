@@ -1,0 +1,7 @@
+<|im_start|>user
+Explain the fault-tolerance of the reaction control system on the Space Shuttle<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

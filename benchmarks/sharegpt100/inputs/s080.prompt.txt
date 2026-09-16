@@ -1,0 +1,7 @@
+<|im_start|>user
+Demand generation manager for a B2B brand ambassador program called Brandchamp<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

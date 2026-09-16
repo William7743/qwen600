@@ -1,0 +1,41 @@
+Sure, here is a Python implementation of Johnson's algorithm for finding the shortest paths between all pairs of vertices in a weighted, directed graph:
+```
+from collections import deque
+
+def johnson(G):
+    # G is a weighted, directed graph represented in adjacency list format
+
+    # Step 1: Add a new source vertex to G and connect it to all other vertices with weight 0
+    source = len(G)
+    for v in range(len(G)):
+        G[v].append((source, 0))
+    G.append([])
+
+    # Step 2: Run Bellman-Ford algorithm from the new source vertex to compute the h values
+    h = bellman_ford(G, source)
+
+    # Step 3: Remove the edges added in Step 1 and the new source vertex
+    for v in range(len(G)):
+        G[v] = [e for e in G[v] if e[0] != source]
+    G.pop()
+
+    # Step 4: For each vertex v, reweight the edges leaving v using the h values
+    # Specifically, for each edge (v, w) with weight wt, set the new weight to wt + h[v] - h[w]
+    for v in range(len(G)):
+        for i, (w, wt) in enumerate(G[v]):
+            G[v][i] = (w, wt + h[v] - h[w])
+
+    # Step 5: Run Dijkstra's algorithm on G starting from each vertex to find the shortest path to all other vertices
+    shortest_paths = []
+    for v in range(len(G)):
+        dist, pred = dijkstra(G, v)
+        shortest_paths.append((dist, pred))
+
+    # Step 6: Re-weight the paths using the h values
+    for i, (dist, pred) in enumerate(shortest_paths):
+        for v, d in enumerate(dist):
+            dist[v] = d - h[i] + h[v]
+
+    return shortest_paths
+```
+This implementation assumes that you have already implemented the `bellman_ford` and `dijkstra` functions for finding the shortest path from a single source. Let me know if you have any questions or if you need further clarification on the algorithm.

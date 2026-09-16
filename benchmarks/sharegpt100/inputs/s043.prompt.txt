@@ -1,0 +1,7 @@
+<|im_start|>user
+Hi, i will give you three pieces of text, then i will ask you some questions, do you understand?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

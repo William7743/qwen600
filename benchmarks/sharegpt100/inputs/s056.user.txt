@@ -1,0 +1,1 @@
+Write a python program which accept a command line param as question and send it to server via HTTP get method

@@ -1,0 +1,7 @@
+<|im_start|>user
+I want to make a physics based character and add all the gadgets that a mandalorian would use, assume I'm familier with unity and xr interaction toolkit, and know about vr stuff i need to expand the xr interactable to be network interactable with photon pun 2, including any attached audio, in fact i also need to make a audiosource subclass thats networked, help me with some example scripts for this first write the expanded xr interactable then you can write the others<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

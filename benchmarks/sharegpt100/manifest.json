@@ -1,0 +1,2664 @@
+{
+  "schema_version": 1,
+  "dataset": "qwen600-sharegpt100-v1",
+  "purpose": "Filtered single-turn performance workload; original replies specify length only",
+  "source": {
+    "repo_id": "anon8231489123/ShareGPT_Vicuna_unfiltered",
+    "revision": "192ab2185289094fc556ec8ce5ce1e8e587154ca",
+    "filename": "ShareGPT_V3_unfiltered_cleaned_split.json",
+    "url": "https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/192ab2185289094fc556ec8ce5ce1e8e587154ca/ShareGPT_V3_unfiltered_cleaned_split.json",
+    "upstream_file_bytes": 672837942,
+    "upstream_lfs_sha256": "35f0e213ce091ed9b9af2a1f0755e9d39f9ccec34ab281cd4ca60d70f6479ba4",
+    "full_file_hash_locally_verified": false,
+    "prefix_bytes_read": 4194304,
+    "prefix_sha256": "b0c1103f7ba3a4bf9ac1826554049b3092195d5818eb8d103b85075dd2013360",
+    "snapshot_transform": "First two turns and original id/index of each complete conversation in the downloaded prefix; other turns omitted",
+    "upstream_declared_license": "Apache-2.0",
+    "snapshot_candidate_count": 163
+  },
+  "source_pairs_sha256": "2189385da7186779f6c17947d17ef252af82dc423de46dc079792236cd25d3f0",
+  "selection": "First 100 unique qualifying first human/gpt pairs in pinned source order; no truncation",
+  "skipped_before_selection_complete": {
+    "roles": 48,
+    "length": 15
+  },
+  "model": {
+    "repo_id": "Qwen/Qwen3-0.6B",
+    "revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+    "sha256": {
+      "config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+      "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+      "generation_config.json": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+      "model.safetensors": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+    }
+  },
+  "tokenizer_versions": {
+    "transformers": "5.14.1",
+    "tokenizers": "0.22.2",
+    "jinja2": "3.1.6"
+  },
+  "batch_size": 1,
+  "concurrent_requests": 1,
+  "chat_template": {
+    "enable_thinking": false,
+    "add_generation_prompt": true
+  },
+  "sampling": {
+    "mode": "greedy",
+    "ignore_eos": true,
+    "fixed_output_tokens": true
+  },
+  "execution": {
+    "global_warmup_requests": 1,
+    "measured_requests_per_case": 1,
+    "warmup_selection": "closest to P=512,G=512; tie by case id",
+    "load_model_once": true,
+    "reset_sequence_each_request": true,
+    "case_order": "s001..s100"
+  },
+  "inputs": [
+    {
+      "name": "s001",
+      "source_id": "QWJhYvA_0",
+      "source_index": 0,
+      "prompt_tokens": 46,
+      "files": {
+        "user": "inputs/s001.user.txt",
+        "prompt": "inputs/s001.prompt.txt",
+        "ids": "inputs/s001.ids",
+        "reference_reply": "inputs/s001.reply.txt"
+      },
+      "sha256": {
+        "user": "232e243cc0a3f16490539ee9e3506613e6e22b5970f18ea565e0b2c6c70c0a79",
+        "prompt": "4aab47d42eb6618096ecf1a6cca4235b9c81913ee8468c44c9f4aba4d49afb0c",
+        "ids": "24f125f566414859e0bf589d30637472f278f7841cfca939fd73dfa67d23e6e3",
+        "reference_reply": "311d295cc5ce321edc30d71aaeddba379ad2d8a9076f8dd732ed91a41dd3e754"
+      }
+    },
+    {
+      "name": "s002",
+      "source_id": "i6IyJda_0",
+      "source_index": 1,
+      "prompt_tokens": 29,
+      "files": {
+        "user": "inputs/s002.user.txt",
+        "prompt": "inputs/s002.prompt.txt",
+        "ids": "inputs/s002.ids",
+        "reference_reply": "inputs/s002.reply.txt"
+      },
+      "sha256": {
+        "user": "e84296385575a118acc07e395393d98701ec89808c7e07cb3dae0d0fe0aa0e64",
+        "prompt": "d363278227cc298b51c5ce4bbbb21807653441561928323c8bd8fd00063321a0",
+        "ids": "1a011592310eb4bcc933db24fa41d9943f909d1ed1eb70e480f52377b3155f6d",
+        "reference_reply": "d67491fcbd7aa2797f86996e03216acdd4cf041a7ab1d99510846deadbf38f34"
+      }
+    },
+    {
+      "name": "s003",
+      "source_id": "A5AbcES_0",
+      "source_index": 2,
+      "prompt_tokens": 74,
+      "files": {
+        "user": "inputs/s003.user.txt",
+        "prompt": "inputs/s003.prompt.txt",
+        "ids": "inputs/s003.ids",
+        "reference_reply": "inputs/s003.reply.txt"
+      },
+      "sha256": {
+        "user": "878b52c30fe92b658ee578a65fbf51026422b9c5c4492382b7f0fb041f4a6bb1",
+        "prompt": "f51dd2d8b696060a25dec3ea78b00dac2ea995dfcacf98696dbbc8e4157105e7",
+        "ids": "32c8007842b869120ee24fdc01e5ca9fdd2f0c72201c00eecd54a178ad14e716",
+        "reference_reply": "ac98c36585fa7752e35f0400ff6358615cb006dda413929ba6d85da53f3b60af"
+      }
+    },
+    {
+      "name": "s004",
+      "source_id": "hRPPgZT_0",
+      "source_index": 3,
+      "prompt_tokens": 105,
+      "files": {
+        "user": "inputs/s004.user.txt",
+        "prompt": "inputs/s004.prompt.txt",
+        "ids": "inputs/s004.ids",
+        "reference_reply": "inputs/s004.reply.txt"
+      },
+      "sha256": {
+        "user": "2a6d4ecc91beac350c465be32ffa29a24ab9066332237782d93c5975d91668da",
+        "prompt": "e9049d73dd7e05349a4d874017be9a9c8bbf17a07788e211f9159dbace712ad0",
+        "ids": "5c9394c4e5f0fd04ecf49bb2d9e06e28796d24f050adb616a8618b925a691e42",
+        "reference_reply": "4874ab9341290597ab5077ae7def32de7a26ef53e9fb871200edce1729566f06"
+      }
+    },
+    {
+      "name": "s005",
+      "source_id": "IWkMGRK_0",
+      "source_index": 6,
+      "prompt_tokens": 282,
+      "files": {
+        "user": "inputs/s005.user.txt",
+        "prompt": "inputs/s005.prompt.txt",
+        "ids": "inputs/s005.ids",
+        "reference_reply": "inputs/s005.reply.txt"
+      },
+      "sha256": {
+        "user": "99e79fc6f80d7080701f12bee92ac337ab0d8aea36bc47183c66c98af8a33b25",
+        "prompt": "29118abd86bfaa01bfbaafc23e288af82707095a17031be2fc6fe2f559b190d6",
+        "ids": "99ff6979a157a6aca4bb0beaea2276edfbb61b33000ae13221a39aaaa1e15207",
+        "reference_reply": "a7685e431fcc2e28f53f778087b19bcbab14c217111239abf2b1841a47b569b0"
+      }
+    },
+    {
+      "name": "s006",
+      "source_id": "yn2eWCt_0",
+      "source_index": 7,
+      "prompt_tokens": 28,
+      "files": {
+        "user": "inputs/s006.user.txt",
+        "prompt": "inputs/s006.prompt.txt",
+        "ids": "inputs/s006.ids",
+        "reference_reply": "inputs/s006.reply.txt"
+      },
+      "sha256": {
+        "user": "d99303da4a5064aae6ffabcc8f0513515879c7b4680b2df3862249966bf26f2c",
+        "prompt": "b9eeb242f8bf4dcc66543c38aee75de1a67055cb506c6e6a570e490c19b2d548",
+        "ids": "6dd275cc8178d2c699fd36f7307d2f97a73286ab9ce693303c5f994803ecc5d5",
+        "reference_reply": "536bb9da1c0c1f86b1fb042aff1b89610e9d1c189e39f71002aa8e520c61b07e"
+      }
+    },
+    {
+      "name": "s007",
+      "source_id": "DhelrJT_0",
+      "source_index": 8,
+      "prompt_tokens": 29,
+      "files": {
+        "user": "inputs/s007.user.txt",
+        "prompt": "inputs/s007.prompt.txt",
+        "ids": "inputs/s007.ids",
+        "reference_reply": "inputs/s007.reply.txt"
+      },
+      "sha256": {
+        "user": "a6aba9db96b1bb0ef9eaba122dc6822a693eeaa7b27441c9c722c7eefaa1a875",
+        "prompt": "c45397662638a8ed86293db4b0aeb07f18381ce1bf7dc8e99e269590a3abc879",
+        "ids": "7d643699e32100655a79c29159fcc7143cdb1bf970b76ea5bb9760bdc7ef27e4",
+        "reference_reply": "8b675b2e56f8e4f431db591eaefeeb4cb5adde53e9b9399b270ea29beb34044e"
+      }
+    },
+    {
+      "name": "s008",
+      "source_id": "VY7cMKG_0",
+      "source_index": 9,
+      "prompt_tokens": 17,
+      "files": {
+        "user": "inputs/s008.user.txt",
+        "prompt": "inputs/s008.prompt.txt",
+        "ids": "inputs/s008.ids",
+        "reference_reply": "inputs/s008.reply.txt"
+      },
+      "sha256": {
+        "user": "13ad1b88b7929409e11b95db4338f4143bae04e362488bc157e312c6899925b8",
+        "prompt": "5c37dc2f9e003a99fbf204a5a6c93d2a462a1336e6db80941721663b245c2961",
+        "ids": "017d389dea2d68cdd83ff52e009f7f556b8809d7bf03d9a6d5c9bc7a2525cf91",
+        "reference_reply": "14a3dcb25b94ace31ecea89ca43c9e3872e80b596315ce5787daa56303820f7f"
+      }
+    },
+    {
+      "name": "s009",
+      "source_id": "H1aZlSE_0",
+      "source_index": 10,
+      "prompt_tokens": 62,
+      "files": {
+        "user": "inputs/s009.user.txt",
+        "prompt": "inputs/s009.prompt.txt",
+        "ids": "inputs/s009.ids",
+        "reference_reply": "inputs/s009.reply.txt"
+      },
+      "sha256": {
+        "user": "ce74f1002974025d1c3d13bad87ded45b13951ea48d218d01a156d3e588c147d",
+        "prompt": "1fd187971c1650ea58c1c4429850f0b1d0e5b9069a56e5ad34e0c274e4b70f13",
+        "ids": "27e88ec56013a7718d0a2a1b8cb9b6e91f27da023af29a9c26e2a2db57025c5c",
+        "reference_reply": "93419cf4a35abdfd8dbe957e07686827d6887700adf090e49864bab7ded3cadf"
+      }
+    },
+    {
+      "name": "s010",
+      "source_id": "wNBG8Gp_0",
+      "source_index": 11,
+      "prompt_tokens": 22,
+      "files": {
+        "user": "inputs/s010.user.txt",
+        "prompt": "inputs/s010.prompt.txt",
+        "ids": "inputs/s010.ids",
+        "reference_reply": "inputs/s010.reply.txt"
+      },
+      "sha256": {
+        "user": "1734da6c4ebfc3682eb19db3e25ce3322286baef9f3872b802f85dbb62001c7a",
+        "prompt": "e45e8eb21f3db2031e1119053f6fa7cb47076dea7f8bb6d745067aae67f49af5",
+        "ids": "2218df5d1338f7caf8884b6aef7687cd92536fc5c067669469fd222d6b1b030b",
+        "reference_reply": "952da609a0a68efd4bc7dd5ed7205eb4afd890e110417e56d36222584fa0ceb7"
+      }
+    },
+    {
+      "name": "s011",
+      "source_id": "wNBG8Gp_80",
+      "source_index": 17,
+      "prompt_tokens": 20,
+      "files": {
+        "user": "inputs/s011.user.txt",
+        "prompt": "inputs/s011.prompt.txt",
+        "ids": "inputs/s011.ids",
+        "reference_reply": "inputs/s011.reply.txt"
+      },
+      "sha256": {
+        "user": "392e8ed89f4c0b3bfcf00fbcec24d2eefc06e08ba227a2c7f356565785a7eb1c",
+        "prompt": "fd108038645244e427a3825b9a488649f3fcf6325dbf3eeccbdb5a6c62cb33c7",
+        "ids": "fc101ffbafeb4b6ead177643e3d276a10d330d565f64fb1f6066442d471b478e",
+        "reference_reply": "91d250df1b014000d5ca566da6c54691343d4f9fda49c2016d2412f8debc190a"
+      }
+    },
+    {
+      "name": "s012",
+      "source_id": "eL3wWKe_0",
+      "source_index": 18,
+      "prompt_tokens": 59,
+      "files": {
+        "user": "inputs/s012.user.txt",
+        "prompt": "inputs/s012.prompt.txt",
+        "ids": "inputs/s012.ids",
+        "reference_reply": "inputs/s012.reply.txt"
+      },
+      "sha256": {
+        "user": "360d1b44c845c942dcd34c433d25e09a79855449d51d43397b658636d2ca8e94",
+        "prompt": "2dce2469f27c7613bd2c3cd15672b153d6ab84e8de0d462fe822a7f737905ac7",
+        "ids": "62f3b7b18f0565c243fab24edf2b5806b821c5b1688d794b6bd3a0cf7cdd967d",
+        "reference_reply": "10fb31ea43e8a2a2f46f84691430f47fc6eb6a1c6a13dccf8e79e019d298d5f5"
+      }
+    },
+    {
+      "name": "s013",
+      "source_id": "ng7rjf6_0",
+      "source_index": 19,
+      "prompt_tokens": 15,
+      "files": {
+        "user": "inputs/s013.user.txt",
+        "prompt": "inputs/s013.prompt.txt",
+        "ids": "inputs/s013.ids",
+        "reference_reply": "inputs/s013.reply.txt"
+      },
+      "sha256": {
+        "user": "4fc8c286ea192becddce1dd8529bdd50112ad3d39af40812d368fdab1dac0cae",
+        "prompt": "1b3716aebde9cc4929ed1d16803045989617a360a7787614fe8e4ac7073788d2",
+        "ids": "5d9ccf8e016f982a79c0d7b7476eca9fa13b542ca79285904274666507e284cc",
+        "reference_reply": "027ffe1500cb59bffc8b559b06e312aa8a5751eaacfe170bef258415184d9738"
+      }
+    },
+    {
+      "name": "s014",
+      "source_id": "88iCu0j_0",
+      "source_index": 20,
+      "prompt_tokens": 24,
+      "files": {
+        "user": "inputs/s014.user.txt",
+        "prompt": "inputs/s014.prompt.txt",
+        "ids": "inputs/s014.ids",
+        "reference_reply": "inputs/s014.reply.txt"
+      },
+      "sha256": {
+        "user": "a563a90009273945316333e1cce54eae4e5b8f1530dd7b2dc08f3046e50e4eea",
+        "prompt": "bc576e31bb6ca6ad8f1c3a3d436ba036ab91e38212997a7d2c1daf46bb407427",
+        "ids": "7f567cab2779009f49db16a2bd8672a4d6db4bbd39129f6d693092c2a0da50c9",
+        "reference_reply": "b4d5c8955918e23896e5c20504297a24abb5630fbab724aa7fdbf096354b52d0"
+      }
+    },
+    {
+      "name": "s015",
+      "source_id": "idMLILF_0",
+      "source_index": 22,
+      "prompt_tokens": 31,
+      "files": {
+        "user": "inputs/s015.user.txt",
+        "prompt": "inputs/s015.prompt.txt",
+        "ids": "inputs/s015.ids",
+        "reference_reply": "inputs/s015.reply.txt"
+      },
+      "sha256": {
+        "user": "cc48cda2b677082fdd1c73256596c81056210a6503dafab1f4ebbfedd8f2d829",
+        "prompt": "72e8e870e5f4eef01808cffb770311c3092b32aa21de09f6958b0427a4e151ef",
+        "ids": "aecfa01fad4fd32ef1541dad94809e6ab2befec5f366c1b4297cfd0ff0a2b749",
+        "reference_reply": "66ed8a06ffe49fb35cf2ed398bae380f93ee2dc38056977a44911fb1f9d112c8"
+      }
+    },
+    {
+      "name": "s016",
+      "source_id": "idMLILF_14",
+      "source_index": 23,
+      "prompt_tokens": 352,
+      "files": {
+        "user": "inputs/s016.user.txt",
+        "prompt": "inputs/s016.prompt.txt",
+        "ids": "inputs/s016.ids",
+        "reference_reply": "inputs/s016.reply.txt"
+      },
+      "sha256": {
+        "user": "9f4fdae591c7a29db777baeea70cfbca989c7edd34704f7c04dc2a5546273bd5",
+        "prompt": "139bdfa9a00165d0dec0c05756ea7baad82fe5a0dc0c1e183c671dd054932782",
+        "ids": "0eff8b68f7c9e71b0e5ce1dbda8ced5e2fa9bb01533510c32e0244a10b09e673",
+        "reference_reply": "a3c36bddd5d41c6400b8b2cf749eeaa8d5f8c1bf42a9e204167b90e0c7f4f794"
+      }
+    },
+    {
+      "name": "s017",
+      "source_id": "tcgsdUu_0",
+      "source_index": 38,
+      "prompt_tokens": 31,
+      "files": {
+        "user": "inputs/s017.user.txt",
+        "prompt": "inputs/s017.prompt.txt",
+        "ids": "inputs/s017.ids",
+        "reference_reply": "inputs/s017.reply.txt"
+      },
+      "sha256": {
+        "user": "2b88480542c4c2b05c28777a95429508c3551862ed2690e46d2f44928b3a6fd1",
+        "prompt": "19ef773d5af098ca0c96b3ce926f19ed07696df1a742d0e75589c5d9140a33bc",
+        "ids": "f0db99729659b3e39f81ed3396643e8086f054f329d0af5660745e164b2c63fc",
+        "reference_reply": "bb38be67ba601a76d222dd5981ec47e6094f487111665bfe8d4ba3bcd82e8b9b"
+      }
+    },
+    {
+      "name": "s018",
+      "source_id": "sUO0XFL_0",
+      "source_index": 39,
+      "prompt_tokens": 242,
+      "files": {
+        "user": "inputs/s018.user.txt",
+        "prompt": "inputs/s018.prompt.txt",
+        "ids": "inputs/s018.ids",
+        "reference_reply": "inputs/s018.reply.txt"
+      },
+      "sha256": {
+        "user": "6f586b78d443ba9e30cf418769c93c0289bd69a2bc0a189302a68e1b5ec698df",
+        "prompt": "02d3d7f540ed65691b5913db4ea297cdb88940593b29eb1adb8c392111a687ae",
+        "ids": "960903d577355233f315200496201c2e4cc2320f59a097c149f4e740d02c5298",
+        "reference_reply": "4b87b9d89b52c270eeeb7e52dd0db5f41dafd9230dd7526b28939d90a7e1c572"
+      }
+    },
+    {
+      "name": "s019",
+      "source_id": "6Zoa7wI_0",
+      "source_index": 40,
+      "prompt_tokens": 25,
+      "files": {
+        "user": "inputs/s019.user.txt",
+        "prompt": "inputs/s019.prompt.txt",
+        "ids": "inputs/s019.ids",
+        "reference_reply": "inputs/s019.reply.txt"
+      },
+      "sha256": {
+        "user": "41dea13847a13bf783d1a1455d6e62e733e55e7c2c6052b9301c07542f561e3e",
+        "prompt": "7509b3b17ea7cde981abdd36d03d1ee93c2276e28ffb299cc80fb3f9b82e9935",
+        "ids": "752f13db1363d7b9182b4dbd14600e42b6c47810ab39f6b3ed7e12af689d2b48",
+        "reference_reply": "23d494de6923c804d0ece1a4387296c367c2be52b84e1f0ce7bb7c21aa2a1a55"
+      }
+    },
+    {
+      "name": "s020",
+      "source_id": "6YMEjv4_0",
+      "source_index": 41,
+      "prompt_tokens": 33,
+      "files": {
+        "user": "inputs/s020.user.txt",
+        "prompt": "inputs/s020.prompt.txt",
+        "ids": "inputs/s020.ids",
+        "reference_reply": "inputs/s020.reply.txt"
+      },
+      "sha256": {
+        "user": "d8f2a0863ea0dabd0d83ea72178014ecf551250004bec93a99ff18015873d465",
+        "prompt": "9c840b9d5f5f4f2436536bf551dc90f4242b0609cb615a9ba29ab4bbeb2f0137",
+        "ids": "45ef7a5e9521e2ef37626566164778d737b04f7df3c88b71c04496c2b20d894f",
+        "reference_reply": "9eb66592dd2c9e7811eb0a7a851147fb103dd2c1c4dfb395df1875c32ef5bb83"
+      }
+    },
+    {
+      "name": "s021",
+      "source_id": "b5AqyBf_0",
+      "source_index": 42,
+      "prompt_tokens": 27,
+      "files": {
+        "user": "inputs/s021.user.txt",
+        "prompt": "inputs/s021.prompt.txt",
+        "ids": "inputs/s021.ids",
+        "reference_reply": "inputs/s021.reply.txt"
+      },
+      "sha256": {
+        "user": "b813d58011acfb590429fc96bb2be3b8cb8f9aca1f3be99113243796fdcbcffc",
+        "prompt": "d5fbfa5d521f069d8924c2f89a8edaa19c14c70b3aaeebfdf405cb692e1a8593",
+        "ids": "71c8eec8e98c96e88a57f956c3879e63f72fc3e3c8a59e506cd42136ad05f3e5",
+        "reference_reply": "dde1afeb0ff077829f55ed23acab5c36dae8103db77f549920fd7e1066c24e8a"
+      }
+    },
+    {
+      "name": "s022",
+      "source_id": "jbL4U2H_0",
+      "source_index": 43,
+      "prompt_tokens": 48,
+      "files": {
+        "user": "inputs/s022.user.txt",
+        "prompt": "inputs/s022.prompt.txt",
+        "ids": "inputs/s022.ids",
+        "reference_reply": "inputs/s022.reply.txt"
+      },
+      "sha256": {
+        "user": "3722cfa19dfef51415bb5b5acf18c2bc3735b144de95e66fa80d4cdd946d6417",
+        "prompt": "1af2641a1ccf922a6b6a9c24cc200e4b7e71d5db3665b449aeceb2f40cec85c2",
+        "ids": "7db4e80c4ff47cc15efc45d042820a8f3bced43ea12737cf79e55ec435265350",
+        "reference_reply": "fe9c1e2cf4a1b08af2b5e21676185eb0df4fbad4b5c7859245e6fbfa7581beb8"
+      }
+    },
+    {
+      "name": "s023",
+      "source_id": "795KMlQ_0",
+      "source_index": 44,
+      "prompt_tokens": 20,
+      "files": {
+        "user": "inputs/s023.user.txt",
+        "prompt": "inputs/s023.prompt.txt",
+        "ids": "inputs/s023.ids",
+        "reference_reply": "inputs/s023.reply.txt"
+      },
+      "sha256": {
+        "user": "051f78fa94497ccc6c774db05a65d34510a7698949064a0d49bc65c20f44ba61",
+        "prompt": "beac6b9f1afbdb63202d31c354cfe3748ff3f68f21423fc2c28a9d72ad1ddf4a",
+        "ids": "21664405bffb3d92065369c16bbffb93043ca715bde23fd271020fd3b138acd3",
+        "reference_reply": "097efc7311048bd3849280ede321823553dfbaa7c3879f78c15f09f26de8f068"
+      }
+    },
+    {
+      "name": "s024",
+      "source_id": "UQWWfNB_0",
+      "source_index": 45,
+      "prompt_tokens": 28,
+      "files": {
+        "user": "inputs/s024.user.txt",
+        "prompt": "inputs/s024.prompt.txt",
+        "ids": "inputs/s024.ids",
+        "reference_reply": "inputs/s024.reply.txt"
+      },
+      "sha256": {
+        "user": "50fbaa8fd13d3d58979fc9b10a8a97856372ee4cf1d850ac9c4cf4b90355ec63",
+        "prompt": "e0e3ae715bd7cf388e4d14b3dabe20e9d00dbe5707018d243024abc3908d028d",
+        "ids": "860e12241086f3eb17efb3a471b8b9a2e78077224ea3cfa57084cf38a0ed938e",
+        "reference_reply": "21e9d8502a14141bedd0caceb31b849f60c464d92e7a6b8e76b81aeb5960051e"
+      }
+    },
+    {
+      "name": "s025",
+      "source_id": "Ez4Up7Z_0",
+      "source_index": 46,
+      "prompt_tokens": 36,
+      "files": {
+        "user": "inputs/s025.user.txt",
+        "prompt": "inputs/s025.prompt.txt",
+        "ids": "inputs/s025.ids",
+        "reference_reply": "inputs/s025.reply.txt"
+      },
+      "sha256": {
+        "user": "a5e5d35bf34e2e477332e07f9e50b642032d9724ae6f36d2b395a6f004fb4712",
+        "prompt": "358ef463772feffa69fbcfdc7a5d302f40701c070930355ba0f3fba379a32def",
+        "ids": "40219d8ce134e54e0616a9255ab2469c20793c87dcb54d75d1c4d9263a418f1a",
+        "reference_reply": "d8a9721ba55df35a66c8f65f6b42ea491adfdcd3751bc3c0b5a7c7b7379a9b89"
+      }
+    },
+    {
+      "name": "s026",
+      "source_id": "fcxU0TT_0",
+      "source_index": 47,
+      "prompt_tokens": 22,
+      "files": {
+        "user": "inputs/s026.user.txt",
+        "prompt": "inputs/s026.prompt.txt",
+        "ids": "inputs/s026.ids",
+        "reference_reply": "inputs/s026.reply.txt"
+      },
+      "sha256": {
+        "user": "244d0e02f7c4314c3ccf82a65d42eb57478012decff9cd00db6597861dd59a03",
+        "prompt": "55ad772fe537472b24567f0e1dd2fedf48037d824e740b625c93ebf3c3ba6794",
+        "ids": "2bcf63fab755cde2158844580652648b2b986937e20db7cc4986bebbe900f6ec",
+        "reference_reply": "7df11c358d32ceb6ec2f8ae29674a4c1b9e144b2c2e927bc0d8fb6e8ca0245ee"
+      }
+    },
+    {
+      "name": "s027",
+      "source_id": "BmS3AX0_0",
+      "source_index": 48,
+      "prompt_tokens": 424,
+      "files": {
+        "user": "inputs/s027.user.txt",
+        "prompt": "inputs/s027.prompt.txt",
+        "ids": "inputs/s027.ids",
+        "reference_reply": "inputs/s027.reply.txt"
+      },
+      "sha256": {
+        "user": "413902c0c85c32527731566b87f8d72cb07e7bdd85a3b95de7f0534ba02ec954",
+        "prompt": "03d6537cde22f73f293d076a0c2408167f7cc0b7881a4126d51a9a0b802d4c86",
+        "ids": "82c109d3a389201c6697c5ba96ea9d44384c5aa0edf28b41898b78ec653da56a",
+        "reference_reply": "91531283d91b2bd8a9b83707761195a7e1686dcef42cc2ceff0ca904c0a23ec4"
+      }
+    },
+    {
+      "name": "s028",
+      "source_id": "BmS3AX0_10",
+      "source_index": 49,
+      "prompt_tokens": 145,
+      "files": {
+        "user": "inputs/s028.user.txt",
+        "prompt": "inputs/s028.prompt.txt",
+        "ids": "inputs/s028.ids",
+        "reference_reply": "inputs/s028.reply.txt"
+      },
+      "sha256": {
+        "user": "956d2fa206e8e425257ef5e310f9474ede3390be202f873be4e90478bd11bb58",
+        "prompt": "5ad91a85c5b63be16cd5c020a1eb5302c5cff67466dab1d9157c701bd18d1585",
+        "ids": "8bd18380065cfabb0ff310524c5eae5fc457ac35360a23f5d3594bb63bc93c60",
+        "reference_reply": "91b7129c0f854736f60efe7f75feeba401c9ff681e0a3d64691412d5790fb563"
+      }
+    },
+    {
+      "name": "s029",
+      "source_id": "WJidmXp_0",
+      "source_index": 50,
+      "prompt_tokens": 193,
+      "files": {
+        "user": "inputs/s029.user.txt",
+        "prompt": "inputs/s029.prompt.txt",
+        "ids": "inputs/s029.ids",
+        "reference_reply": "inputs/s029.reply.txt"
+      },
+      "sha256": {
+        "user": "ed4da3a6b9202745d2cb336110503847a7c7a78648899c3117d1853cc97cb61f",
+        "prompt": "e12ed0f0ac7573c937694eb4bb1e03d096b84fbe628b62f07acc801a3cc79552",
+        "ids": "eab1e92807c3db61d472f5d63bdf4a82aa247def26c9ae5fbce01b101c62f9fd",
+        "reference_reply": "80439ec39fa4e112769f786e22b0a59695f71a38acede6db9ac4f8468015e95e"
+      }
+    },
+    {
+      "name": "s030",
+      "source_id": "juND8Ql_0",
+      "source_index": 51,
+      "prompt_tokens": 21,
+      "files": {
+        "user": "inputs/s030.user.txt",
+        "prompt": "inputs/s030.prompt.txt",
+        "ids": "inputs/s030.ids",
+        "reference_reply": "inputs/s030.reply.txt"
+      },
+      "sha256": {
+        "user": "8c09cf42281ec060493ac45f47a90f83bb4581771b40394086e56febb28a7aac",
+        "prompt": "0ef326c93c80bc701f823797b2e2b8c7558ca73d8e02c10e24f2d11dc827cad8",
+        "ids": "56af5bd3bc6b6cae8f88c5ac94ca12e2ff6235d9139007e665b5f4db1c20e212",
+        "reference_reply": "1a1400acac4fa619c9070a543a27730a8ac98cd324e159a73d2a28d7228752cc"
+      }
+    },
+    {
+      "name": "s031",
+      "source_id": "vH787Fr_0",
+      "source_index": 52,
+      "prompt_tokens": 20,
+      "files": {
+        "user": "inputs/s031.user.txt",
+        "prompt": "inputs/s031.prompt.txt",
+        "ids": "inputs/s031.ids",
+        "reference_reply": "inputs/s031.reply.txt"
+      },
+      "sha256": {
+        "user": "01e697e484bf607fd7ad1874d0f7f1f7bfac61e353bdd9b2ccf366c3a39d72ec",
+        "prompt": "aaeb31aaa5a784702cb5b1d9e8443b513722abf437ced2cd5c9fbd515f4a5706",
+        "ids": "a19d3566e8ff43dfb9b67598eaf7b2dd43c7725fd812906444685d8115ed8d45",
+        "reference_reply": "ef78dc0049b8227ba364fa892312961b81d2b868acf0c2f6b3cd7987bfa7c71f"
+      }
+    },
+    {
+      "name": "s032",
+      "source_id": "pngR6CU_0",
+      "source_index": 53,
+      "prompt_tokens": 26,
+      "files": {
+        "user": "inputs/s032.user.txt",
+        "prompt": "inputs/s032.prompt.txt",
+        "ids": "inputs/s032.ids",
+        "reference_reply": "inputs/s032.reply.txt"
+      },
+      "sha256": {
+        "user": "3b8f62dad44c99ae1817166703bb831dfa7f0f7472e036af79532614bc6a4559",
+        "prompt": "a4537ca4400218aecd33a0c13ae83f0725f355f43e210d3a91385569072ec61c",
+        "ids": "383e66870cfb2fece06d4ff8ff3589b80026a552816f5938786d52959ef88a30",
+        "reference_reply": "cc8de9b6a138e7a12831f972527d3e82c4b17dd810ecf3085f7761cea0dd130e"
+      }
+    },
+    {
+      "name": "s033",
+      "source_id": "NBkldhW_0",
+      "source_index": 54,
+      "prompt_tokens": 55,
+      "files": {
+        "user": "inputs/s033.user.txt",
+        "prompt": "inputs/s033.prompt.txt",
+        "ids": "inputs/s033.ids",
+        "reference_reply": "inputs/s033.reply.txt"
+      },
+      "sha256": {
+        "user": "06733aea3f2e99488b6ebdbb0c3c025ae2799476dcc832372a888ff3156cc581",
+        "prompt": "047d8a396615a1f6c48825f766ca95c66f675153fa6af8cb614d8429e14981ad",
+        "ids": "96a1d052bca7aa77e503dec445b44349f3e234648b2995efbb25db3098768410",
+        "reference_reply": "441e7118cc7ee3ff7d049261bb0287a6b70453a0f95ddfa52fc6586984a5618c"
+      }
+    },
+    {
+      "name": "s034",
+      "source_id": "X1NXUxZ_0",
+      "source_index": 55,
+      "prompt_tokens": 36,
+      "files": {
+        "user": "inputs/s034.user.txt",
+        "prompt": "inputs/s034.prompt.txt",
+        "ids": "inputs/s034.ids",
+        "reference_reply": "inputs/s034.reply.txt"
+      },
+      "sha256": {
+        "user": "43e8141ff6525dcb8c528a6c99af79a5b45188656888f151ef8f82fa7835f5ed",
+        "prompt": "b83451a4389cb3b2c3fe6d8ab538b2a3a264962d7045b9885bafdf14fefabeac",
+        "ids": "e3cc4ce506129bb8e5ac621d7fd075bf3eeb81a5114180bea6b81623de2c605f",
+        "reference_reply": "464a1a57284839f1f8be8624d178b4c084fe53ab2f6dd2de41bb62f51903417a"
+      }
+    },
+    {
+      "name": "s035",
+      "source_id": "UGg8d44_0",
+      "source_index": 56,
+      "prompt_tokens": 41,
+      "files": {
+        "user": "inputs/s035.user.txt",
+        "prompt": "inputs/s035.prompt.txt",
+        "ids": "inputs/s035.ids",
+        "reference_reply": "inputs/s035.reply.txt"
+      },
+      "sha256": {
+        "user": "f8ca09f998a8a7e84af52fe0c859225b45d94dd69b3dbe705993b8630fdd86fe",
+        "prompt": "057d23645234c1bcbcd6b1d3758e15f21160a956afc6041b3ca27b4b44b94f03",
+        "ids": "48a3bd01858f7dc03641cb9973bb96890985c2de7a39c84ff956634545e90bdd",
+        "reference_reply": "b6f9580269ba16b676d674164b4fddb842da5643c713d6327e918ba3e79621d9"
+      }
+    },
+    {
+      "name": "s036",
+      "source_id": "UGg8d44_60",
+      "source_index": 64,
+      "prompt_tokens": 326,
+      "files": {
+        "user": "inputs/s036.user.txt",
+        "prompt": "inputs/s036.prompt.txt",
+        "ids": "inputs/s036.ids",
+        "reference_reply": "inputs/s036.reply.txt"
+      },
+      "sha256": {
+        "user": "7667e1ad0a8dff9761820c1802066802d48fc865fa2e17494c096e0be2311403",
+        "prompt": "364a9f237ebbc7080d5b864a43937fbc5ef53943c689ffdd67ddfe7dada4ee04",
+        "ids": "c9afc0910988d4efe4b111449966afe0ac9e4ea342d1840a27a2efae28fa76c0",
+        "reference_reply": "7208ddbd1b8cf98f62aad30c25badad97eb120778fe745f73c9a7a25e7498b95"
+      }
+    },
+    {
+      "name": "s037",
+      "source_id": "otSTSpB_0",
+      "source_index": 65,
+      "prompt_tokens": 26,
+      "files": {
+        "user": "inputs/s037.user.txt",
+        "prompt": "inputs/s037.prompt.txt",
+        "ids": "inputs/s037.ids",
+        "reference_reply": "inputs/s037.reply.txt"
+      },
+      "sha256": {
+        "user": "d7fa64ba92eef5862214797d7c493471500f0990549c84026a8c4bc12275b2e8",
+        "prompt": "a301bdd825683c7dd630cc566e6187ecb940acba63b35d527db001e587eb99e4",
+        "ids": "14c6db17709daad01f387c58ce9d2f63ab3f2af1cac4f2f9f76f691038c6d615",
+        "reference_reply": "33ccaa27a4f21d4a7f6c0175ffe0eecc984dc43c1132cbb7ddafb66fd220a61b"
+      }
+    },
+    {
+      "name": "s038",
+      "source_id": "ncJJfCQ_0",
+      "source_index": 66,
+      "prompt_tokens": 432,
+      "files": {
+        "user": "inputs/s038.user.txt",
+        "prompt": "inputs/s038.prompt.txt",
+        "ids": "inputs/s038.ids",
+        "reference_reply": "inputs/s038.reply.txt"
+      },
+      "sha256": {
+        "user": "fc7d65f28255bf6a1319040036f98c61f9ab02570339c54327dd8d8ebcac740a",
+        "prompt": "5cb38abc7a24878f495dd7551311cfeed64356595217497d9d33c0819f3bdefc",
+        "ids": "79c446bbbf94fd699f5fe4e6a7ed73f75e2d1d8c99288b9e9cbad044d1664617",
+        "reference_reply": "b1a618e5f2e19c55a06e2c3141ecbc2d0ff68e1678c23f0bbee360e91b449aed"
+      }
+    },
+    {
+      "name": "s039",
+      "source_id": "j0gtTrY_0",
+      "source_index": 67,
+      "prompt_tokens": 146,
+      "files": {
+        "user": "inputs/s039.user.txt",
+        "prompt": "inputs/s039.prompt.txt",
+        "ids": "inputs/s039.ids",
+        "reference_reply": "inputs/s039.reply.txt"
+      },
+      "sha256": {
+        "user": "1b03492e95e0fb7fdd4197c767e3052a0a52fab3e2a5f5b3735ee363fef6da46",
+        "prompt": "4a5bba08b7f1b02411a4cf5438acad9a6aa5d3bf6a1bfaaa9c8d499d48c919a9",
+        "ids": "8ca99848f171f917cb07e80622f097e7b4ebdbf1b26f50362a38c092056076aa",
+        "reference_reply": "7eed2aaeaaa9d57673962dcf384d93ba2228d6a4a584e6f6f328c6fb62bf9a13"
+      }
+    },
+    {
+      "name": "s040",
+      "source_id": "W4wL13P_0",
+      "source_index": 68,
+      "prompt_tokens": 16,
+      "files": {
+        "user": "inputs/s040.user.txt",
+        "prompt": "inputs/s040.prompt.txt",
+        "ids": "inputs/s040.ids",
+        "reference_reply": "inputs/s040.reply.txt"
+      },
+      "sha256": {
+        "user": "3f8df2aea2c34eb4a8fcc73e8e555ae2bbfb36e6c0de6c04d22bb2f2f4b1e676",
+        "prompt": "a77e41680684d74b7c2c2fb7d4a8bac09082d4c1076d1dab30b43bee54ec9d6f",
+        "ids": "64fbc928ee0975fafd14bc2409665db2d41bccb224be8d08ead7e57867f97d03",
+        "reference_reply": "803f3a88875bd24d46ac650c9bb6472cfcd96002a1305deae3ebfbfc676e119a"
+      }
+    },
+    {
+      "name": "s041",
+      "source_id": "wpSappl_0",
+      "source_index": 69,
+      "prompt_tokens": 27,
+      "files": {
+        "user": "inputs/s041.user.txt",
+        "prompt": "inputs/s041.prompt.txt",
+        "ids": "inputs/s041.ids",
+        "reference_reply": "inputs/s041.reply.txt"
+      },
+      "sha256": {
+        "user": "4c9e3831f3ba101aecc0340a0612c9f33476457707e42413502313181087e851",
+        "prompt": "ea8599e6039f3580e441cfd7ce1e30b3456c9e48cc7dce2e5227e8bb4c3e5495",
+        "ids": "a2d85b8f29947491bcf48499b70527f2e370e3a21f88bf24f8aaa51bcbc510bc",
+        "reference_reply": "269eb2d3caa99509c5b08f59fef856125e6eeb505e3148bf6f92bc2a79bbbe50"
+      }
+    },
+    {
+      "name": "s042",
+      "source_id": "dcTB2RK_0",
+      "source_index": 70,
+      "prompt_tokens": 55,
+      "files": {
+        "user": "inputs/s042.user.txt",
+        "prompt": "inputs/s042.prompt.txt",
+        "ids": "inputs/s042.ids",
+        "reference_reply": "inputs/s042.reply.txt"
+      },
+      "sha256": {
+        "user": "4d3038cfe0fcbc2906202c15c60c202e7d28b033041c5e442ce28e3e5949179f",
+        "prompt": "d8ed2361f8e7cdca6ff5340c60af2707cae5ebcf36b699b0069d0cd3af7e5bad",
+        "ids": "cb1c8bde7e19af0f84d59e6e4a675da434874f6aae477fbc7bb4ce04b4262e49",
+        "reference_reply": "1beb2340bc32f2fc1ba859f3e20d2c7a50a8e43ac05349603bbaf2f02eb60da9"
+      }
+    },
+    {
+      "name": "s043",
+      "source_id": "LINiOhS_0",
+      "source_index": 74,
+      "prompt_tokens": 35,
+      "files": {
+        "user": "inputs/s043.user.txt",
+        "prompt": "inputs/s043.prompt.txt",
+        "ids": "inputs/s043.ids",
+        "reference_reply": "inputs/s043.reply.txt"
+      },
+      "sha256": {
+        "user": "15623da7e2bf3c670d17c90f468e07440e75e9a160d27778d19aa5829ff96e27",
+        "prompt": "cceceeea297794d95f2effcc81dbcb0141f3cfabcbbbc911ca7870bad54cde91",
+        "ids": "6a74a616123b999addf92c48871287ab3d92574aecda5ae607b466e6228d9345",
+        "reference_reply": "daa60f40f5376e98d81b0118958d2cdf3618ce31baee6675bda8d0a38bbb0fac"
+      }
+    },
+    {
+      "name": "s044",
+      "source_id": "zHkTtNj_0",
+      "source_index": 77,
+      "prompt_tokens": 312,
+      "files": {
+        "user": "inputs/s044.user.txt",
+        "prompt": "inputs/s044.prompt.txt",
+        "ids": "inputs/s044.ids",
+        "reference_reply": "inputs/s044.reply.txt"
+      },
+      "sha256": {
+        "user": "0370c1590d402b54343d10335736f5074fd3478086496e8c347300bfa3ea0ee2",
+        "prompt": "ef4fb1060290a7b0544bdb712d6ffdf4fbc5ad8cbaf4d20b5bf740fb1da5173d",
+        "ids": "2e8b436d6f2dfe37e07de90fbff7ecc038fe5baa704671226f391bea69b4f327",
+        "reference_reply": "2d3c8835b5643918fd9ad46d1b9c12df0e899decc9d394d31e2e71ad78d80433"
+      }
+    },
+    {
+      "name": "s045",
+      "source_id": "Ys4AKnP_0",
+      "source_index": 78,
+      "prompt_tokens": 61,
+      "files": {
+        "user": "inputs/s045.user.txt",
+        "prompt": "inputs/s045.prompt.txt",
+        "ids": "inputs/s045.ids",
+        "reference_reply": "inputs/s045.reply.txt"
+      },
+      "sha256": {
+        "user": "6ad6f2ba1b102419319eb58171884a857525aeb74b0a5721196f48195c0975bf",
+        "prompt": "ee2eb7cfc23f69940099fed07cb8f13c39ab5bf94974d8e1594f60b4cc524711",
+        "ids": "03d204fb30b28399bb3f87adf888e5aa6f99e3ce9c565988ddeb68caf555f42d",
+        "reference_reply": "9986db8b624078068ed8e12dc0b623e0c8d4e51db2566f5b7dd14dfdabb27839"
+      }
+    },
+    {
+      "name": "s046",
+      "source_id": "d51bm7m_0",
+      "source_index": 79,
+      "prompt_tokens": 19,
+      "files": {
+        "user": "inputs/s046.user.txt",
+        "prompt": "inputs/s046.prompt.txt",
+        "ids": "inputs/s046.ids",
+        "reference_reply": "inputs/s046.reply.txt"
+      },
+      "sha256": {
+        "user": "94d41447ddb9235139f7df739733a8ec02c3bc7a4b76116cd996460441c42e72",
+        "prompt": "4dfb3d11ba6e75e39916eaa42eea79c8165754ea946c64ec6730b5afa2709485",
+        "ids": "21c0eeb037ec6671ed396c7cf6e562ecd956d2ce3c69804ed5beafc992ddad3f",
+        "reference_reply": "e8fe6eef0fd50a25268ba3f5467c79ff9852f7c6905220c965dcb0c431bad778"
+      }
+    },
+    {
+      "name": "s047",
+      "source_id": "ACt45V7_0",
+      "source_index": 80,
+      "prompt_tokens": 352,
+      "files": {
+        "user": "inputs/s047.user.txt",
+        "prompt": "inputs/s047.prompt.txt",
+        "ids": "inputs/s047.ids",
+        "reference_reply": "inputs/s047.reply.txt"
+      },
+      "sha256": {
+        "user": "35b6dea2cc706c22c4209616273766e2a12aef6c450f09e608adc7e0a26b5031",
+        "prompt": "30192e268f26705b258e20107f199c8b50180cd76da3cd56c2ca0056c76dd5ac",
+        "ids": "0cac3fa6e128a31be96fd109ce565fe920c3f1b17164bf4c3364c143f8d4ad70",
+        "reference_reply": "05901ca2c744768c23a0f28f7342388825237854b1fa1d8531004a4969b952ca"
+      }
+    },
+    {
+      "name": "s048",
+      "source_id": "fud9GZG_0",
+      "source_index": 82,
+      "prompt_tokens": 434,
+      "files": {
+        "user": "inputs/s048.user.txt",
+        "prompt": "inputs/s048.prompt.txt",
+        "ids": "inputs/s048.ids",
+        "reference_reply": "inputs/s048.reply.txt"
+      },
+      "sha256": {
+        "user": "9070721ecaea6e45476e571fe303527437355eddd895b19ce359060f78ae633f",
+        "prompt": "22b4394de1ecc260d49a5dfbcaab96df15ccb69e40345d070683a2a27a47464d",
+        "ids": "a9d23b3e55aba3153f90efcfaf33453fcc760472cfd160f157bdb73940351ff7",
+        "reference_reply": "92c8497b0d5c3d9563acb9409acb0799a7c5d08162f57d6b5faa4d2a24ee401b"
+      }
+    },
+    {
+      "name": "s049",
+      "source_id": "v4PzAY8_0",
+      "source_index": 86,
+      "prompt_tokens": 13,
+      "files": {
+        "user": "inputs/s049.user.txt",
+        "prompt": "inputs/s049.prompt.txt",
+        "ids": "inputs/s049.ids",
+        "reference_reply": "inputs/s049.reply.txt"
+      },
+      "sha256": {
+        "user": "185f8db32271fe25f561a6fc938b2e264306ec304eda518007d1764826381969",
+        "prompt": "13071b0f0e23e97681f6f39247dbb715973302580660a81dbae994fe8064e7d3",
+        "ids": "9d24faf73ad68abfadabf9735ec7807c816ee9cb0743739fe2725633baa3cc2c",
+        "reference_reply": "fda564ba3f7a0f028106d468420f674898ed99ac5bf2765ac9586206e39d73c5"
+      }
+    },
+    {
+      "name": "s050",
+      "source_id": "IJ4n5em_0",
+      "source_index": 87,
+      "prompt_tokens": 80,
+      "files": {
+        "user": "inputs/s050.user.txt",
+        "prompt": "inputs/s050.prompt.txt",
+        "ids": "inputs/s050.ids",
+        "reference_reply": "inputs/s050.reply.txt"
+      },
+      "sha256": {
+        "user": "755147104f4547b4d56f8b3c60fb76303cebdab225fcfa38c3b13e1261ae3700",
+        "prompt": "aa5aedb8e7bffae010161f582a36c9c47d12a52f995757a1c160221351348985",
+        "ids": "9088114a24e2621f18bae748f65a2bac12085f61dcdd97cb75fafe80a52a762d",
+        "reference_reply": "1093adac5e1ac44fc86ba1913b0da9251c110e4d457937e43467e9d9616c9059"
+      }
+    },
+    {
+      "name": "s051",
+      "source_id": "aFQ1wf6_0",
+      "source_index": 88,
+      "prompt_tokens": 30,
+      "files": {
+        "user": "inputs/s051.user.txt",
+        "prompt": "inputs/s051.prompt.txt",
+        "ids": "inputs/s051.ids",
+        "reference_reply": "inputs/s051.reply.txt"
+      },
+      "sha256": {
+        "user": "158d7dfa736cbc4df073db4fd898076d9eea11f048d50d14a51e40cdf96b4c3c",
+        "prompt": "7b930059942252f15d9cc25c4e43da865e177008101d05fa355af054294aa0ec",
+        "ids": "15e8fc9cc828ce3676d5bb4e67114ba0257dd928bd0c3ba4270f53c32de54237",
+        "reference_reply": "50b150aee2a167d9f0fa1df88e90784aa49cbb53c6b909c89ffb40d742c50f16"
+      }
+    },
+    {
+      "name": "s052",
+      "source_id": "khWNavV_0",
+      "source_index": 89,
+      "prompt_tokens": 19,
+      "files": {
+        "user": "inputs/s052.user.txt",
+        "prompt": "inputs/s052.prompt.txt",
+        "ids": "inputs/s052.ids",
+        "reference_reply": "inputs/s052.reply.txt"
+      },
+      "sha256": {
+        "user": "3dc03fda1bc168ab42f39acd7f0631979f441fac8d0dbaefbae115b52b14dcdb",
+        "prompt": "53d309043ace95cf3f505ec5b8cc68fbe4e3dec096e5ca4b9ffbbe2a0f36b5a7",
+        "ids": "8188c6cef04d25920a7b4f57f348250aa537c020cc90fba52001e22b798b7fa3",
+        "reference_reply": "58a4b340e68c766b3350166187b8de1aef78178e6e37d4cbb8585ce8886ff00f"
+      }
+    },
+    {
+      "name": "s053",
+      "source_id": "NhvViwM_0",
+      "source_index": 90,
+      "prompt_tokens": 86,
+      "files": {
+        "user": "inputs/s053.user.txt",
+        "prompt": "inputs/s053.prompt.txt",
+        "ids": "inputs/s053.ids",
+        "reference_reply": "inputs/s053.reply.txt"
+      },
+      "sha256": {
+        "user": "b5afbec01161c0ee7b458319aab43576d691e09955cf6cec95784048738968c3",
+        "prompt": "2a73916d89ed1245562845f1da11ece6c0c5faea64666626c1febd6ea8d32b03",
+        "ids": "0a9f22c3911213cf506d2c0201a320a11143563f2981af498f715194afd689a4",
+        "reference_reply": "c915e66ad05f2222e32ffc03cc6eb476048dd8c13a4f14ec50e72903f7f95300"
+      }
+    },
+    {
+      "name": "s054",
+      "source_id": "mxEe31E_0",
+      "source_index": 91,
+      "prompt_tokens": 15,
+      "files": {
+        "user": "inputs/s054.user.txt",
+        "prompt": "inputs/s054.prompt.txt",
+        "ids": "inputs/s054.ids",
+        "reference_reply": "inputs/s054.reply.txt"
+      },
+      "sha256": {
+        "user": "292910a65a414a98be250fa4ae200dc0da3c9678fd165672fdbf82cc1bf565c7",
+        "prompt": "e587dc6e07241296625e55f54f8e504f9d34014d87454c3ff6b0fdb4d2c391a3",
+        "ids": "5aff4c823d8fc54c31e1e5893cab2485bdf63e323df552888a2cf7ac73f06c1c",
+        "reference_reply": "6575e2de6e1a126b84fce412ee21dc670eb9841dee1ef71dab316e52fb10048c"
+      }
+    },
+    {
+      "name": "s055",
+      "source_id": "etlVnIy_0",
+      "source_index": 92,
+      "prompt_tokens": 32,
+      "files": {
+        "user": "inputs/s055.user.txt",
+        "prompt": "inputs/s055.prompt.txt",
+        "ids": "inputs/s055.ids",
+        "reference_reply": "inputs/s055.reply.txt"
+      },
+      "sha256": {
+        "user": "0ad417f76f19c7c32f11edd7df872ef1ed4fe48a3890304105c9e37937237eac",
+        "prompt": "74196aa4f9ce7265b44713171584e0e080e372b09b9d51a0a25efa15c71b38cc",
+        "ids": "120633e5936ea40407c0b6a3357885adf2d546c48a80314543a35bd27e76d8f6",
+        "reference_reply": "5e91a54ad296c501834131cede381787dfb57622b0988012eb92b3bea9260c1f"
+      }
+    },
+    {
+      "name": "s056",
+      "source_id": "o67mG13_0",
+      "source_index": 94,
+      "prompt_tokens": 33,
+      "files": {
+        "user": "inputs/s056.user.txt",
+        "prompt": "inputs/s056.prompt.txt",
+        "ids": "inputs/s056.ids",
+        "reference_reply": "inputs/s056.reply.txt"
+      },
+      "sha256": {
+        "user": "704eabebab7509e5f1ce0b6dcb1c516fddc0162bf03777417b10b33e25d05888",
+        "prompt": "b91c3a66bccb5158f53c5d849ab1dccc8c3e0ac51c7fdadec16acfcf6c21d103",
+        "ids": "5398f1a3d983eef07750e11fc2d85bce61625f12473cac7e97402c25c5683cad",
+        "reference_reply": "fb1953ff684f33d2135a1122c22c0d149f206654e3ea7111e58b12f21374281b"
+      }
+    },
+    {
+      "name": "s057",
+      "source_id": "THAybyi_0",
+      "source_index": 95,
+      "prompt_tokens": 24,
+      "files": {
+        "user": "inputs/s057.user.txt",
+        "prompt": "inputs/s057.prompt.txt",
+        "ids": "inputs/s057.ids",
+        "reference_reply": "inputs/s057.reply.txt"
+      },
+      "sha256": {
+        "user": "c4dcd3959dc517374295aa53344a511447ab56fd8c619ee1a3df8149aaff5326",
+        "prompt": "cf8984ddb5747fb50fd89b2010555684de44a9622a62b4abe14cda465b6dc58c",
+        "ids": "7c62847b44efe7b1891b48e03f56c98126acc55021f8b6b60013947d7c06d62f",
+        "reference_reply": "1f02a2ce87d91053f3f0c4fcb0e526aaf0dcd1e6f6c7be8fa65272dfb646af93"
+      }
+    },
+    {
+      "name": "s058",
+      "source_id": "Dk6qZaf_0",
+      "source_index": 96,
+      "prompt_tokens": 43,
+      "files": {
+        "user": "inputs/s058.user.txt",
+        "prompt": "inputs/s058.prompt.txt",
+        "ids": "inputs/s058.ids",
+        "reference_reply": "inputs/s058.reply.txt"
+      },
+      "sha256": {
+        "user": "df39ab6e1535bc865e82e65850c89ae959a6bb8cd38d36d66eaedf7aea769c62",
+        "prompt": "a24a1e3820b02293b9288ccee6e9709e994399f4b37da081accdc404c119944d",
+        "ids": "fa63e198484aff3187b08dc707122441679bbb6287c418f02ecff181e803fb5e",
+        "reference_reply": "a171e89233028a1038e66af5385f3a496069971f0d66f2d8df6d28d61db6bb1c"
+      }
+    },
+    {
+      "name": "s059",
+      "source_id": "tgKByb7_0",
+      "source_index": 97,
+      "prompt_tokens": 15,
+      "files": {
+        "user": "inputs/s059.user.txt",
+        "prompt": "inputs/s059.prompt.txt",
+        "ids": "inputs/s059.ids",
+        "reference_reply": "inputs/s059.reply.txt"
+      },
+      "sha256": {
+        "user": "f93900a9541f01baba2e3328b87f9ceb6916dfa5e8e6380e72573c6efe5bfc05",
+        "prompt": "965a2bc2828e4c9def068d86d51c47894bd94ce60ccae55b6b8bf35fcd0bf3df",
+        "ids": "2a0eba30941bddb2e32215fd05c3c4b4d10f3de468040a1613fb3bf00d619db7",
+        "reference_reply": "56e289ad8b6087279a752e6b27f5877f27a19c80b5128180a5011035901889bc"
+      }
+    },
+    {
+      "name": "s060",
+      "source_id": "GG8dVob_0",
+      "source_index": 99,
+      "prompt_tokens": 19,
+      "files": {
+        "user": "inputs/s060.user.txt",
+        "prompt": "inputs/s060.prompt.txt",
+        "ids": "inputs/s060.ids",
+        "reference_reply": "inputs/s060.reply.txt"
+      },
+      "sha256": {
+        "user": "29c30885c519a5f8bb89faf53b4d21c3837931234c35b1c64b1c6cbdc0780e3c",
+        "prompt": "c215bbb97c7c0e83d2305cc2459267c35659e286bcd6f88c0abc7f481aecda82",
+        "ids": "d3a96a15bf9cc5083fb0f661abd0e6db8d1f870f4f8108fb19d2531c7cd6e9e9",
+        "reference_reply": "f754484d0a0ae72bd4f110798ea5da07575258b6dd613d788d657b9d2f80e1d3"
+      }
+    },
+    {
+      "name": "s061",
+      "source_id": "lV4R2w4_0",
+      "source_index": 100,
+      "prompt_tokens": 33,
+      "files": {
+        "user": "inputs/s061.user.txt",
+        "prompt": "inputs/s061.prompt.txt",
+        "ids": "inputs/s061.ids",
+        "reference_reply": "inputs/s061.reply.txt"
+      },
+      "sha256": {
+        "user": "b1026cff412d83e08beacf20a93f930847f539310845dc935138d0eb89e73981",
+        "prompt": "8a991cbba38c10bda98714093e015a90024b50a3c05bf291cf88b5d9e260abbd",
+        "ids": "c91234092198cfa4697b5252cc9dc547c61ad29eb1518cc1f7b92d5f14c1413e",
+        "reference_reply": "8f57e4d9c31c525bd6908a6979a2937ab4b4931e0dab930295cd597894e2e6ea"
+      }
+    },
+    {
+      "name": "s062",
+      "source_id": "SWdKUmo_0",
+      "source_index": 101,
+      "prompt_tokens": 52,
+      "files": {
+        "user": "inputs/s062.user.txt",
+        "prompt": "inputs/s062.prompt.txt",
+        "ids": "inputs/s062.ids",
+        "reference_reply": "inputs/s062.reply.txt"
+      },
+      "sha256": {
+        "user": "192ee74495bd010a8c41e31e21123afe013c8b8a1fd6398475e064c50fcdd20b",
+        "prompt": "879b53cb05f1dda0e76a872e498c11a37bb8c83ebe46dae49af395664d6bf6d8",
+        "ids": "b132b0fc93aca3d59fe3f50d30980d55a5f6a89ea5552e54c5bd46f8a6d8ee2d",
+        "reference_reply": "5e11dc905ccd8a59e1392db3c8a84633503ed72a62565fef4dcfaef9fe75fb70"
+      }
+    },
+    {
+      "name": "s063",
+      "source_id": "tAUIJDD_0",
+      "source_index": 103,
+      "prompt_tokens": 26,
+      "files": {
+        "user": "inputs/s063.user.txt",
+        "prompt": "inputs/s063.prompt.txt",
+        "ids": "inputs/s063.ids",
+        "reference_reply": "inputs/s063.reply.txt"
+      },
+      "sha256": {
+        "user": "e9a5d5e6a4911f2fefcf34c6380076c32905ec42fab08cebb84c53b613ee377a",
+        "prompt": "5bdc0f637a9bf9a6c976315979814066669c5919fc5272deeb253b228e09bb53",
+        "ids": "a7de6dac93d1eae46757cf82aa73f8e9460d431928189b4a657e1719778a5215",
+        "reference_reply": "8c853d85880b5dd65da82e7c81c77bfb50cb07150d4c220958461c4231633adf"
+      }
+    },
+    {
+      "name": "s064",
+      "source_id": "SaIKRQ4_0",
+      "source_index": 105,
+      "prompt_tokens": 119,
+      "files": {
+        "user": "inputs/s064.user.txt",
+        "prompt": "inputs/s064.prompt.txt",
+        "ids": "inputs/s064.ids",
+        "reference_reply": "inputs/s064.reply.txt"
+      },
+      "sha256": {
+        "user": "77b11c9f718720636ea97f46ed4b05a96f8e8a6ba7596b032ec04b5f2eca37de",
+        "prompt": "74c07c50e83e00916e2af5d04be8c68d0ba9f4512a4dcb29d3958dfaf4a852a9",
+        "ids": "79d4b20b1a02292ba349377243eea849e03211822584e7cf6ae3257f720f2404",
+        "reference_reply": "2bae6d29b3d1d3aacfff0fc57b7af43a7e7e31358c958bfeb0473a05cf864c81"
+      }
+    },
+    {
+      "name": "s065",
+      "source_id": "tFAvE80_0",
+      "source_index": 106,
+      "prompt_tokens": 23,
+      "files": {
+        "user": "inputs/s065.user.txt",
+        "prompt": "inputs/s065.prompt.txt",
+        "ids": "inputs/s065.ids",
+        "reference_reply": "inputs/s065.reply.txt"
+      },
+      "sha256": {
+        "user": "9625973d31cd317ca26863f19be63a6e47685a853675fe2cadc5419ee5298e80",
+        "prompt": "ee19dfcff6c16f480c6a7298a4cd7c680fdfff9fd90ab4cbb8d867389d3b6a68",
+        "ids": "3db012cecde4e1c399337a843b39be786e5d1ebd91ad3d858e77d75482f64be5",
+        "reference_reply": "4948e02bddd7b7a81b8cf1f17ebe70e7166c23ba1097b50e1c3aa7065f30bda0"
+      }
+    },
+    {
+      "name": "s066",
+      "source_id": "aureXq6_0",
+      "source_index": 112,
+      "prompt_tokens": 18,
+      "files": {
+        "user": "inputs/s066.user.txt",
+        "prompt": "inputs/s066.prompt.txt",
+        "ids": "inputs/s066.ids",
+        "reference_reply": "inputs/s066.reply.txt"
+      },
+      "sha256": {
+        "user": "e63b7946335185b7bd730cd0ec657d04698952dee5a91aa6adf5c4e98ec0af5c",
+        "prompt": "7941145a847a0aaf7d90ac7d2e8f056cb9ee63de3ab14ca80f9eccb337317aa1",
+        "ids": "457d802101fef4c3d621ec741d82b0f5d9934a467f80dfed6bf6578e5578dd65",
+        "reference_reply": "d7f6c35fe87310bb808c6b61a39af21d5625caca055c5b0cbdc8dc33948a4716"
+      }
+    },
+    {
+      "name": "s067",
+      "source_id": "jjwRxUY_0",
+      "source_index": 114,
+      "prompt_tokens": 42,
+      "files": {
+        "user": "inputs/s067.user.txt",
+        "prompt": "inputs/s067.prompt.txt",
+        "ids": "inputs/s067.ids",
+        "reference_reply": "inputs/s067.reply.txt"
+      },
+      "sha256": {
+        "user": "baa70c54f8c73c26f40fa8ef6645dbe8cd64bd95fc9fc080880c8667f0ecf56a",
+        "prompt": "3ffa3222f904efec4a26712302af7461f793af8297ebe0bd67b914724048eadf",
+        "ids": "6a0b6fb7616d3df596f2f3553d8aa01cd377ca0f685c7202cc38d7760ad7db37",
+        "reference_reply": "a628387d808da13fa2c006e041b61d5a37ceb540f57f5cd137de31e9a4e9abf2"
+      }
+    },
+    {
+      "name": "s068",
+      "source_id": "2wtLdZm_0",
+      "source_index": 115,
+      "prompt_tokens": 21,
+      "files": {
+        "user": "inputs/s068.user.txt",
+        "prompt": "inputs/s068.prompt.txt",
+        "ids": "inputs/s068.ids",
+        "reference_reply": "inputs/s068.reply.txt"
+      },
+      "sha256": {
+        "user": "a61d1bba12f71ce2adcab852db8266cb6e94744b3a8043a14a2cc701dcb2ab24",
+        "prompt": "5ba3d8d2b413c5e4cfb71abad5879420fdadde38a818f54d4eefbe1d89ab07c1",
+        "ids": "dbf172f1e0061981da3d14e2d4ae20a9c40dfcf08002af9bc1490c8a16a409c2",
+        "reference_reply": "3f3d3dc263ef824e50a152cf2ab43dcaeffc8d3326232c5512fafcb93518758e"
+      }
+    },
+    {
+      "name": "s069",
+      "source_id": "uXyoBKr_0",
+      "source_index": 116,
+      "prompt_tokens": 38,
+      "files": {
+        "user": "inputs/s069.user.txt",
+        "prompt": "inputs/s069.prompt.txt",
+        "ids": "inputs/s069.ids",
+        "reference_reply": "inputs/s069.reply.txt"
+      },
+      "sha256": {
+        "user": "6daec6b66cbf90e26c990cf8f5bdcfcf71a7f297613f589fe8b998e22030accf",
+        "prompt": "9f5468f5cedf64cba7d2bdc7ba8ab33bfa48ae492787706c8b21facd9d3b30f7",
+        "ids": "025bfb7f5477a5a0731dfa0598770e225cd0874795149c8abebe98950b6fd479",
+        "reference_reply": "0e2052e697cbd17a43cafdfe96e602f73909250b9d6f21bb105151637ded94a2"
+      }
+    },
+    {
+      "name": "s070",
+      "source_id": "w31Bk3K_0",
+      "source_index": 118,
+      "prompt_tokens": 36,
+      "files": {
+        "user": "inputs/s070.user.txt",
+        "prompt": "inputs/s070.prompt.txt",
+        "ids": "inputs/s070.ids",
+        "reference_reply": "inputs/s070.reply.txt"
+      },
+      "sha256": {
+        "user": "8d0d952013bb5b73eca8852e4058f8e3219e7fa4cea691f3083a8081b9c68223",
+        "prompt": "ca0eaa1cadeaa62caa6e85bc697b112d3f765788bbb55c4b81065a42f56c2a37",
+        "ids": "25bf6d84e03cef3cee76307a0b7d19968d7846fcfcf73740aecaa8e4d112ecce",
+        "reference_reply": "6b9d90c4b55b51f6033490e7d132189de69fd7de6235d736bc3170430883aea2"
+      }
+    },
+    {
+      "name": "s071",
+      "source_id": "xd92L6L_0",
+      "source_index": 120,
+      "prompt_tokens": 313,
+      "files": {
+        "user": "inputs/s071.user.txt",
+        "prompt": "inputs/s071.prompt.txt",
+        "ids": "inputs/s071.ids",
+        "reference_reply": "inputs/s071.reply.txt"
+      },
+      "sha256": {
+        "user": "47866ae2568237588626842b1f68e1397402739faef02d7bbae197932bb61ef5",
+        "prompt": "fd28ca14662c3487463cf874875a4d7957ebdd0e076aa1e42c84843adc7e6507",
+        "ids": "3aded0f461cb690329d34a74db3828bfd4d2aacc08e52d782d92a53af7c6d3a6",
+        "reference_reply": "d01bb9f44cdf03bd670862ab1fcf6eb89055b4105cbaf417389c2555725a7a7e"
+      }
+    },
+    {
+      "name": "s072",
+      "source_id": "xd92L6L_48",
+      "source_index": 123,
+      "prompt_tokens": 278,
+      "files": {
+        "user": "inputs/s072.user.txt",
+        "prompt": "inputs/s072.prompt.txt",
+        "ids": "inputs/s072.ids",
+        "reference_reply": "inputs/s072.reply.txt"
+      },
+      "sha256": {
+        "user": "f544fc30472726af977626aa9b4bf34fae088a8ee0a3005b8fc468d2d3589412",
+        "prompt": "d31051b0c80b00e72284388012f418ba9e345e15ccd5026f2af0f80b18df9891",
+        "ids": "3e815237a1d833a5fdcd8dd859d241c67c1aaaf4bbf6c3514d08777f5c7c19ca",
+        "reference_reply": "fed94473c37664efc484563757de85843d7686922fc2c7db38e9b1ae7b7d6288"
+      }
+    },
+    {
+      "name": "s073",
+      "source_id": "xd92L6L_80",
+      "source_index": 125,
+      "prompt_tokens": 259,
+      "files": {
+        "user": "inputs/s073.user.txt",
+        "prompt": "inputs/s073.prompt.txt",
+        "ids": "inputs/s073.ids",
+        "reference_reply": "inputs/s073.reply.txt"
+      },
+      "sha256": {
+        "user": "738902f109ffa2b814346614a1f14f74c00f412d236ab729ce4a91158e22d048",
+        "prompt": "08e236402f10a12a061ef2d41ca8202dfc5fa4615786aa1cb30324a446f36145",
+        "ids": "87c72c66b172114cf27c925cc8c32a209cdc02be2735ad0c1e49969f10c63c3b",
+        "reference_reply": "22f4eb36351c0f938e56b790890b93b71df99187588c7b96b04d4db73d8af7a9"
+      }
+    },
+    {
+      "name": "s074",
+      "source_id": "eYj4Nqi_0",
+      "source_index": 127,
+      "prompt_tokens": 87,
+      "files": {
+        "user": "inputs/s074.user.txt",
+        "prompt": "inputs/s074.prompt.txt",
+        "ids": "inputs/s074.ids",
+        "reference_reply": "inputs/s074.reply.txt"
+      },
+      "sha256": {
+        "user": "04945440061bc014f3991c344e98273a611594c2dfa876b01581465c97d10f5a",
+        "prompt": "1a16e90d974622c3805eae21f3022de113bfc0243b7c43d12dfbf95b946723bc",
+        "ids": "b0418b75f869264b135b2dccc62c664e2ec1dc5936137ddf44766eff6f57153e",
+        "reference_reply": "4df58193b8670496c5d04adeb46a73dd5bed4edd6c0490da0bf2a4fcb60c1a76"
+      }
+    },
+    {
+      "name": "s075",
+      "source_id": "50SbvAt_0",
+      "source_index": 128,
+      "prompt_tokens": 61,
+      "files": {
+        "user": "inputs/s075.user.txt",
+        "prompt": "inputs/s075.prompt.txt",
+        "ids": "inputs/s075.ids",
+        "reference_reply": "inputs/s075.reply.txt"
+      },
+      "sha256": {
+        "user": "8a69c1c4c5e14a8b2eedb9dc4c076e771423ae7c4852eb1f09481950da4743da",
+        "prompt": "68fa59d0285bb2c285a37202f5c033a083cc3ae18acc02687381f527a9829c68",
+        "ids": "8a1b1ccb2e0fb361ef6cb4b9512bd12a5f281e2425473a9b0ba2319e359525a9",
+        "reference_reply": "c9c003f817e82f4354cd3198f4e88d4cbd1cd34c2434293fcd683e0681446adb"
+      }
+    },
+    {
+      "name": "s076",
+      "source_id": "zWauOni_0",
+      "source_index": 129,
+      "prompt_tokens": 35,
+      "files": {
+        "user": "inputs/s076.user.txt",
+        "prompt": "inputs/s076.prompt.txt",
+        "ids": "inputs/s076.ids",
+        "reference_reply": "inputs/s076.reply.txt"
+      },
+      "sha256": {
+        "user": "278e9ba99aeffb0f66e97e2bdc77fe18b9923fc77dc0867c1f3e2e5844211ca3",
+        "prompt": "dd6fd26da474321760150501723d6ecb2d2409d75af886897f1bb732229399bc",
+        "ids": "c521e7aa6ddac4b4a7176d3d2fff46473453c5068cc26254daf44edea38fedd2",
+        "reference_reply": "46825397b591274fdd3e23077429d850b533b549378dc3db2c0a1d49bfa7e7a2"
+      }
+    },
+    {
+      "name": "s077",
+      "source_id": "MKrcrHj_0",
+      "source_index": 130,
+      "prompt_tokens": 21,
+      "files": {
+        "user": "inputs/s077.user.txt",
+        "prompt": "inputs/s077.prompt.txt",
+        "ids": "inputs/s077.ids",
+        "reference_reply": "inputs/s077.reply.txt"
+      },
+      "sha256": {
+        "user": "180967adcc52d0d784604df238a2c367c46c2c2ff85f63dbe749f25179af75ad",
+        "prompt": "f82819abfe932cff32d261b158849af69ad67a3fae70cf0a9d93ff421c38862e",
+        "ids": "1d45330d416bed1b9c0331791119f1a12f0384e46443f3acf80ee7a17d307a52",
+        "reference_reply": "94a5db0f238a67a140e894d28168c7bcf40bb3be867f4579dafe5f6d363364c9"
+      }
+    },
+    {
+      "name": "s078",
+      "source_id": "1HuVef4_0",
+      "source_index": 131,
+      "prompt_tokens": 16,
+      "files": {
+        "user": "inputs/s078.user.txt",
+        "prompt": "inputs/s078.prompt.txt",
+        "ids": "inputs/s078.ids",
+        "reference_reply": "inputs/s078.reply.txt"
+      },
+      "sha256": {
+        "user": "4f9dc874fa49e6fdb517845ebebe83366e312cebd0cd40695d464def2ef801cb",
+        "prompt": "bd11a8afe516fc57b5a48015c0e8d399d4e94eb89cdc957586a37992b6e217bb",
+        "ids": "90680518a3a55b3719771a479e80a54b6bf611cffdd0c131f17ea91f867a16e5",
+        "reference_reply": "bfbf00cb883367d6873e6f11f6f9e7179b2659cbeb67766a0dc9d1371cff53bc"
+      }
+    },
+    {
+      "name": "s079",
+      "source_id": "6CWcc2w_0",
+      "source_index": 132,
+      "prompt_tokens": 453,
+      "files": {
+        "user": "inputs/s079.user.txt",
+        "prompt": "inputs/s079.prompt.txt",
+        "ids": "inputs/s079.ids",
+        "reference_reply": "inputs/s079.reply.txt"
+      },
+      "sha256": {
+        "user": "45cfa2748fc48cd03bbc1a5becd4a64938f36446a558a75bd7c229417e860222",
+        "prompt": "05d9d91a78246715f0ca9628c89ce5ebde4178187ffe3caf9bdd9017253d8333",
+        "ids": "6a8b246cf432e7ff059da4b770a664c90e402760646b8f4863d89ecf4caa4bb2",
+        "reference_reply": "d725e4bf761d612055e93dd6a9a2fabf4e224ef6be3a91e435156f81cbab22ff"
+      }
+    },
+    {
+      "name": "s080",
+      "source_id": "KdfQsce_0",
+      "source_index": 133,
+      "prompt_tokens": 27,
+      "files": {
+        "user": "inputs/s080.user.txt",
+        "prompt": "inputs/s080.prompt.txt",
+        "ids": "inputs/s080.ids",
+        "reference_reply": "inputs/s080.reply.txt"
+      },
+      "sha256": {
+        "user": "341dec881f4ee0c3a97a00cf3be462bf017116334992f67ad5f214e1b1951be7",
+        "prompt": "b4af3dfee8adce59d19c9591cc70f377a1edec0956e3fa7ea68fdd6d4bdc2409",
+        "ids": "f566f5fa61f8f1cbd6ee629f61f5a7ffb4d7dbb84e54e0c0716ece4a1768fd11",
+        "reference_reply": "497c73b87bd29b5b86cfa4f1451bacce519cdd7dbabae14081fb9188e185a92a"
+      }
+    },
+    {
+      "name": "s081",
+      "source_id": "VZVve87_0",
+      "source_index": 134,
+      "prompt_tokens": 361,
+      "files": {
+        "user": "inputs/s081.user.txt",
+        "prompt": "inputs/s081.prompt.txt",
+        "ids": "inputs/s081.ids",
+        "reference_reply": "inputs/s081.reply.txt"
+      },
+      "sha256": {
+        "user": "a360a36051752cb22ca5336bf7f0f6b5c8596afac555dc51a07631cd38012a1b",
+        "prompt": "57cebeac0ff3b57e5cd338288b35225f8d0e1760d742880fac816bee5178343f",
+        "ids": "b9f5611d9df94b957a4335ed636bb77dcdde6b3baa7cc9a1649c4515c6768f08",
+        "reference_reply": "7a3278dc44815a8ecd2b6ea5d9280912955368180febe17e571ffa939073010f"
+      }
+    },
+    {
+      "name": "s082",
+      "source_id": "7pRcopi_0",
+      "source_index": 135,
+      "prompt_tokens": 39,
+      "files": {
+        "user": "inputs/s082.user.txt",
+        "prompt": "inputs/s082.prompt.txt",
+        "ids": "inputs/s082.ids",
+        "reference_reply": "inputs/s082.reply.txt"
+      },
+      "sha256": {
+        "user": "43241811e785d5fbdb8c87d371bedb0ae5fbee2b20874e6c9c78ac993e075b25",
+        "prompt": "a86523bf660d7f9cf8ed7ece493f6b943c2811fc9e2b8bada55fc892e76ba553",
+        "ids": "9a4760fff45b5a580ab37a98467a5fae2d2d1da623a02b1f90edddcfc8986794",
+        "reference_reply": "689310bc954048de33ffbb0644bb7372788170814341fcf51b1408701a4db81f"
+      }
+    },
+    {
+      "name": "s083",
+      "source_id": "4Wwxlin_0",
+      "source_index": 136,
+      "prompt_tokens": 26,
+      "files": {
+        "user": "inputs/s083.user.txt",
+        "prompt": "inputs/s083.prompt.txt",
+        "ids": "inputs/s083.ids",
+        "reference_reply": "inputs/s083.reply.txt"
+      },
+      "sha256": {
+        "user": "87b2edfa652e6a6127c5f4b569a392f2f6ba168104065dbe55b6e3734b6e59f0",
+        "prompt": "6c81edcf4c71c533ffa4007e688c9e79f3625e7d9933aa1041f4275ad38e3f90",
+        "ids": "540f6fecf2a08a8d14ac5dfecdbbc6d06cc64edb4d09ea99b8256dabbff82fe1",
+        "reference_reply": "45513b14bc0dc39e8a3c7a465cc9849d61b2d68d7f361f9462d90d07e641907f"
+      }
+    },
+    {
+      "name": "s084",
+      "source_id": "RU6GzqQ_0",
+      "source_index": 137,
+      "prompt_tokens": 29,
+      "files": {
+        "user": "inputs/s084.user.txt",
+        "prompt": "inputs/s084.prompt.txt",
+        "ids": "inputs/s084.ids",
+        "reference_reply": "inputs/s084.reply.txt"
+      },
+      "sha256": {
+        "user": "cea770593506654df31cdd0385821e8032f3b3c34a110a1db9606dbd75b343cd",
+        "prompt": "16f27585747cf1d99616d63e3afe3c5d34dbfa3f51e2c958f3c45d01975b6399",
+        "ids": "43ca89f8be0aca7f6e67b1a2b8ca3cecdb96f8d2238c130894b0769bb463e0c7",
+        "reference_reply": "c017f15990846fbcb3460bac5ea78052ecc66aa0f74e1c46524d7c5c50c93a47"
+      }
+    },
+    {
+      "name": "s085",
+      "source_id": "jamWAp9_0",
+      "source_index": 138,
+      "prompt_tokens": 66,
+      "files": {
+        "user": "inputs/s085.user.txt",
+        "prompt": "inputs/s085.prompt.txt",
+        "ids": "inputs/s085.ids",
+        "reference_reply": "inputs/s085.reply.txt"
+      },
+      "sha256": {
+        "user": "cb662bdd84390cd47746f0bccb701be56398beab033d2eeb61dcd46a4ef2fba1",
+        "prompt": "bbb63168614ad3e2ce068981e05055be95d8afb443ec852fbf4a620551123a45",
+        "ids": "18e80e5a2ec33c296dd7c3c7e3433895503cf53234cdfad75bfefab227727ead",
+        "reference_reply": "834953dc572bfa34fc6b1c56e5b5fde58d89b37e49272cd3708173f7c441e876"
+      }
+    },
+    {
+      "name": "s086",
+      "source_id": "9UIByXH_0",
+      "source_index": 139,
+      "prompt_tokens": 18,
+      "files": {
+        "user": "inputs/s086.user.txt",
+        "prompt": "inputs/s086.prompt.txt",
+        "ids": "inputs/s086.ids",
+        "reference_reply": "inputs/s086.reply.txt"
+      },
+      "sha256": {
+        "user": "ea9478fa6b62844d2f9820510038f9a0f570db3e2b56466e0e68e09e1039da1d",
+        "prompt": "69eb1e7c181b1548b51156ba23260ba6c1eabe38f9fa6583d1d4179458b8a0b7",
+        "ids": "cc39a9bd50acc7981f701e73abdc9d59597b20e14d64579470d304541108268b",
+        "reference_reply": "aa2a6ba962e4c8001e8fd1f8f086fdad7dd72b2f5e1d9d3856f7630f07b18ec8"
+      }
+    },
+    {
+      "name": "s087",
+      "source_id": "fpgNDwP_0",
+      "source_index": 140,
+      "prompt_tokens": 25,
+      "files": {
+        "user": "inputs/s087.user.txt",
+        "prompt": "inputs/s087.prompt.txt",
+        "ids": "inputs/s087.ids",
+        "reference_reply": "inputs/s087.reply.txt"
+      },
+      "sha256": {
+        "user": "19e849cfcf6736f729b1a541ccc4ae290711209b6532a663d37fbcbaad34d0db",
+        "prompt": "f9a0a45c7dde17bdae09cf2293acbb2cf171d3c44d564df9c680171cec15afcf",
+        "ids": "c1d1620ca30da07813f5ff0c2aeb0d9953423c579e2e7b54ed43f4672fa9c9ed",
+        "reference_reply": "3434ebdf533cff050ae045c3a439a20683e899badf8d26c75eafbd67b0099a2d"
+      }
+    },
+    {
+      "name": "s088",
+      "source_id": "Ot1oxuK_0",
+      "source_index": 142,
+      "prompt_tokens": 20,
+      "files": {
+        "user": "inputs/s088.user.txt",
+        "prompt": "inputs/s088.prompt.txt",
+        "ids": "inputs/s088.ids",
+        "reference_reply": "inputs/s088.reply.txt"
+      },
+      "sha256": {
+        "user": "d027f8a3d82e8873c9dc79391320c7eb382b2b0f4d9642ccc4e7c43e826d031f",
+        "prompt": "b33323a267a3784c9281f125ef3840b2c810ab222c9d7e8f58127faa7df57e0c",
+        "ids": "21f364bd58eac0c83867170ea9d954a44c9ea7c156971f731e59ef75638a99f9",
+        "reference_reply": "8ebf5ce50009892af553e464b265232ec3a07d42da0e44b965a472edaf6a38a8"
+      }
+    },
+    {
+      "name": "s089",
+      "source_id": "gcVkCKD_0",
+      "source_index": 144,
+      "prompt_tokens": 159,
+      "files": {
+        "user": "inputs/s089.user.txt",
+        "prompt": "inputs/s089.prompt.txt",
+        "ids": "inputs/s089.ids",
+        "reference_reply": "inputs/s089.reply.txt"
+      },
+      "sha256": {
+        "user": "8a3ddd7042c95e0c54b2d501c417315c8b33cad6cf8a7af51c6343b94867030f",
+        "prompt": "686dff67b31e91a468043255dd14c742026515256000daa8bf7bf8834f1e35d1",
+        "ids": "d54eaac7e851d0f8c224e29ffe1470e58da808b6d8c568b08613b8b9aa197636",
+        "reference_reply": "ab244b2fe3ba0988277336feb77cbd014d189d000518263fb18f57100568b8d8"
+      }
+    },
+    {
+      "name": "s090",
+      "source_id": "vfD3HFX_0",
+      "source_index": 145,
+      "prompt_tokens": 20,
+      "files": {
+        "user": "inputs/s090.user.txt",
+        "prompt": "inputs/s090.prompt.txt",
+        "ids": "inputs/s090.ids",
+        "reference_reply": "inputs/s090.reply.txt"
+      },
+      "sha256": {
+        "user": "542b4ebca68eec623153335a65bb99f330a2bf5b7bbcf4e425fe1349bcfd8860",
+        "prompt": "7a73e2d5de4bb27b3ba61bee301878ab26ac6123aa1415f19927ebd3cfda1076",
+        "ids": "bf70ab51d6c1e067721b26df58c96dab20c8e3646d39bbd27990d899e3d5a774",
+        "reference_reply": "36d920f9d78a094cc8e0eca51e2c73e2aff26b4f57ad741a874025cb3d78884b"
+      }
+    },
+    {
+      "name": "s091",
+      "source_id": "CmD5m6T_0",
+      "source_index": 146,
+      "prompt_tokens": 19,
+      "files": {
+        "user": "inputs/s091.user.txt",
+        "prompt": "inputs/s091.prompt.txt",
+        "ids": "inputs/s091.ids",
+        "reference_reply": "inputs/s091.reply.txt"
+      },
+      "sha256": {
+        "user": "adef98d271c544d4aa7e501ea84d891f1bcc1096180175415cb69dda19aa12de",
+        "prompt": "625abb385fe0aa6f568903b4f05d4f8980e41386bcd83141feedad4fb168172e",
+        "ids": "959c3924f6db5b06d86ba3b778425edfbc772a3262ea704eab532ea59726a44e",
+        "reference_reply": "58bed07a9abd327ed59476b0cb7b3be251036231f22af406f130727e75cb5234"
+      }
+    },
+    {
+      "name": "s092",
+      "source_id": "LuMzUEg_0",
+      "source_index": 148,
+      "prompt_tokens": 21,
+      "files": {
+        "user": "inputs/s092.user.txt",
+        "prompt": "inputs/s092.prompt.txt",
+        "ids": "inputs/s092.ids",
+        "reference_reply": "inputs/s092.reply.txt"
+      },
+      "sha256": {
+        "user": "62706ae15d9e69d8d98905206856131c7152e63a7f8ca3109c1819ae9ffffce0",
+        "prompt": "5805bb1736e4898a9f04ef5eb07487fe7c3274631930068899b84fde76bcc363",
+        "ids": "9c0eea192aec387b7862c446b903732018373188129e09d87d41603447f7ddf0",
+        "reference_reply": "c7dc16aa0085cdc263fc302e9b98e15ae63ba185c45113dd0f6f61493ba87f22"
+      }
+    },
+    {
+      "name": "s093",
+      "source_id": "ZivWPmv_0",
+      "source_index": 153,
+      "prompt_tokens": 742,
+      "files": {
+        "user": "inputs/s093.user.txt",
+        "prompt": "inputs/s093.prompt.txt",
+        "ids": "inputs/s093.ids",
+        "reference_reply": "inputs/s093.reply.txt"
+      },
+      "sha256": {
+        "user": "9e12955811d4b078a3cd2e339f63bb7d8352e213595fe6081daf58db79ee1899",
+        "prompt": "c9155ce105423018a7a722299f784e1b2ab4ce5338a7cd87016dcbe9a2120022",
+        "ids": "1647aa338fac01acf32994797db7e0d49c946be4611529919f9be2ccdf7e02be",
+        "reference_reply": "ca7ab1cd2746ee770cb4b195567a5794daa99fb08f13aeeb55fbf2afbdc4be8b"
+      }
+    },
+    {
+      "name": "s094",
+      "source_id": "BZOnM3l_0",
+      "source_index": 155,
+      "prompt_tokens": 20,
+      "files": {
+        "user": "inputs/s094.user.txt",
+        "prompt": "inputs/s094.prompt.txt",
+        "ids": "inputs/s094.ids",
+        "reference_reply": "inputs/s094.reply.txt"
+      },
+      "sha256": {
+        "user": "fafa9a7c7e85ce97a224a758680aa4f0b40bdb35049999b2d3fbbfe9cf6af622",
+        "prompt": "1a44ab0c15a2ae6268583d258bcb0a392c22e4d9b10c52ef73b75cf1f5f5f7da",
+        "ids": "c00926a9105bf9dcd27f407f92a421b046ec04a909683eaa653ae4c89a375057",
+        "reference_reply": "01f34e3c5c5216ad21358d0d23454adedb1cd16315416920a5abcf9a6aa39e7f"
+      }
+    },
+    {
+      "name": "s095",
+      "source_id": "WC5I3VQ_0",
+      "source_index": 156,
+      "prompt_tokens": 111,
+      "files": {
+        "user": "inputs/s095.user.txt",
+        "prompt": "inputs/s095.prompt.txt",
+        "ids": "inputs/s095.ids",
+        "reference_reply": "inputs/s095.reply.txt"
+      },
+      "sha256": {
+        "user": "82c77626eb344fdf7d9573ad25ee590ef7b2265c30212e5d885cab111abe273f",
+        "prompt": "95d635757d1833d5dcf22284d81dd6aaa5d0a38132372bb7a7faa3c4f7975e7f",
+        "ids": "17d0c0fb5bae7fd98ef2378b0d626afe37188b28b4b294c59fa2d8caab1cfc35",
+        "reference_reply": "7c1c3f8bd74e1acd73df648a702a2b247b3eb4a3c818a310dfcbafb47442a338"
+      }
+    },
+    {
+      "name": "s096",
+      "source_id": "eDt8ex9_0",
+      "source_index": 157,
+      "prompt_tokens": 32,
+      "files": {
+        "user": "inputs/s096.user.txt",
+        "prompt": "inputs/s096.prompt.txt",
+        "ids": "inputs/s096.ids",
+        "reference_reply": "inputs/s096.reply.txt"
+      },
+      "sha256": {
+        "user": "34705b1d2d45eb73d671b7c208632f18bc7105c7d558055ba51c7c4615e5d98c",
+        "prompt": "ba086e0403d85e4f76424f458d780fa3b0079eda058888971c90790949821989",
+        "ids": "e64f54d9ed55be44fe22e44d67882b64e4104724aae0ccc39c9906a176bde189",
+        "reference_reply": "82706f1f188e46bc6eee2ee994e90be078d12d5435674dafe2140541bac6dae4"
+      }
+    },
+    {
+      "name": "s097",
+      "source_id": "DOpwVfg_0",
+      "source_index": 158,
+      "prompt_tokens": 162,
+      "files": {
+        "user": "inputs/s097.user.txt",
+        "prompt": "inputs/s097.prompt.txt",
+        "ids": "inputs/s097.ids",
+        "reference_reply": "inputs/s097.reply.txt"
+      },
+      "sha256": {
+        "user": "7d0d06d56c5b4b5cb87879715e18742956b5678d392a2cfe58cb16ded18b8972",
+        "prompt": "d036b37a589d3f6cef80329f0fa456fdb59ef63ce6977ce2c10a0ed684ca6bf3",
+        "ids": "90ee080477fad8b4e251a399f2c361f6b72b15ff09655ebb2fe697cd02b8a982",
+        "reference_reply": "129d9ccd3ee40464299d22142ee378005783b1ee3d662375bdbfd744d45a8934"
+      }
+    },
+    {
+      "name": "s098",
+      "source_id": "wYX2jxL_0",
+      "source_index": 160,
+      "prompt_tokens": 18,
+      "files": {
+        "user": "inputs/s098.user.txt",
+        "prompt": "inputs/s098.prompt.txt",
+        "ids": "inputs/s098.ids",
+        "reference_reply": "inputs/s098.reply.txt"
+      },
+      "sha256": {
+        "user": "d6d826fa495665fe6f559179b94c70a8f8205a9126db0c7749a549c51fb166bf",
+        "prompt": "0485849d525c121c1296b9c4346c9341f60ac228d24ff92e3d01751a35c58204",
+        "ids": "96c0cabe5b5fa00218d130889132b2ff6b7a08634acaa42fd8fee0c440a57b74",
+        "reference_reply": "7263f183059f9bc1af08fee597957f1587d96fcff2d4fbef3b12cb279b5e336f"
+      }
+    },
+    {
+      "name": "s099",
+      "source_id": "WSGTmPU_0",
+      "source_index": 161,
+      "prompt_tokens": 42,
+      "files": {
+        "user": "inputs/s099.user.txt",
+        "prompt": "inputs/s099.prompt.txt",
+        "ids": "inputs/s099.ids",
+        "reference_reply": "inputs/s099.reply.txt"
+      },
+      "sha256": {
+        "user": "43fae3619041a0d55311cef657119c801945a75beb2999976db5cdea5adb5e47",
+        "prompt": "44d14e75b4c254e44933b9f8d0b411498ad62c44b7b50dd8b33f478a79cdbfab",
+        "ids": "a888f8decaa65639a3240bcb001c790d1fcf263e49d72abad73840a2ff12025e",
+        "reference_reply": "d038c5dbcccefaa0a19b0cddcad0cf3e68d3404b23939cc9e0c5f1b9bc4718dd"
+      }
+    },
+    {
+      "name": "s100",
+      "source_id": "ltqfPQc_0",
+      "source_index": 162,
+      "prompt_tokens": 88,
+      "files": {
+        "user": "inputs/s100.user.txt",
+        "prompt": "inputs/s100.prompt.txt",
+        "ids": "inputs/s100.ids",
+        "reference_reply": "inputs/s100.reply.txt"
+      },
+      "sha256": {
+        "user": "0cafec3f392b49ed269085306a452909eba50875738e028af5195b3cc097cd13",
+        "prompt": "c75afe0b966d29a2f3c2f4f6dda8bd791af2dd3646f9e4657cb833d0c16243aa",
+        "ids": "92ee3537b7aec5ebfad261a5eb62b126a0995a10ac4dd7db8bfdb00341e79afe",
+        "reference_reply": "fd56ff1020a9ca3271d5d84938d340083923e8782ed2a07ca7654cadd1070bae"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "s001",
+      "input": "s001",
+      "prompt_tokens": 46,
+      "output_tokens": 244,
+      "decode_forward_steps": 243,
+      "total_tokens": 290
+    },
+    {
+      "id": "s002",
+      "input": "s002",
+      "prompt_tokens": 29,
+      "output_tokens": 71,
+      "decode_forward_steps": 70,
+      "total_tokens": 100
+    },
+    {
+      "id": "s003",
+      "input": "s003",
+      "prompt_tokens": 74,
+      "output_tokens": 398,
+      "decode_forward_steps": 397,
+      "total_tokens": 472
+    },
+    {
+      "id": "s004",
+      "input": "s004",
+      "prompt_tokens": 105,
+      "output_tokens": 127,
+      "decode_forward_steps": 126,
+      "total_tokens": 232
+    },
+    {
+      "id": "s005",
+      "input": "s005",
+      "prompt_tokens": 282,
+      "output_tokens": 187,
+      "decode_forward_steps": 186,
+      "total_tokens": 469
+    },
+    {
+      "id": "s006",
+      "input": "s006",
+      "prompt_tokens": 28,
+      "output_tokens": 181,
+      "decode_forward_steps": 180,
+      "total_tokens": 209
+    },
+    {
+      "id": "s007",
+      "input": "s007",
+      "prompt_tokens": 29,
+      "output_tokens": 6,
+      "decode_forward_steps": 5,
+      "total_tokens": 35
+    },
+    {
+      "id": "s008",
+      "input": "s008",
+      "prompt_tokens": 17,
+      "output_tokens": 255,
+      "decode_forward_steps": 254,
+      "total_tokens": 272
+    },
+    {
+      "id": "s009",
+      "input": "s009",
+      "prompt_tokens": 62,
+      "output_tokens": 619,
+      "decode_forward_steps": 618,
+      "total_tokens": 681
+    },
+    {
+      "id": "s010",
+      "input": "s010",
+      "prompt_tokens": 22,
+      "output_tokens": 195,
+      "decode_forward_steps": 194,
+      "total_tokens": 217
+    },
+    {
+      "id": "s011",
+      "input": "s011",
+      "prompt_tokens": 20,
+      "output_tokens": 129,
+      "decode_forward_steps": 128,
+      "total_tokens": 149
+    },
+    {
+      "id": "s012",
+      "input": "s012",
+      "prompt_tokens": 59,
+      "output_tokens": 455,
+      "decode_forward_steps": 454,
+      "total_tokens": 514
+    },
+    {
+      "id": "s013",
+      "input": "s013",
+      "prompt_tokens": 15,
+      "output_tokens": 669,
+      "decode_forward_steps": 668,
+      "total_tokens": 684
+    },
+    {
+      "id": "s014",
+      "input": "s014",
+      "prompt_tokens": 24,
+      "output_tokens": 40,
+      "decode_forward_steps": 39,
+      "total_tokens": 64
+    },
+    {
+      "id": "s015",
+      "input": "s015",
+      "prompt_tokens": 31,
+      "output_tokens": 119,
+      "decode_forward_steps": 118,
+      "total_tokens": 150
+    },
+    {
+      "id": "s016",
+      "input": "s016",
+      "prompt_tokens": 352,
+      "output_tokens": 232,
+      "decode_forward_steps": 231,
+      "total_tokens": 584
+    },
+    {
+      "id": "s017",
+      "input": "s017",
+      "prompt_tokens": 31,
+      "output_tokens": 244,
+      "decode_forward_steps": 243,
+      "total_tokens": 275
+    },
+    {
+      "id": "s018",
+      "input": "s018",
+      "prompt_tokens": 242,
+      "output_tokens": 255,
+      "decode_forward_steps": 254,
+      "total_tokens": 497
+    },
+    {
+      "id": "s019",
+      "input": "s019",
+      "prompt_tokens": 25,
+      "output_tokens": 701,
+      "decode_forward_steps": 700,
+      "total_tokens": 726
+    },
+    {
+      "id": "s020",
+      "input": "s020",
+      "prompt_tokens": 33,
+      "output_tokens": 113,
+      "decode_forward_steps": 112,
+      "total_tokens": 146
+    },
+    {
+      "id": "s021",
+      "input": "s021",
+      "prompt_tokens": 27,
+      "output_tokens": 217,
+      "decode_forward_steps": 216,
+      "total_tokens": 244
+    },
+    {
+      "id": "s022",
+      "input": "s022",
+      "prompt_tokens": 48,
+      "output_tokens": 612,
+      "decode_forward_steps": 611,
+      "total_tokens": 660
+    },
+    {
+      "id": "s023",
+      "input": "s023",
+      "prompt_tokens": 20,
+      "output_tokens": 308,
+      "decode_forward_steps": 307,
+      "total_tokens": 328
+    },
+    {
+      "id": "s024",
+      "input": "s024",
+      "prompt_tokens": 28,
+      "output_tokens": 137,
+      "decode_forward_steps": 136,
+      "total_tokens": 165
+    },
+    {
+      "id": "s025",
+      "input": "s025",
+      "prompt_tokens": 36,
+      "output_tokens": 549,
+      "decode_forward_steps": 548,
+      "total_tokens": 585
+    },
+    {
+      "id": "s026",
+      "input": "s026",
+      "prompt_tokens": 22,
+      "output_tokens": 169,
+      "decode_forward_steps": 168,
+      "total_tokens": 191
+    },
+    {
+      "id": "s027",
+      "input": "s027",
+      "prompt_tokens": 424,
+      "output_tokens": 321,
+      "decode_forward_steps": 320,
+      "total_tokens": 745
+    },
+    {
+      "id": "s028",
+      "input": "s028",
+      "prompt_tokens": 145,
+      "output_tokens": 163,
+      "decode_forward_steps": 162,
+      "total_tokens": 308
+    },
+    {
+      "id": "s029",
+      "input": "s029",
+      "prompt_tokens": 193,
+      "output_tokens": 74,
+      "decode_forward_steps": 73,
+      "total_tokens": 267
+    },
+    {
+      "id": "s030",
+      "input": "s030",
+      "prompt_tokens": 21,
+      "output_tokens": 422,
+      "decode_forward_steps": 421,
+      "total_tokens": 443
+    },
+    {
+      "id": "s031",
+      "input": "s031",
+      "prompt_tokens": 20,
+      "output_tokens": 69,
+      "decode_forward_steps": 68,
+      "total_tokens": 89
+    },
+    {
+      "id": "s032",
+      "input": "s032",
+      "prompt_tokens": 26,
+      "output_tokens": 178,
+      "decode_forward_steps": 177,
+      "total_tokens": 204
+    },
+    {
+      "id": "s033",
+      "input": "s033",
+      "prompt_tokens": 55,
+      "output_tokens": 113,
+      "decode_forward_steps": 112,
+      "total_tokens": 168
+    },
+    {
+      "id": "s034",
+      "input": "s034",
+      "prompt_tokens": 36,
+      "output_tokens": 24,
+      "decode_forward_steps": 23,
+      "total_tokens": 60
+    },
+    {
+      "id": "s035",
+      "input": "s035",
+      "prompt_tokens": 41,
+      "output_tokens": 44,
+      "decode_forward_steps": 43,
+      "total_tokens": 85
+    },
+    {
+      "id": "s036",
+      "input": "s036",
+      "prompt_tokens": 326,
+      "output_tokens": 193,
+      "decode_forward_steps": 192,
+      "total_tokens": 519
+    },
+    {
+      "id": "s037",
+      "input": "s037",
+      "prompt_tokens": 26,
+      "output_tokens": 650,
+      "decode_forward_steps": 649,
+      "total_tokens": 676
+    },
+    {
+      "id": "s038",
+      "input": "s038",
+      "prompt_tokens": 432,
+      "output_tokens": 362,
+      "decode_forward_steps": 361,
+      "total_tokens": 794
+    },
+    {
+      "id": "s039",
+      "input": "s039",
+      "prompt_tokens": 146,
+      "output_tokens": 71,
+      "decode_forward_steps": 70,
+      "total_tokens": 217
+    },
+    {
+      "id": "s040",
+      "input": "s040",
+      "prompt_tokens": 16,
+      "output_tokens": 288,
+      "decode_forward_steps": 287,
+      "total_tokens": 304
+    },
+    {
+      "id": "s041",
+      "input": "s041",
+      "prompt_tokens": 27,
+      "output_tokens": 116,
+      "decode_forward_steps": 115,
+      "total_tokens": 143
+    },
+    {
+      "id": "s042",
+      "input": "s042",
+      "prompt_tokens": 55,
+      "output_tokens": 250,
+      "decode_forward_steps": 249,
+      "total_tokens": 305
+    },
+    {
+      "id": "s043",
+      "input": "s043",
+      "prompt_tokens": 35,
+      "output_tokens": 14,
+      "decode_forward_steps": 13,
+      "total_tokens": 49
+    },
+    {
+      "id": "s044",
+      "input": "s044",
+      "prompt_tokens": 312,
+      "output_tokens": 350,
+      "decode_forward_steps": 349,
+      "total_tokens": 662
+    },
+    {
+      "id": "s045",
+      "input": "s045",
+      "prompt_tokens": 61,
+      "output_tokens": 377,
+      "decode_forward_steps": 376,
+      "total_tokens": 438
+    },
+    {
+      "id": "s046",
+      "input": "s046",
+      "prompt_tokens": 19,
+      "output_tokens": 36,
+      "decode_forward_steps": 35,
+      "total_tokens": 55
+    },
+    {
+      "id": "s047",
+      "input": "s047",
+      "prompt_tokens": 352,
+      "output_tokens": 269,
+      "decode_forward_steps": 268,
+      "total_tokens": 621
+    },
+    {
+      "id": "s048",
+      "input": "s048",
+      "prompt_tokens": 434,
+      "output_tokens": 130,
+      "decode_forward_steps": 129,
+      "total_tokens": 564
+    },
+    {
+      "id": "s049",
+      "input": "s049",
+      "prompt_tokens": 13,
+      "output_tokens": 9,
+      "decode_forward_steps": 8,
+      "total_tokens": 22
+    },
+    {
+      "id": "s050",
+      "input": "s050",
+      "prompt_tokens": 80,
+      "output_tokens": 402,
+      "decode_forward_steps": 401,
+      "total_tokens": 482
+    },
+    {
+      "id": "s051",
+      "input": "s051",
+      "prompt_tokens": 30,
+      "output_tokens": 398,
+      "decode_forward_steps": 397,
+      "total_tokens": 428
+    },
+    {
+      "id": "s052",
+      "input": "s052",
+      "prompt_tokens": 19,
+      "output_tokens": 212,
+      "decode_forward_steps": 211,
+      "total_tokens": 231
+    },
+    {
+      "id": "s053",
+      "input": "s053",
+      "prompt_tokens": 86,
+      "output_tokens": 340,
+      "decode_forward_steps": 339,
+      "total_tokens": 426
+    },
+    {
+      "id": "s054",
+      "input": "s054",
+      "prompt_tokens": 15,
+      "output_tokens": 213,
+      "decode_forward_steps": 212,
+      "total_tokens": 228
+    },
+    {
+      "id": "s055",
+      "input": "s055",
+      "prompt_tokens": 32,
+      "output_tokens": 331,
+      "decode_forward_steps": 330,
+      "total_tokens": 363
+    },
+    {
+      "id": "s056",
+      "input": "s056",
+      "prompt_tokens": 33,
+      "output_tokens": 268,
+      "decode_forward_steps": 267,
+      "total_tokens": 301
+    },
+    {
+      "id": "s057",
+      "input": "s057",
+      "prompt_tokens": 24,
+      "output_tokens": 222,
+      "decode_forward_steps": 221,
+      "total_tokens": 246
+    },
+    {
+      "id": "s058",
+      "input": "s058",
+      "prompt_tokens": 43,
+      "output_tokens": 37,
+      "decode_forward_steps": 36,
+      "total_tokens": 80
+    },
+    {
+      "id": "s059",
+      "input": "s059",
+      "prompt_tokens": 15,
+      "output_tokens": 190,
+      "decode_forward_steps": 189,
+      "total_tokens": 205
+    },
+    {
+      "id": "s060",
+      "input": "s060",
+      "prompt_tokens": 19,
+      "output_tokens": 227,
+      "decode_forward_steps": 226,
+      "total_tokens": 246
+    },
+    {
+      "id": "s061",
+      "input": "s061",
+      "prompt_tokens": 33,
+      "output_tokens": 330,
+      "decode_forward_steps": 329,
+      "total_tokens": 363
+    },
+    {
+      "id": "s062",
+      "input": "s062",
+      "prompt_tokens": 52,
+      "output_tokens": 162,
+      "decode_forward_steps": 161,
+      "total_tokens": 214
+    },
+    {
+      "id": "s063",
+      "input": "s063",
+      "prompt_tokens": 26,
+      "output_tokens": 129,
+      "decode_forward_steps": 128,
+      "total_tokens": 155
+    },
+    {
+      "id": "s064",
+      "input": "s064",
+      "prompt_tokens": 119,
+      "output_tokens": 152,
+      "decode_forward_steps": 151,
+      "total_tokens": 271
+    },
+    {
+      "id": "s065",
+      "input": "s065",
+      "prompt_tokens": 23,
+      "output_tokens": 252,
+      "decode_forward_steps": 251,
+      "total_tokens": 275
+    },
+    {
+      "id": "s066",
+      "input": "s066",
+      "prompt_tokens": 18,
+      "output_tokens": 649,
+      "decode_forward_steps": 648,
+      "total_tokens": 667
+    },
+    {
+      "id": "s067",
+      "input": "s067",
+      "prompt_tokens": 42,
+      "output_tokens": 165,
+      "decode_forward_steps": 164,
+      "total_tokens": 207
+    },
+    {
+      "id": "s068",
+      "input": "s068",
+      "prompt_tokens": 21,
+      "output_tokens": 87,
+      "decode_forward_steps": 86,
+      "total_tokens": 108
+    },
+    {
+      "id": "s069",
+      "input": "s069",
+      "prompt_tokens": 38,
+      "output_tokens": 622,
+      "decode_forward_steps": 621,
+      "total_tokens": 660
+    },
+    {
+      "id": "s070",
+      "input": "s070",
+      "prompt_tokens": 36,
+      "output_tokens": 217,
+      "decode_forward_steps": 216,
+      "total_tokens": 253
+    },
+    {
+      "id": "s071",
+      "input": "s071",
+      "prompt_tokens": 313,
+      "output_tokens": 135,
+      "decode_forward_steps": 134,
+      "total_tokens": 448
+    },
+    {
+      "id": "s072",
+      "input": "s072",
+      "prompt_tokens": 278,
+      "output_tokens": 197,
+      "decode_forward_steps": 196,
+      "total_tokens": 475
+    },
+    {
+      "id": "s073",
+      "input": "s073",
+      "prompt_tokens": 259,
+      "output_tokens": 128,
+      "decode_forward_steps": 127,
+      "total_tokens": 387
+    },
+    {
+      "id": "s074",
+      "input": "s074",
+      "prompt_tokens": 87,
+      "output_tokens": 301,
+      "decode_forward_steps": 300,
+      "total_tokens": 388
+    },
+    {
+      "id": "s075",
+      "input": "s075",
+      "prompt_tokens": 61,
+      "output_tokens": 92,
+      "decode_forward_steps": 91,
+      "total_tokens": 153
+    },
+    {
+      "id": "s076",
+      "input": "s076",
+      "prompt_tokens": 35,
+      "output_tokens": 225,
+      "decode_forward_steps": 224,
+      "total_tokens": 260
+    },
+    {
+      "id": "s077",
+      "input": "s077",
+      "prompt_tokens": 21,
+      "output_tokens": 367,
+      "decode_forward_steps": 366,
+      "total_tokens": 388
+    },
+    {
+      "id": "s078",
+      "input": "s078",
+      "prompt_tokens": 16,
+      "output_tokens": 25,
+      "decode_forward_steps": 24,
+      "total_tokens": 41
+    },
+    {
+      "id": "s079",
+      "input": "s079",
+      "prompt_tokens": 453,
+      "output_tokens": 100,
+      "decode_forward_steps": 99,
+      "total_tokens": 553
+    },
+    {
+      "id": "s080",
+      "input": "s080",
+      "prompt_tokens": 27,
+      "output_tokens": 491,
+      "decode_forward_steps": 490,
+      "total_tokens": 518
+    },
+    {
+      "id": "s081",
+      "input": "s081",
+      "prompt_tokens": 361,
+      "output_tokens": 88,
+      "decode_forward_steps": 87,
+      "total_tokens": 449
+    },
+    {
+      "id": "s082",
+      "input": "s082",
+      "prompt_tokens": 39,
+      "output_tokens": 402,
+      "decode_forward_steps": 401,
+      "total_tokens": 441
+    },
+    {
+      "id": "s083",
+      "input": "s083",
+      "prompt_tokens": 26,
+      "output_tokens": 199,
+      "decode_forward_steps": 198,
+      "total_tokens": 225
+    },
+    {
+      "id": "s084",
+      "input": "s084",
+      "prompt_tokens": 29,
+      "output_tokens": 373,
+      "decode_forward_steps": 372,
+      "total_tokens": 402
+    },
+    {
+      "id": "s085",
+      "input": "s085",
+      "prompt_tokens": 66,
+      "output_tokens": 227,
+      "decode_forward_steps": 226,
+      "total_tokens": 293
+    },
+    {
+      "id": "s086",
+      "input": "s086",
+      "prompt_tokens": 18,
+      "output_tokens": 174,
+      "decode_forward_steps": 173,
+      "total_tokens": 192
+    },
+    {
+      "id": "s087",
+      "input": "s087",
+      "prompt_tokens": 25,
+      "output_tokens": 156,
+      "decode_forward_steps": 155,
+      "total_tokens": 181
+    },
+    {
+      "id": "s088",
+      "input": "s088",
+      "prompt_tokens": 20,
+      "output_tokens": 13,
+      "decode_forward_steps": 12,
+      "total_tokens": 33
+    },
+    {
+      "id": "s089",
+      "input": "s089",
+      "prompt_tokens": 159,
+      "output_tokens": 389,
+      "decode_forward_steps": 388,
+      "total_tokens": 548
+    },
+    {
+      "id": "s090",
+      "input": "s090",
+      "prompt_tokens": 20,
+      "output_tokens": 282,
+      "decode_forward_steps": 281,
+      "total_tokens": 302
+    },
+    {
+      "id": "s091",
+      "input": "s091",
+      "prompt_tokens": 19,
+      "output_tokens": 460,
+      "decode_forward_steps": 459,
+      "total_tokens": 479
+    },
+    {
+      "id": "s092",
+      "input": "s092",
+      "prompt_tokens": 21,
+      "output_tokens": 284,
+      "decode_forward_steps": 283,
+      "total_tokens": 305
+    },
+    {
+      "id": "s093",
+      "input": "s093",
+      "prompt_tokens": 742,
+      "output_tokens": 391,
+      "decode_forward_steps": 390,
+      "total_tokens": 1133
+    },
+    {
+      "id": "s094",
+      "input": "s094",
+      "prompt_tokens": 20,
+      "output_tokens": 91,
+      "decode_forward_steps": 90,
+      "total_tokens": 111
+    },
+    {
+      "id": "s095",
+      "input": "s095",
+      "prompt_tokens": 111,
+      "output_tokens": 626,
+      "decode_forward_steps": 625,
+      "total_tokens": 737
+    },
+    {
+      "id": "s096",
+      "input": "s096",
+      "prompt_tokens": 32,
+      "output_tokens": 150,
+      "decode_forward_steps": 149,
+      "total_tokens": 182
+    },
+    {
+      "id": "s097",
+      "input": "s097",
+      "prompt_tokens": 162,
+      "output_tokens": 100,
+      "decode_forward_steps": 99,
+      "total_tokens": 262
+    },
+    {
+      "id": "s098",
+      "input": "s098",
+      "prompt_tokens": 18,
+      "output_tokens": 317,
+      "decode_forward_steps": 316,
+      "total_tokens": 335
+    },
+    {
+      "id": "s099",
+      "input": "s099",
+      "prompt_tokens": 42,
+      "output_tokens": 111,
+      "decode_forward_steps": 110,
+      "total_tokens": 153
+    },
+    {
+      "id": "s100",
+      "input": "s100",
+      "prompt_tokens": 88,
+      "output_tokens": 788,
+      "decode_forward_steps": 787,
+      "total_tokens": 876
+    }
+  ]
+}

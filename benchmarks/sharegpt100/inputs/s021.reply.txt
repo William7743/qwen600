@@ -1,0 +1,5 @@
+The reaction control system (RCS) on the Space Shuttle was designed to be fault-tolerant, meaning it was able to continue functioning even if one or more of its components failed. The RCS consisted of two sets of thrusters: primary and secondary. The primary thrusters were located on the aft of the orbiter and were used for major maneuvers such as orbit insertion and deorbit. The secondary thrusters were located on the nose and tail of the orbiter and were used for fine-tuning the spacecraft's attitude, or orientation in space.
+
+Each set of thrusters had multiple redundant thrusters, so that if one failed, the others could still function. Additionally, the RCS was connected to the orbiter's main computer, which monitored the system's performance and could automatically switch to a backup thruster if needed. This ensured that the spacecraft could still be controlled even if a thruster failed.
+
+All these features made the RCS fault-tolerant and able to continue functioning even in the event of a failure, which made it an important safety feature on the Space Shuttle.

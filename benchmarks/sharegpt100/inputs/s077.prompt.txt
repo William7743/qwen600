@@ -1,0 +1,7 @@
+<|im_start|>user
+Write user stories that describe this concept in detail<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

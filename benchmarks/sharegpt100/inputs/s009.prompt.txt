@@ -1,0 +1,7 @@
+<|im_start|>user
+can you design a referral system similar on how dropbox did? I need a technical overview on how it should work, instead of free space we use the generic term "credits" where users can get more credits for every 3 friends they recommend.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

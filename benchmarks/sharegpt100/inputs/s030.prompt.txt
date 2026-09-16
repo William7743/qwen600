@@ -1,0 +1,7 @@
+<|im_start|>user
+Write a rap song about Mikkel Selko<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

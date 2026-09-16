@@ -1,0 +1,7 @@
+<|im_start|>user
+estoy en 6to semestre de mecatronica, necesito un nombre para mi equipo, asi que quiero que me des una lista de 40 opciones, pueden estar relacionadas con la mecaronica, o combinando los nombres de los integrantes que son rudy, gloria, johana, melissa, perla y nomar<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

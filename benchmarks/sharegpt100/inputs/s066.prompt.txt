@@ -1,0 +1,7 @@
+<|im_start|>user
+write an essay on french revolution<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

@@ -1,0 +1,7 @@
+<|im_start|>user
+explain the metaverse<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

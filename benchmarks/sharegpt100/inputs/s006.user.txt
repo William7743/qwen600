@@ -1,0 +1,1 @@
+how do I add multiple new columns in m for power query or power bi?

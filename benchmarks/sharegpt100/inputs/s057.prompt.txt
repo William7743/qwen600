@@ -1,0 +1,7 @@
+<|im_start|>user
+Can you explain the fourth dimension to a second grader?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

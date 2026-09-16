@@ -1,0 +1,35 @@
+In Python, you can find out the datatype of a variable using the built-in function `type()`. Here's an example:
+```python
+x = 5
+print(type(x))  # Output: <class 'int'>
+```
+To convert the datatype of a variable, you can use one of the following built-in functions:
+
+* `int()`: Converts a value to an integer.
+* `float()`: Converts a value to a floating-point number.
+* `str()`: Converts a value to a string.
+* `bool()`: Converts a value to a Boolean value.
+
+Here are some examples:
+```python
+# Convert string to integer
+x = "10"
+y = int(x)
+print(type(y))  # Output: <class 'int'>
+
+# Convert integer to float
+x = 5
+y = float(x)
+print(type(y))  # Output: <class 'float'>
+
+# Convert integer to string
+x = 10
+y = str(x)
+print(type(y))  # Output: <class 'str'>
+
+# Convert integer to boolean
+x = 0
+y = bool(x)
+print(type(y))  # Output: <class 'bool'>
+```
+Note that not all conversions are possible, and some may result in loss of information. For example, converting a floating-point number to an integer will truncate the decimal part of the number.

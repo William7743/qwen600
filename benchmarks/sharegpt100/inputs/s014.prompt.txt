@@ -1,0 +1,7 @@
+<|im_start|>user
+what do you think about this for a start up idea:<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

@@ -1,0 +1,94 @@
+<|im_start|>user
+I want to create filter related to FittedModel in WalkForward admin
+
+```
+class FittedModel(TimeStampedModel):
+ """
+ This model stores the fitted model.
+ """
+
+ class Type(models.TextChoices):
+ BACKTEST = 'backtest', \_\_("Backtest")
+ FORECAST = 'forecast', \_\_("Forecast")
+
+ ai\_model = models.ForeignKey(AIModel, on\_delete=models.CASCADE)
+
+ name = models.CharField(max\_length=255)
+
+ # type of the fitted model. backtest or forecast
+ type = models.CharField(max\_length=255, choices=Type.choices, null=False, default=Type.BACKTEST)
+
+ # we can store train\_start, train\_end, model version, feature version, etc. in this field
+ metadata = models.JSONField(verbose\_name="Meta Data", blank=True, null=True)
+
+ # store training states
+ fit\_result = models.JSONField(verbose\_name="Fit Results", blank=True, null=True)
+
+ # store pickled model
+ pickle = PickledObjectField(verbose\_name="Pickle", null=True)
+
+ class Meta:
+ unique\_together = ('ai\_model', 'name', 'type', 'created')
+ verbose\_name = "Fitted Model"
+ verbose\_name\_plural = "Fitted Models"
+
+ def \_\_str\_\_(self):
+ return f"{self.name}({self.id})"
+
+ def save\_model(self, model):
+ """
+ convert ForecasterHDML to bytes and save it to database
+ """
+ self.pickle = pickle.dumps(obj=model, protocol=pickle.HIGHEST\_PROTOCOL)
+ self.save()
+
+ def load\_model(self):
+ """
+ convert bytes to ForecasterHDML and return it
+ """
+ return pickle.loads(self.pickle)
+class WalkForward(TimeStampedModel):
+ """
+ this serves many to one relationship between FittedModel and WalkForward.
+ - one walkforward can have multiple fitted\_models.
+ - one fitted\_model can have only one walkforward.
+ """
+ fitted\_models = models.ManyToManyField(FittedModel, through="FittedModelWalkForward", related\_name='walkforwards')
+
+ # start date of training in walkforward interval
+ train\_start = models.DateTimeField(verbose\_name="Training Start Time")
+
+ # end date of training in walkforward interval
+ train\_end = models.DateTimeField(verbose\_name="Training End Time")
+
+ # start date of testing in walkforward interval
+ test\_start = models.DateTimeField(verbose\_name="Testing Start Time")
+
+ # end date of testing in walkforward interval
+ test\_end = models.DateTimeField(verbose\_name="Testing End Time")
+
+ class Meta:
+ verbose\_name = "Walkforward"
+ verbose\_name\_plural = "Walkforwards"
+ ordering = ['-test\_end', 'test\_end']
+
+ # def name(self):
+ # return f"{self.test\_start} - {self.test\_end}"
+ def \_\_str\_\_(self):
+ return f"WalkForward (Train: {self.train\_start.strftime('%Y-%m-%d')} to " \
+ f"{self.train\_end.strftime('%Y-%m-%d')}, " \
+ f"Test: {self.test\_start.strftime('%Y-%m-%d')} to " \
+ f"{self.test\_end.strftime('%Y-%m-%d')})"
+class FittedModelWalkForward(models.Model):
+ fitted\_model = models.ForeignKey(FittedModel, on\_delete=models.CASCADE)
+ walk\_forward = models.ForeignKey(WalkForward, on\_delete=models.CASCADE)
+
+ class Meta:
+ verbose\_name = "Fitted Model Walkforward"
+ verbose\_name\_plural = "Fitted Model Walkforwards"
+```<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

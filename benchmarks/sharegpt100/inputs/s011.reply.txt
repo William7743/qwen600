@@ -1,0 +1,9 @@
+I apologize for the confusion. Here is an example of how the if and for loops could be combined into a while loop in Java:
+```less
+while (count <= tempCount.size() - Integer.parseInt(currentSeat.getColumn()) + 1 && currentIndex < seats.size()) {
+    seats.get(currentIndex).availablity = SeatStatus.LOCKED;
+    currentIndex++;
+    count++;
+}
+```
+In this version, the condition for the while loop combines the original `if` statement and the loop continuation check from the `for` loop. Inside the loop, the code to lock the seat and increment the counters is the same as before.

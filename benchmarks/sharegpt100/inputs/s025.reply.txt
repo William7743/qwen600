@@ -1,0 +1,47 @@
+Certainly! I'll provide you with a simple geological database structure, along with some example data to practice your SQL query skills.
+
+Here's a database structure with three tables: minerals, rocks, and locations. You can create the tables using the following SQL statements:
+```sql
+CREATE TABLE minerals (
+  id INTEGER PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  chemical_formula VARCHAR(50),
+  hardness FLOAT,
+  color VARCHAR(50)
+);
+
+CREATE TABLE rocks (
+  id INTEGER PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  type VARCHAR(50) NOT NULL,
+  mineral_id INTEGER,
+  FOREIGN KEY (mineral_id) REFERENCES minerals(id)
+);
+
+CREATE TABLE locations (
+  id INTEGER PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  latitude DECIMAL(10, 8),
+  longitude DECIMAL(11, 8),
+  rock_id INTEGER,
+  FOREIGN KEY (rock_id) REFERENCES rocks(id)
+);
+```
+Now let's insert some example data into these tables:
+```sql
+INSERT INTO minerals (id, name, chemical_formula, hardness, color) VALUES
+(1, 'Quartz', 'SiO2', 7, 'Colorless'),
+(2, 'Feldspar', 'KAlSi3O8 - NaAlSi3O8 - CaAl2Si2O8', 6, 'Various colors'),
+(3, 'Mica', 'KAl2(AlSi3O10)(OH)2', 2.5, 'Silver-black');
+
+INSERT INTO rocks (id, name, type, mineral_id) VALUES
+(1, 'Granite', 'Igneous', 1),
+(2, 'Gneiss', 'Metamorphic', 2),
+(3, 'Shale', 'Sedimentary', 3);
+
+INSERT INTO locations (id, name, latitude, longitude, rock_id) VALUES
+(1, 'Rocky Mountains', 39.7392358, -104.990251, 1),
+(2, 'Appalachian Mountains', 35.565960, -83.402550, 2),
+(3, 'Mississippi River Basin', 38.250301, -89.925323, 3);
+```
+Now you have a simple geological database with example data to practice your SQL query skills. You can start by selecting data from each table, joining tables, filtering and sorting data, and performing other SQL operations.

@@ -1,0 +1,7 @@
+<|im_start|>user
+Python is usually an elegant language. But `if \_\_name\_\_ == "\_\_main\_\_"` is one exception.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

@@ -1,0 +1,7 @@
+<|im_start|>user
+You are an expert marketing consultant and copywriter with expertise is direct response marketing. I need your help. Can I tell you about my business?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

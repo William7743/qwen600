@@ -1,0 +1,23 @@
+To send a question from a command line parameter to a server via HTTP GET method in Python, you can use the `requests` library. Here is an example program:
+```python
+import sys
+import requests
+
+if len(sys.argv) < 2:
+    print("Please provide a question as a command line parameter")
+    sys.exit(1)
+
+question = sys.argv[1]
+url = f"https://example.com/api/answer?q={question}"
+response = requests.get(url)
+
+if response.status_code == 200:
+    print(response.json()["answer"])
+else:
+    print(f"Error {response.status_code}: {response.reason}")
+```
+In this program, we first check if a command line parameter has been provided. If not, we print an error message and exit with a non-zero status code.
+
+If a question has been provided, we construct a URL with the question as a query parameter. We then send an HTTP GET request to the URL using the `requests.get()` function. The response from the server is stored in the `response` variable.
+
+If the response status code is 200 (which means the request was successful), we print the answer returned by the server. If the status code is not 200, we print an error message along with the status code and reason.

@@ -1,0 +1,11 @@
+The error message suggests that the GraphQL engine is unable to connect to the PostgreSQL database on your DigitalOcean server.
+
+There could be several reasons for this, but a common one is that the server firewall is blocking incoming connections on the database port (25060 in your case). You may need to configure the firewall to allow incoming traffic on that port.
+
+Another possibility is that the database credentials you're using are incorrect or incomplete. Double-check that the username, password, and database name are all correct, and that the SSL mode is set to "require" if that's how your database is configured.
+
+You may also want to check that your DigitalOcean server has enough resources to run the GraphQL engine and the PostgreSQL database simultaneously. Make sure that you have enough RAM and CPU resources allocated to your server.
+
+Finally, the error message suggests that the GraphQL engine is timing out while waiting for the database to respond. You could try increasing the value of the `HASURA_GRAPHQL_MIGRATIONS_SERVER_TIMEOUT` environment variable to give the engine more time to connect to the database.
+
+If none of these solutions work, you may want to consult the documentation or support resources for your GraphQL engine or DigitalOcean server to see if there are any additional steps you need to take.

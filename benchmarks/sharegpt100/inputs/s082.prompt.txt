@@ -1,0 +1,7 @@
+<|im_start|>user
+고등교육의 필요성에 관한 영어 에세이를 1000자 이내로 작성하시오.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

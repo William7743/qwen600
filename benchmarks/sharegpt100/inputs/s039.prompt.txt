@@ -1,0 +1,9 @@
+<|im_start|>user
+Captain Smith, who set out on a daring expedition with his fleet of ships consisting of the Discovery, the Endeavour, the Adventure, the Challenger, and the Explorer. Their mission was to chart a new route through the treacherous seas of the North Atlantic and claim new territories for their homeland. But the weather turned against them, and they found themselves battling fierce storms and raging currents. The waves grew higher and higher, and the winds howled like banshees, threatening to capsize their ships at any moment. Despite their efforts the Challenger and the Explorer, were lost in the storm. 
+
+How many ships did the captain leave with and how many returned?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

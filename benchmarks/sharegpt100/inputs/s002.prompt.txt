@@ -1,0 +1,7 @@
+<|im_start|>user
+How to tell if a customer segment is well segmented? In 3 bullet points.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

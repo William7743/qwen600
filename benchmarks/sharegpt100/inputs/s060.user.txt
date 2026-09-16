@@ -1,0 +1,1 @@
+how edit array which is in object

@@ -1,0 +1,7 @@
+<|im_start|>user
+how to find out and conver datatype in python<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

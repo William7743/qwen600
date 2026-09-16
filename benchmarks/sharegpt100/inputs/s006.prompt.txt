@@ -1,0 +1,7 @@
+<|im_start|>user
+how do I add multiple new columns in m for power query or power bi?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

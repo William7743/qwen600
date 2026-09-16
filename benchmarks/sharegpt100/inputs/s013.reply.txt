@@ -1,0 +1,68 @@
+Sure, I'd be happy to explain in more detail.
+
+The first step in creating a simple drawing app is to set up a new ReactJS project using create-react-app. This will give you a basic template to work with. Once you have your project set up, you can install the necessary libraries using npm.
+
+The next step is to create a new component that will render the 3D canvas using ThreeJS and the Drei library. In this component, you will need to import the necessary ThreeJS and Drei modules. You will also need to set up a camera and controls for the 3D canvas, as well as any lighting you want to use. Finally, you will need to add an event listener to capture user input, such as mouse clicks or mouse movements. When the user interacts with the canvas, you can convert their input into 3D geometry and update the canvas accordingly.
+
+Here is an example of how to create a basic ThreeJS scene with a camera and lighting:
+```javascript
+import React, { useRef } from 'react'
+import { Canvas } from 'react-three-fiber'
+
+const ThreeCanvas = () => {
+  const camera = useRef()
+
+  return (
+    <Canvas>
+      <perspectiveCamera ref={camera} position={[0, 0, 5]} />
+      <ambientLight />
+      <pointLight position={[10, 10, 10]} />
+    </Canvas>
+  )
+}
+
+export default ThreeCanvas
+```
+The next step is to create a new component that will render the 2D drawing tool. In this component, you will need to import the necessary ReactJS modules. You will also need to set up event listeners to capture user input, such as mouse clicks or mouse movements. When the user interacts with the drawing tool, you can update the canvas with their input, such as drawing lines or shapes. You can also display the vertices of the shape/s in a sidebar component.
+
+Here is an example of how to create a basic ReactJS component that captures user input:
+```javascript
+import React, { useState } from 'react'
+
+const DrawingTool = () => {
+  const [vertices, setVertices] = useState([])
+
+  const onPointerDown = (event) => {
+    // Handle user input here
+  }
+
+  const onPointerMove = (event) => {
+    // Handle user input here
+  }
+
+  return (
+    <div>
+      <svg
+        width="100%"
+        height="100%"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+      >
+        {/* Render drawing tool here */}
+      </svg>
+      <ul>
+        {vertices.map((vertex, index) => (
+          <li key={index}>
+            {vertex.x}, {vertex.y}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+export default DrawingTool
+```
+Finally, you will need to style your components using CSS. You can use CSS to customize the look and feel of your drawing tool and canvas, as well as the layout of your sidebar component.
+
+That's a high-level overview of how to create a simple drawing app using ReactJS and ThreeJS with the Drei library. I hope this helps!

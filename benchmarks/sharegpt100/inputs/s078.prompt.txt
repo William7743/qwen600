@@ -1,0 +1,7 @@
+<|im_start|>user
+Check your python version<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

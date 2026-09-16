@@ -1,0 +1,7 @@
+<|im_start|>user
+I want to do a road trip from Pune to Gujarat. Me and my wife will be travelling and we dont prefer very long driving sessions. Can you suggest a plan starting from Thursday early morning and ending in Pune on Sunday late night.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

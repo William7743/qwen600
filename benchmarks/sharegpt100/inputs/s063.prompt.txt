@@ -1,0 +1,7 @@
+<|im_start|>user
+can i use spring state machine and workflow together and is it justified?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

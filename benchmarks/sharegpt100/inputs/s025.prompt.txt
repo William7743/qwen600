@@ -1,0 +1,7 @@
+<|im_start|>user
+I want some geological database structure with some example data for practicing my SQL query skills. Would you generate that for me?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

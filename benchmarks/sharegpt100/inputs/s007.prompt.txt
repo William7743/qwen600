@@ -1,0 +1,7 @@
+<|im_start|>user
+Sure, I can do that. What new technology would you like me to review?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

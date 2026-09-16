@@ -1,0 +1,27 @@
+Here is the Java code you provided, formatted for improved readability:
+```
+public void fightMenu() {
+    switch (Abilities.count) {
+        case 1:
+            System.out.println(String.format("[%s]", Ability1));
+            break;
+        case 2:
+            System.out.println(String.format("[%s] [%s]", Ability1, Ability2));
+            break;
+        case 3:
+            System.out.println(String.format("[%s] [%s]", Ability1, Ability2));
+            System.out.println(String.format("[%s]", Ability3));
+            break;
+        case 4:
+            System.out.println(String.format("[%s] [%s]", Ability1, Ability2));
+            System.out.println(String.format("[%s] [%s]", Ability1, Ability2));
+            break;
+        default:
+            //can't be reached
+            break;
+    }
+}
+```
+This code defines a `fightMenu` method that uses a `switch` statement to perform different actions based on the value of `Abilities.count`. If `Abilities.count` is 1, the code will print a string that contains `Ability1` in square brackets. If `Abilities.count` is 2, the code will print two strings, each containing one of `Ability1` and `Ability2` in square brackets. If `Abilities.count` is 3, the code will print two strings as before, and a third string containing `Ability3` in square brackets. If `Abilities.count` is 4, the code will print two strings as before, each containing `Ability1` and `Ability2` in square brackets.
+
+The `default` case of the `switch` statement can't be reached, as the `switch` statement only handles the values 1, 2, 3, and 4. You might want to remove this case or add a comment explaining why it can't be reached.

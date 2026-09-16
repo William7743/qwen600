@@ -1,0 +1,7 @@
+<|im_start|>user
+how could i implement a minesweeper algorithm that utilises algebraic topology to solve boards?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

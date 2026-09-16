@@ -1,0 +1,3 @@
+One possible word that could be used to describe the state when a person has been invited to a conference call but has not yet responded is "pending."
+
+So in the context of your software, you could say that the person's status is "pending" until they respond to the invitation to join the conference call. This would also apply to the meeting organizer if their client has not responded yet, as they too would be considered as pending until a response is received.

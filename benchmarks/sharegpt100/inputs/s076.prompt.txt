@@ -1,0 +1,7 @@
+<|im_start|>user
+Would you be able to classify them into more of a range from small startup to big fortune 500 company<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

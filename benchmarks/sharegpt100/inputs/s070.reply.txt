@@ -1,0 +1,22 @@
+To transform the given lines using regular expressions and remove the leading zeros and whitespace, you can use the following pattern:
+```ruby
+^0+\s*(\w+)$
+```
+And replace with the capture group 1 (`$1`) which matches the alphabets.
+
+Here's an example in Python:
+```python
+import re
+
+lines = ['0003 AB', '0568 FD']
+
+for line in lines:
+    result = re.sub(r'^0+\s*(\w+)$', r'\1', line)
+    print(result)
+```
+Output:
+```
+AB
+FD
+```
+In the regular expression pattern, `^` matches the start of the string, `0+` matches one or more zeros, `\s*` matches zero or more whitespace characters, and `(\w+)` matches one or more word characters (letters, digits, or underscores) and captures them in a group. `$` matches the end of the string. The `r'\1'` replacement string references the first capture group.

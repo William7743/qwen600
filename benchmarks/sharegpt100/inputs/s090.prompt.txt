@@ -1,0 +1,7 @@
+<|im_start|>user
+what tools for example you would recommand?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

@@ -1,0 +1,9 @@
+Here are some user stories that describe the campaign feature in detail:
+
+As a marketing manager, I want to create a campaign to promote a new product. I want to select a group of NFC objects that are associated with the product and include them in the campaign. I also want to specify a forward URL that users will be redirected to when they scan an NFC object. I want to be able to set a timeframe for the campaign and track the results in a dashboard so that I can see how many people are accessing the campaign and where they are located.
+
+As a small business owner, I want to create a campaign to encourage customers to visit my store. I want to select a group of NFC objects that I will place around the store and include them in the campaign. I want to specify a forward URL that will provide customers with a special offer or discount when they scan an NFC object. I want to be able to run the campaign indefinitely so that it is always active for customers to participate in.
+
+As a event organizer, I want to create a campaign to provide information about an upcoming event. I want to select a group of NFC objects that will be distributed at the event and include them in the campaign. I want to specify a forward URL that will provide users with details about the event, including the schedule, location, and other important information. I want to be able to set a specific timeframe for the campaign so that it is only active during the event.
+
+As a campaign administrator, I want to ensure that no NFC object is included in two campaigns at the same time. I want to be able to see which objects are included in each campaign and prevent any conflicts. I also want to be able to review the results of completed campaigns in the dashboard so that I can see how successful they were and make informed decisions about future campaigns.

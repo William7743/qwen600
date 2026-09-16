@@ -1,0 +1,7 @@
+<|im_start|>user
+Can you suggest some good e-governance initiatives in tribal districct of india by district administration<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

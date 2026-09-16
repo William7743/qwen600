@@ -1,0 +1,1 @@
+I want some geological database structure with some example data for practicing my SQL query skills. Would you generate that for me?

@@ -1,0 +1,9 @@
+Metaphorical language is also used to describe the various addressing modes of the instructions. Grandiose language to express their excitement and admiration for the functionality of the instructions being described. Now, rewrite this with more perplexity:
+
+JMP ABCD
+MOV AX, [BX+SI]
+MOV AX, [100]
+MOV AX, [BX]
+MOV AX, [BX\*2+SI]
+MOV AX, BX
+MOV AX, 7

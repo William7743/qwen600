@@ -1,0 +1,26 @@
+To build QGroundControl on Ubuntu, you can follow these steps:
+
+1. Install the necessary dependencies:
+```csharp
+sudo apt-get update
+sudo apt-get install qtbase5-dev libqt5serialport5-dev libudev-dev libxml2-dev libprotobuf-dev protobuf-compiler libqt5opengl5-dev libqt5svg5-dev qtmultimedia5-dev libopencv-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-bad libgstreamer-plugins-good1.0-dev gstreamer1.0-plugins-good libgstreamer-plugins-ugly1.0-dev gstreamer1.0-plugins-ugly
+```
+2. Clone the QGroundControl repository from GitHub:
+```bash
+git clone https://github.com/mavlink/qgroundcontrol.git
+```
+3. Change to the QGroundControl directory:
+```bash
+cd qgroundcontrol
+```
+4. Build QGroundControl using qmake and make:
+```go
+qmake qgroundcontrol.pro
+make -j4
+```
+The "-j4" option specifies the number of threads to use during the build process. You can adjust this value to match the number of cores on your system.
+5. Run QGroundControl:
+```bash
+./qgroundcontrol-start.sh
+```
+This will start QGroundControl. If you encounter any issues, check the QGroundControl documentation for troubleshooting steps.

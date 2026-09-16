@@ -1,0 +1,40 @@
+To create a filter related to the FittedModel in WalkForward admin, you can use Django's built-in filter classes in your `admin.py`.
+
+First, import the necessary modules:
+```python
+from django.contrib import admin
+from .models import FittedModel, WalkForward, FittedModelWalkForward
+```
+Then, create a custom filter for the `FittedModel` type:
+```python
+class FittedModelTypeFilter(admin.SimpleListFilter):
+    title = 'fitted model type'
+    parameter_name = 'type'
+
+    def lookups(self, request, model_admin):
+        return (
+            (FittedModel.Type.BACKTEST, 'Backtest'),
+            (FittedModel.Type.FORECAST, 'Forecast'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() in (FittedModel.Type.BACKTEST, FittedModel.Type.FORECAST):
+            return queryset.filter(fitted_models__type=self.value())
+        return queryset
+```
+Now, create a custom admin class for `WalkForward` to add the filter:
+```python
+class WalkForwardAdmin(admin.ModelAdmin):
+    list_filter = (FittedModelTypeFilter,)
+
+    # Optional: You can customize other settings, like ordering or display fields:
+    # list_display = ('train_start', 'train_end', 'test_start', 'test_end')
+    # ordering = ('-test_end', 'test_end')
+```
+Finally, register your models and custom admin classes:
+```python
+admin.site.register(FittedModel)
+admin.site.register(WalkForward, WalkForwardAdmin)
+admin.site.register(FittedModelWalkForward)
+```
+With this implementation, when you access the WalkForward admin page, you should see a filter sidebar with the FittedModel types (Backtest and Forecast) as options. Selecting one of the options will display only the WalkForwards associated with FittedModels of the chosen type.

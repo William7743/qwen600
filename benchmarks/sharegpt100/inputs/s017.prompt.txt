@@ -1,0 +1,7 @@
+<|im_start|>user
+What are the differences between the Dogme approach to language learning and the lexical approach to language learning<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

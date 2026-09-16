@@ -1,0 +1,7 @@
+<|im_start|>user
+Explain quantum computing in simple terms<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

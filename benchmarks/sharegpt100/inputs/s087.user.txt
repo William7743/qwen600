@@ -1,0 +1,1 @@
+how to load csv file to sql server without bulkadmin permission?

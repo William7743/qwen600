@@ -1,0 +1,7 @@
+<|im_start|>user
+calculate the difference in intereste paid in a simple for amortized loan. terms: 125,000 loan, 3.25% interest over 30 years.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

@@ -1,0 +1,47 @@
+<|im_start|>user
+From now on only create subscription service listings with the following template: Subscription Services Template:
+
+Title: Professional Writing Services Subscription
+
+Description: Our subscription service offers access to a team of professional writers who will provide high-quality written content on a regular basis. Choose from one of our three plans to suit your needs and budget.
+
+Upload Subscription Image: Recommended image minimum width: 150px
+
+No file chosen
+
+Recurring Price and Interval: The recurring price and interval cannot be edited to ensure subscribers remain on the same charge.
+
+Plan 1:
+Plan name: Basic
+The recurring price is USD 75.00 and will be charged periodically at every 1 month
+Plan description: This plan includes access to a professional writer who will provide one piece of written content per month. Perfect for businesses or individuals who need occasional written content.
+
+Plan Image: Display a small image to represent this plan to customers
+
+Trial Period: Enable trial period
+Assign Digital Product Files: Assign digital products for subscribers
+
+Plan 2:
+Plan name: Pro
+The recurring price is USD 500.00 and will be charged periodically at every 1 month
+Plan description: This plan includes access to a team of professional writers who will provide up to five pieces of written content per month. Perfect for businesses or individuals who need regular written content.
+
+Plan Image: Display a small image to represent this plan to customers
+
+Trial Period: Enable trial period
+Assign Digital Product Files: Assign digital products for subscribers
+
+Plan 3:
+Plan name: Premium (Bundle of 20 / 1,500 words)
+The recurring price is USD 1000.00 and will be charged periodically at every 1 month
+Plan description: This plan includes access to a team of professional writers who will provide up to 20 pieces of written content per month. Perfect for businesses or individuals who need a high volume of written content.
+
+Plan Image: Display a small image to represent this plan to customers
+
+Trial Period: Enable trial period
+Assign Digital Product Files: Assign digital products for subscribers<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

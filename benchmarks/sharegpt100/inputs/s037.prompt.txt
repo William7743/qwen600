@@ -1,0 +1,7 @@
+<|im_start|>user
+Provide a detailed chronology of the Apostle John according to the New Testament<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

@@ -1,0 +1,1 @@
+the solenoids will be 12v so they will have to be controled by relays triggered by the GPIO pins

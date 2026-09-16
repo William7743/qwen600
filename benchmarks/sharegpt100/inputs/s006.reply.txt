@@ -1,0 +1,9 @@
+In Power Query or Power BI, you can add multiple new columns by using the "Add Column" menu in the Home tab. Once you click on the "Add Column" menu, you will see options to add a custom column, index column, and more.
+
+To add multiple new columns, you can use the "Custom Column" option. You can also use "Duplicate Column" option to duplicate an existing column, and then rename the new column as desired.
+
+Another way to add multiple new columns is to use the "Add Columns" button to add columns from a table, then rename the new columns as desired.
+
+You can also add multiple columns by using the "Add Column" button to add columns from a table, then rename the new columns as desired.
+
+In addition, you can also use formula or other transformation in Power Query Editor to generate new columns based on existing columns or your own logic.

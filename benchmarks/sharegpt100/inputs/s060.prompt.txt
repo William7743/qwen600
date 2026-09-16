@@ -1,0 +1,7 @@
+<|im_start|>user
+how edit array which is in object<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

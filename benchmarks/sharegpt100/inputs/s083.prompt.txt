@@ -1,0 +1,7 @@
+<|im_start|>user
+Which hero is the best in Heroes of Might and Magic 3?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

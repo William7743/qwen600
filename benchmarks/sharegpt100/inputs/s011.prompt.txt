@@ -1,0 +1,7 @@
+<|im_start|>user
+this is not less code this is java<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

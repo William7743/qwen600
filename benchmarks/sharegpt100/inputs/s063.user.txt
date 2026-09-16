@@ -1,0 +1,1 @@
+can i use spring state machine and workflow together and is it justified?

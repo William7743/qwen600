@@ -1,0 +1,32 @@
+Here are the potential vulnerabilities I identified in the provided Solidity code:
+
+1. Reentrancy vulnerability (Y\_WALLET contract, Collect function):
+
+The `Collect` function uses the `call.value()` method to send Ether, which allows the receiving contract to execute arbitrary code through a fallback function. This could enable a reentrant attack.
+
+Fix: Replace `call.value()` with `transfer()` or `send()` methods, as these limit the gas sent to the callee, preventing reentrant attacks. Additionally, update the state before transferring Ether.
+```solidity
+if (acc.balance >= MinSum && acc.balance >= _am && now > acc.unlockTime) {
+    acc.balance -= _am;
+    (bool success, ) = msg.sender.call{value: _am}("");
+    require(success, "Transfer failed.");
+    LogFile.AddMessage(msg.sender, _am, "Collect");
+}
+```
+1. Outdated compiler version:
+
+The code uses an outdated compiler version (`pragma solidity ^0.4.25`). This version may not have the latest security features and optimizations.
+
+Fix: Update the Solidity compiler version to the latest stable release.
+```solidity
+pragma solidity ^0.8.0;
+```
+1. Use of `var` keyword (Y\_WALLET contract, Put and Collect functions):
+
+The `var` keyword is deprecated and should be replaced with explicit typing.
+
+Fix: Replace `var acc` with `Holder storage acc`.
+```solidity
+Holder storage acc = Acc[msg.sender];
+```
+Please note that this analysis might not cover all possible security vulnerabilities. It is always a good idea to have a professional security audit conducted for smart contracts, especially when they handle valuable assets.

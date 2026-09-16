@@ -1,0 +1,7 @@
+<|im_start|>user
+list the largest outdoor retailers in the world<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

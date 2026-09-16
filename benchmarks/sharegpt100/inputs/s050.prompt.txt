@@ -1,0 +1,7 @@
+<|im_start|>user
+I am launching an Etsy shop with a Printful integration for drop shipping my designs on specific products. I am looking for ways to differentiate beyond the designs. You are an expert on Etsy audiences. Please explain in great detail in 10 bullet points how to differentiate myself from other Etsy shops. I am looking for more obscure ideas here.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

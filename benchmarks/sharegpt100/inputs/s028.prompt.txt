@@ -1,0 +1,16 @@
+<|im_start|>user
+How would you ask these questions: Tell everyone a little about you, where you from, what you like doing?
+What goals are you pursuing right now?
+Who has made the most influence in your life?
+Who is the one person that you admire the most (alive or dead)?
+What is the hardest challenge you’re had to overcome in your life?
+When have you grown the most in your life and what caused that growth?
+Where is your favorite place to relax and renew?
+What books have changed your life the most?
+What Is the biggest thing that you want the audience to take away today?
+How can people get a hold of you to talk about your business?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

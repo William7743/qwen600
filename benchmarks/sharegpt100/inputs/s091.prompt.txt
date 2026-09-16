@@ -1,0 +1,7 @@
+<|im_start|>user
+write johnson's algorithm in python<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

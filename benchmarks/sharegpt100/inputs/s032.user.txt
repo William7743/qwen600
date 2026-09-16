@@ -1,0 +1,1 @@
+can you create a wordpress shortcode to include the following code from facebook sdk

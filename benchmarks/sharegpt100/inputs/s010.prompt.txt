@@ -1,0 +1,7 @@
+<|im_start|>user
+Java add to the arraylist of a class type<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

@@ -1,0 +1,8 @@
+<|im_start|>user
+I'm writing a software for conference calls.
+Is there a good word for the state when a person was already selected to join the conference but has not responded yet. This should also include the meeting organizer himself, if his client has not answered yet<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

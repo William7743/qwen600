@@ -1,0 +1,7 @@
+<|im_start|>user
+can you create a wordpress shortcode to include the following code from facebook sdk<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

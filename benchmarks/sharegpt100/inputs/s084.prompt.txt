@@ -1,0 +1,7 @@
+<|im_start|>user
+Use C# to get the current YouTube thumbnail and convert it to Base64.<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

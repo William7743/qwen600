@@ -1,0 +1,7 @@
+<|im_start|>user
+Poly Ether Ether Ketone<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

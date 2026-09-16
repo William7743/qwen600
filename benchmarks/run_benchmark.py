@@ -37,7 +37,7 @@ def main():
     parser.add_argument('--model', required=True, type=Path)
     parser.add_argument('--build-dir', type=Path, default=ROOT.parent/'build-benchmark')
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--dataset', choices=('diverse100', 'fixed9'), default='diverse100',
+    parser.add_argument('--dataset', choices=('diverse100', 'fixed9', 'sharegpt100'), default='diverse100',
                         help='Frozen workload collection; default diverse100')
     parser.add_argument('--case', action='append', help='Select case ID; repeat to select several; default entire dataset')
     parser.add_argument('--warmup', type=int, default=1, help='Global real-request warmups, not per case')
@@ -45,11 +45,11 @@ def main():
     args = parser.parse_args()
     if args.warmup < 0 or args.repeats < 1:
         parser.error('warmup >= 0 and repeats >= 1 required')
-    dataset_root = ROOT/'diverse100' if args.dataset == 'diverse100' else ROOT
+    dataset_root = ROOT if args.dataset == 'fixed9' else ROOT/args.dataset
     manifest = json.loads((dataset_root/'manifest.json').read_text())
     cases = [c for c in manifest['cases'] if not args.case or c['id'] in args.case]
     if not cases or (args.case and set(args.case)-{c['id'] for c in cases}):
-        parser.error('Unknown case; diverse100 uses d001..d100; fixed9 uses e.g. p16_g16')
+        parser.error('Unknown case; diverse100: d001..d100; sharegpt100: s001..s100; fixed9: e.g. p16_g16')
     print(f'Dataset: {manifest["dataset"]}; {len(cases)} cases; '
           f'{args.warmup} global warmups; {args.repeats} measurements per case', flush=True)
     probe = args.build_dir.resolve()/'bin/benchmark_probe'
@@ -74,8 +74,8 @@ def main():
     for c in cases:
         if c['prompt_tokens'] != inputs[c['input']]['prompt_tokens'] or c['output_tokens'] < 2:
             raise RuntimeError('Invalid case lengths')
-        if args.dataset == 'diverse100' and not (0 < c['prompt_tokens'] < 1024 and c['output_tokens'] < 1024):
-            raise RuntimeError('diverse100 lengths must be strictly below 1024')
+        if args.dataset != 'fixed9' and not (0 < c['prompt_tokens'] < 1024 and c['output_tokens'] < 1024):
+            raise RuntimeError('Subset lengths must be strictly below 1024')
     output.mkdir(parents=True, exist_ok=True)
     plan = output/'plan.txt'
     representative = min(manifest['cases'], key=lambda c: (abs(c['prompt_tokens']-512)+abs(c['output_tokens']-512), c['id']))

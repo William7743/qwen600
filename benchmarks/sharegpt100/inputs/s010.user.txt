@@ -1,0 +1,1 @@
+Java add to the arraylist of a class type
