@@ -1,7 +1,26 @@
 # qwen600.cu
 
-This repository builds on [yassa9/qwen600](https://github.com/yassa9/qwen600),
-preserving its Git history and MIT license for continued development and optimization.
+## 项目来源与致谢 / Attribution
+
+本项目基于并借鉴 [yassa9/qwen600](https://github.com/yassa9/qwen600)，
+原作者为 **Yassa Sfen（GitHub: @yassa9）**。当前推理引擎的核心实现来自该上游项目，
+包括 CUDA 算子、Transformer 前向计算、权重加载、分词和采样逻辑。
+
+本仓库在原项目基础上整理了源码目录，用于后续学习、正确性修复和性能优化。
+保留原项目的 Git 历史、[MIT 许可证](LICENSE)及版权声明。感谢原作者的开源贡献。
+
+This repository is based on [yassa9/qwen600](https://github.com/yassa9/qwen600)
+by **Yassa Sfen (@yassa9)**. The core inference implementation originates from
+that upstream project. This repository reorganizes the source tree for continued
+study, correctness fixes, and performance optimization, while preserving the
+upstream Git history, MIT license, and copyright notice.
+
+**文档说明：**下文中的第一人称项目介绍、RTX 3050 实验和性能对比来自原项目文档，
+代表原作者的实验记录，并非本仓库重新测得的结果。
+
+**Documentation note:** The first-person introduction, RTX 3050 experiments,
+and benchmark comparisons below are retained from the upstream documentation
+and describe the original author's results, not new measurements by this repository.
 
 <p align="center">
   <img src="assets/banner.png" width="429" height="139" alt="banner_">
