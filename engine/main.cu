@@ -5,9 +5,9 @@
 #include <string.h>
 #include <time.h>
 
-#include "sampler.h"
-#include "tokenizer.h"
-#include "qwen_model.cuh"
+#include "layers/sampler.h"
+#include "utils/tokenizer.h"
+#include "models/qwen_model.cuh"
 
 
 // ================================================================

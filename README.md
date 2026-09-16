@@ -1,5 +1,8 @@
 # qwen600.cu
 
+This repository builds on [yassa9/qwen600](https://github.com/yassa9/qwen600),
+preserving its Git history and MIT license for continued development and optimization.
+
 <p align="center">
   <img src="assets/banner.png" width="429" height="139" alt="banner_">
 </p>
@@ -37,6 +40,18 @@ What does `qwen600` include:
 - The goal is to create a tool that is simple, minimalist, and highly performant by avoiding feature bloat and unnecessary abstractions. 
 - Configuration is done directly in the source code `config.h` as much as possible, and dependencies are kept to an absolute minimum.
 
+## Project Layout
+
+```text
+qwen600/
+├── engine/     # CLI and generation loop
+├── models/     # Qwen3 transformer and CUDA kernels
+├── layers/     # sampling operations
+├── utils/      # tokenizer and safetensors loading
+├── tools/      # tokenizer export helpers
+└── config.h    # compile-time model and runtime constants
+```
+
 ## WANNA TRY ?!
 
 ### Initial Setup
@@ -56,7 +71,7 @@ f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b
 After that:
 
 ```bash
-git clone https://github.com/yassa9/qwen600
+git clone git@github.com:William7743/qwen600.git
 cd qwen600
 ```
 
@@ -65,7 +80,7 @@ Assume that downloaded hugging face dir is `<model_dir>`.
 We convert the Hugging Face tokenizer into the format used by `qwen600`.
 
 ```bash
-python export.py <model_dir>
+python tools/export.py <model_dir>
 ```
 
 That gonna output some template files and most importantly: `tokenizer.bin`

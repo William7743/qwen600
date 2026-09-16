@@ -24,7 +24,13 @@ message(STATUS "Targeting CUDA Architectures: ${CMAKE_CUDA_ARCHITECTURES}")
 
 add_executable(
     qwen600
-    main.cu
+    engine/main.cu
+)
+
+target_include_directories(
+    qwen600
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(

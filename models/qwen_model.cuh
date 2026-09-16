@@ -12,7 +12,7 @@
 #include <cuda_bf16.h>
 
 #include "config.h"
-#include "static_loader.h"
+#include "utils/static_loader.h"
 
 // ================================================================
 // globals
