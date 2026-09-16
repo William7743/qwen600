@@ -1,0 +1,13 @@
+<|im_start|>user
+Explain CUDA. Summarize the following engineering notes and propose a clear plan for checking correctness before optimizing inference.
+
+Note 1: A single GPU runs one language model request at a time. The prompt is processed before new tokens are generated. Each step reads the model weights and the cached keys and values. Engineers compare identical token sequences, check numerical errors, and measure execution time after warmup. Keep the workload fixed, record the compiler settings, and inspect both short and long contexts. A useful optimization should preserve results and explain any performance tradeoffs.
+
+Note 2: A single GPU runs one language model request at a time. The prompt is processed before new tokens are generated. Each step reads the model weights and the cached keys and values. Engineers compare identical token sequences, check numerical errors, and measure execution time after warmup. Keep the workload fixed, record the compiler settings, and inspect both short and long contexts. A useful optimization should preserve results and explain any performance tradeoffs.
+
+Note 3: A single GPU runs one language model request at a time. The prompt is processed before new tokens are generated. Each step reads the model weights and the cached keys and values. Engineers compare identical token sequences,<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

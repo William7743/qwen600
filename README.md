@@ -4,6 +4,10 @@
 获取锁定版本的模型、构建测试并运行 `tests/validate.py`。
 验证范围为最多 8192 token 的指定用例；当前回归通过不等于前向数值已全面验收。
 
+**单 batch 性能计时：**固定 9 组输入/输出负载及一行运行命令见
+[benchmarks/README.md](benchmarks/README.md)。提供 TTFT、TPOT、prefill、decode 吞吐
+和总耗时；数值验收完成前的测量不标记为正式 V0 基线。
+
 ## 项目来源与致谢 / Attribution
 
 本项目基于并借鉴 [yassa9/qwen600](https://github.com/yassa9/qwen600)，

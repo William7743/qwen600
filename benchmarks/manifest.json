@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "dataset": "qwen600-static-batch1-v1",
+  "purpose": "Performance workload, not a correctness or quality dataset",
+  "source_sha256": "a51f94bb357b17ff81344e105dd4b1d7ea69908436fff679a3dd27428a794273",
+  "model": {
+    "repo_id": "Qwen/Qwen3-0.6B",
+    "revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+    "sha256": {
+      "config.json": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+      "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+      "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+      "generation_config.json": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+      "model.safetensors": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+    }
+  },
+  "tokenizer_versions": {
+    "transformers": "5.14.1",
+    "tokenizers": "0.22.2",
+    "jinja2": "3.1.6"
+  },
+  "batch_size": 1,
+  "concurrent_requests": 1,
+  "chat_template": {
+    "enable_thinking": false,
+    "add_generation_prompt": true
+  },
+  "sampling": {
+    "mode": "greedy",
+    "ignore_eos": true,
+    "fixed_output_tokens": true
+  },
+  "execution": {
+    "load_model_once": true,
+    "reset_sequence_each_request": true,
+    "warmup_requests_per_case": 2,
+    "measured_requests_per_case": 5,
+    "print_tokens_during_timing": false,
+    "case_order": "prompt_then_output"
+  },
+  "inputs": [
+    {
+      "name": "p16",
+      "prompt_tokens": 16,
+      "files": {
+        "user": "inputs/p16.user.txt",
+        "prompt": "inputs/p16.prompt.txt",
+        "ids": "inputs/p16.ids"
+      },
+      "sha256": {
+        "user": "6d2f054b7980c967b17639b042ffa06f8ab8851ff62ea54543d2fe078fa2de9d",
+        "prompt": "50437345f77cd54552609da615c2b610ba2cb9f464fe6367bce7fd4607f11de3",
+        "ids": "71d9181b94cdf2cb497d9a476e425c4e01f3b4a1bec5c9ec0dc3ab4202386368"
+      }
+    },
+    {
+      "name": "p256",
+      "prompt_tokens": 256,
+      "files": {
+        "user": "inputs/p256.user.txt",
+        "prompt": "inputs/p256.prompt.txt",
+        "ids": "inputs/p256.ids"
+      },
+      "sha256": {
+        "user": "6cb01eb3f42cf2b9ce9b6d3e73b034c51e314214953c5995c16af4e689f9cf2b",
+        "prompt": "3a124f3aa635ed74ccf6c98836f355bb1fb1412ac010a0506a77267c8bba8c23",
+        "ids": "30283f9682a646e64a7e8573739a7d92eddd356bb1fdd1e9f7d58fd4baa4257d"
+      }
+    },
+    {
+      "name": "p1024",
+      "prompt_tokens": 1024,
+      "files": {
+        "user": "inputs/p1024.user.txt",
+        "prompt": "inputs/p1024.prompt.txt",
+        "ids": "inputs/p1024.ids"
+      },
+      "sha256": {
+        "user": "5837ef231b5db7d03b1c2a3bc8820eda746500ccabb986008cc183dcacaf3704",
+        "prompt": "d8c3bcdfcf7103b331042bb9b5ee80d2b689f3ac43bdda0df9d75913c2569ae5",
+        "ids": "ef9e5f136eb6866a41ac8cae59eac332b7798ea7e0d61bd65acd708051c6ac47"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "p16_g16",
+      "input": "p16",
+      "prompt_tokens": 16,
+      "output_tokens": 16,
+      "decode_forward_steps": 15,
+      "total_tokens": 32
+    },
+    {
+      "id": "p16_g256",
+      "input": "p16",
+      "prompt_tokens": 16,
+      "output_tokens": 256,
+      "decode_forward_steps": 255,
+      "total_tokens": 272
+    },
+    {
+      "id": "p16_g1024",
+      "input": "p16",
+      "prompt_tokens": 16,
+      "output_tokens": 1024,
+      "decode_forward_steps": 1023,
+      "total_tokens": 1040
+    },
+    {
+      "id": "p256_g16",
+      "input": "p256",
+      "prompt_tokens": 256,
+      "output_tokens": 16,
+      "decode_forward_steps": 15,
+      "total_tokens": 272
+    },
+    {
+      "id": "p256_g256",
+      "input": "p256",
+      "prompt_tokens": 256,
+      "output_tokens": 256,
+      "decode_forward_steps": 255,
+      "total_tokens": 512
+    },
+    {
+      "id": "p256_g1024",
+      "input": "p256",
+      "prompt_tokens": 256,
+      "output_tokens": 1024,
+      "decode_forward_steps": 1023,
+      "total_tokens": 1280
+    },
+    {
+      "id": "p1024_g16",
+      "input": "p1024",
+      "prompt_tokens": 1024,
+      "output_tokens": 16,
+      "decode_forward_steps": 15,
+      "total_tokens": 1040
+    },
+    {
+      "id": "p1024_g256",
+      "input": "p1024",
+      "prompt_tokens": 1024,
+      "output_tokens": 256,
+      "decode_forward_steps": 255,
+      "total_tokens": 1280
+    },
+    {
+      "id": "p1024_g1024",
+      "input": "p1024",
+      "prompt_tokens": 1024,
+      "output_tokens": 1024,
+      "decode_forward_steps": 1023,
+      "total_tokens": 2048
+    }
+  ]
+}
