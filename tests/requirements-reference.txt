@@ -1,0 +1,8 @@
+# Validated direct dependencies, Python 3.10. This is not a complete OS/transitive lock.
+# Install CUDA-enabled torch separately using the official wheel index in tests/README.md.
+transformers==5.14.1
+tokenizers==0.22.2
+numpy==2.2.6
+jinja2==3.1.6
+safetensors==0.8.0
+huggingface-hub==1.26.0

@@ -1,0 +1,44 @@
+[
+  {
+    "case": "tokenizer-less-than",
+    "exit_code": 0,
+    "log": "tokenizer-less-than.log"
+  },
+  {
+    "case": "sampler-all",
+    "exit_code": 0,
+    "log": "sampler-all.log"
+  },
+  {
+    "case": "sampler-distribution",
+    "exit_code": 0,
+    "log": "sampler-distribution.log",
+    "counts": {
+      "draws": 2000,
+      "token0": 969,
+      "token1": 1031,
+      "expected_each": 1000
+    }
+  },
+  {
+    "case": "sampler-distribution-default",
+    "exit_code": 0,
+    "log": "sampler-distribution-default.log",
+    "counts": {
+      "draws": 2000,
+      "token0": 969,
+      "token1": 1031,
+      "expected_each": 1000
+    }
+  },
+  {
+    "case": "sampler-k-boundaries",
+    "exit_code": 0,
+    "log": "sampler-k-boundaries.log"
+  },
+  {
+    "case": "sampler-nucleus-boundary",
+    "exit_code": 0,
+    "log": "sampler-nucleus-boundary.log"
+  }
+]

@@ -1,15 +1,11 @@
 # export.py
 
 import argparse
-import gzip
 import json
-import math
 import os
-import shutil
 import struct
 from pathlib import Path
 
-import json
 from jinja2 import Template
 
 def bytes_to_unicode():
@@ -33,55 +29,68 @@ def internal_to_bytes(U2B, token_str: str) -> bytes:
     )
 
 def build_tokenizer(model, output_dir):
-    B2U = bytes_to_unicode()
-    U2B = {u: b for b, u in B2U.items()}
-
+    """Export exact byte IDs, added tokens, regex and ranked BPE pairs (QTK2)."""
     tokenizer = model.tokenizer
-
-    # Get ID → token mapping
+    data = json.loads(tokenizer.backend_tokenizer.to_str())
+    bpe = data["model"]
+    if bpe["type"] != "BPE" or bpe.get("dropout") or bpe.get("ignore_merges"):
+        raise ValueError("Expected deterministic Qwen byte-level BPE")
+    normalizer = data.get("normalizer")
+    if normalizer not in (None, {"type": "NFC"}):
+        raise ValueError("Only NFC or no normalization is supported")
+    pre = data["pre_tokenizer"]
+    if pre.get("type") != "Sequence" or len(pre["pretokenizers"]) != 2:
+        raise ValueError("Expected Qwen Split + ByteLevel pre-tokenizer")
+    split, bytelevel = pre["pretokenizers"]
+    if (split.get("type") != "Split" or split.get("behavior") != "Isolated"
+            or split.get("invert") or "Regex" not in split["pattern"]
+            or bytelevel.get("type") != "ByteLevel"
+            or bytelevel.get("add_prefix_space") or bytelevel.get("use_regex")):
+        raise ValueError("Unsupported pre-tokenization configuration")
+    pattern = split["pattern"]["Regex"].encode("utf-8")
+    added = data["added_tokens"]
+    for token in added:
+        if any(token.get(k) for k in ("single_word", "lstrip", "rstrip", "normalized")):
+            raise ValueError("Unsupported added-token matching flags")
+        if not token["content"]:
+            raise ValueError("Empty added token")
+    added_by_id = {t["id"]: t["content"] for t in added}
     vocab = tokenizer.get_vocab()
-    id_to_token = {v: k for k, v in vocab.items()}
-    all_tokens = [id_to_token[i] for i in sorted(id_to_token)]
-
-    tokenizer_data = json.loads(tokenizer.backend_tokenizer.to_str())
-
-    # Extract vocab and merge rules
-    vocab = tokenizer_data["model"]["vocab"]
-    merges = tokenizer_data["model"]["merges"]
-
-    # Build merge rank table
-    merge_rank = {''.join(tuple(merge if isinstance(merge, list) else merge.split())): i for i, merge in enumerate(merges)}
-
-    # Create pseudo-score dictionary
-    # Tokens from initial vocab get score 0 (unmerged tokens)
-    # Merged tokens get scores based on merge rank
-    pseudo_scores = {}
-    for token_id, token in enumerate(all_tokens):
-        # If this token was the result of a merge, it will appear in merge_rank
-        rank = merge_rank.get(token)
-
-        if rank is not None:
-            score = -math.log(rank + 1)
-        else:
-            score = -1e6  # Initial vocab tokens
-        pseudo_scores[token] = score
-
-    max_token_length = max(len(t) for t in all_tokens)
-    tokenizer_path = os.path.join(output_dir, "tokenizer.bin")
-
-    with open(tokenizer_path, "wb") as out_f:
-        # Header: max_token_length, bos_token_id, eos_token_id
-        out_f.write(struct.pack("<I", max_token_length))
-        out_f.write(struct.pack("<I", model.bos_token_id))
-        out_f.write(struct.pack("<I", model.eos_token_id))
-
-        for id, token in enumerate(all_tokens):
-            token_bytes = internal_to_bytes(U2B, token)
-            out_f.write(struct.pack("f", pseudo_scores[token])) # merge score
-            out_f.write(struct.pack("<I", len(token_bytes))) # 4 bytes: token length
-            out_f.write(token_bytes)                         # UTF-8 bytes
-
-    print(f"Written tokenizer model to {tokenizer_path}")
+    id_to_token = {index: token for token, index in vocab.items()}
+    count = max(id_to_token) + 1
+    if set(id_to_token) != set(range(count)):
+        raise ValueError("Vocabulary IDs must be contiguous")
+    b2u = bytes_to_unicode()
+    u2b = {u: b for b, u in b2u.items()}
+    base_vocab = bpe["vocab"]
+    merges = []
+    for merge in bpe["merges"]:
+        left, right = merge if isinstance(merge, list) else merge.split()
+        merges.append((base_vocab[left], base_vocab[right], base_vocab[left + right]))
+    path = Path(output_dir) / "tokenizer.bin"
+    temporary = path.with_suffix(".bin.tmp")
+    try:
+        with temporary.open("wb") as out:
+            out.write(b"QTK2")
+            out.write(struct.pack("<7I", count, model.bos_token_id, model.eos_token_id,
+                                  len(merges), len(added), len(pattern), int(normalizer is not None)))
+            out.write(pattern)
+            for index in range(count):
+                # Added tokens are literal text, not GPT-2 byte-encoded vocabulary strings.
+                value = (added_by_id[index].encode("utf-8") if index in added_by_id
+                         else internal_to_bytes(u2b, id_to_token[index]))
+                out.write(struct.pack("<I", len(value)))
+                out.write(value)
+            out.write(struct.pack("<256I", *(base_vocab[b2u[b]] for b in range(256))))
+            for token in added:
+                out.write(struct.pack("<I", token["id"]))
+            for merge in merges:
+                out.write(struct.pack("<3I", *merge))
+        os.replace(temporary, path)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+    print(f"Written QTK2 tokenizer to {path} ({count} tokens, {len(merges)} merges)")
 
 def build_prompts(model, output_dir):
     template = Template(model.tokenizer.chat_template)

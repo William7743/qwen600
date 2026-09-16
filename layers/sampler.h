@@ -106,7 +106,8 @@ build_sampler(
 {
     sampler->temperature = temperature;
     sampler->topp = topp;
-    sampler->top_k = (top_k == 0) ? VOCAB_SIZE : top_k;
+    // Non-positive or oversized k means no top-k restriction.
+    sampler->top_k = (top_k <= 0 || top_k >= VOCAB_SIZE) ? VOCAB_SIZE : top_k;
     sampler->rng_state = rng_seed;
     sampler->probindex = (ProbIndex*)malloc(VOCAB_SIZE * sizeof(ProbIndex));
 }
@@ -133,7 +134,10 @@ sample(
     }
     
     int n_cands = (sampler->top_k < VOCAB_SIZE) ? sampler->top_k : VOCAB_SIZE;
-    quick_select(sampler->probindex, VOCAB_SIZE, n_cands);
+    // quick_select takes a zero-based index, not a candidate count.
+    // Selecting the entire vocabulary requires no partition at all.
+    if (n_cands < VOCAB_SIZE)
+        quick_select(sampler->probindex, VOCAB_SIZE, n_cands - 1);
     float max_logit = sampler->probindex[0].prob;
     for (int i = 1; i < n_cands; i++)
     {
@@ -149,6 +153,7 @@ sample(
     }
 
     for (int i = 0; i < n_cands; i++) { sampler->probindex[i].prob /= prob_sum; }
+    prob_sum = 1.0f;
     
     if (sampler->topp > 0.0f && sampler->topp < 1.0f)
     {
@@ -158,7 +163,7 @@ sample(
         for (int i = 0; i < n_cands; i++)
         {
             cumulative_prob += sampler->probindex[i].prob;
-            if (cumulative_prob > sampler->topp) { last_idx = i; break; }
+            if (cumulative_prob >= sampler->topp) { last_idx = i; break; }
         }
         n_cands = last_idx + 1;
         prob_sum = cumulative_prob;

@@ -1,5 +1,9 @@
 # qwen600.cu
 
+**正确性复现：**clone 后请按照 [tests/README.md](tests/README.md) 安装参考依赖、
+获取锁定版本的模型、构建测试并运行 `tests/validate.py`。
+验证范围为最多 1024 token；当前回归通过不等于前向数值已全面验收。
+
 ## 项目来源与致谢 / Attribution
 
 本项目基于并借鉴 [yassa9/qwen600](https://github.com/yassa9/qwen600)，
@@ -21,6 +25,16 @@ upstream Git history, MIT license, and copyright notice.
 **Documentation note:** The first-person introduction, RTX 3050 experiments,
 and benchmark comparisons below are retained from the upstream documentation
 and describe the original author's results, not new measurements by this repository.
+
+## 本仓库的分词与采样修复
+
+分词器按模型的 NFC 规范化、Unicode 正则预分词及有序 BPE 合并对编码，
+使用 **ICU（uc）** 和 **PCRE2（8-bit）**。运行推理仍不需要 Python。
+`top-k=0` 的全词表选择和 `top-p=1` 的概率归一化已修复。
+
+升级后需要重新编译程序，并重新运行 `tools/export.py <model_dir>`，生成
+带 `QTK2` 标识的新 `tokenizer.bin`。旧导出文件不能供新程序使用，旧程序也不能
+读取新格式；模型权重无需重新下载。正确性复测步骤见 [tests/README.md](tests/README.md)。
 
 <p align="center">
   <img src="assets/banner.png" width="429" height="139" alt="banner_">
@@ -110,10 +124,19 @@ Now we are ready to build !
 You just want: 
 - `CUDA` + `nvcc`
 - `cuBLAS` + `CUB` 
+- `PCRE2` (8-bit development headers/library) + `ICU` (`uc` development headers/library)
 
 ```bash
 mkdir build && cd build
 cmake .. && make -j$(nproc)
+```
+
+If PCRE2/ICU are installed outside the system paths, set their prefix. On the
+current development machine they are available under `/opt/anaconda3`:
+
+```bash
+cmake -S . -B build-local -DCMAKE_PREFIX_PATH=/opt/anaconda3
+cmake --build build-local -j 4
 ```
 Just that simple, no other bulky libraries and dependencies to build.
 

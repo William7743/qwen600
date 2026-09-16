@@ -94,7 +94,7 @@ chat(
     char user_prompt[PROMPT_BUFFER_SIZE];
     char rendered_prompt[PROMPT_BUFFER_SIZE];
     int num_prompt_tokens = 0;
-    int *prompt_tokens = (int *)malloc(PROMPT_BUFFER_SIZE * sizeof(int));
+    std::vector<int> prompt_tokens;
 
     int user_turn = 1;
     int next;
@@ -131,7 +131,8 @@ chat(
             else { sprintf(rendered_prompt, tokenizer->prompt_template, user_prompt); }
 
             // encode the prompt & reset the position for the new sequence
-            encode(tokenizer, rendered_prompt, prompt_tokens, &num_prompt_tokens);
+            prompt_tokens = encode(tokenizer, rendered_prompt);
+            num_prompt_tokens = static_cast<int>(prompt_tokens.size());
             pos = 0;
             user_turn = 0;
             // generated_tokens = 0;
@@ -201,7 +202,6 @@ chat(
             }
         }
     }
-    free(prompt_tokens);
 }
 
 // ================================================================
