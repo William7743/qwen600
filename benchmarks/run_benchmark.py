@@ -40,8 +40,8 @@ def main():
     parser.add_argument('--dataset', choices=('diverse100', 'fixed9'), default='diverse100',
                         help='Frozen workload collection; default diverse100')
     parser.add_argument('--case', action='append', help='Select case ID; repeat to select several; default entire dataset')
-    parser.add_argument('--warmup', type=int, default=2)
-    parser.add_argument('--repeats', type=int, default=5)
+    parser.add_argument('--warmup', type=int, default=1, help='Global real-request warmups, not per case')
+    parser.add_argument('--repeats', type=int, default=1)
     args = parser.parse_args()
     if args.warmup < 0 or args.repeats < 1:
         parser.error('warmup >= 0 and repeats >= 1 required')
@@ -51,7 +51,7 @@ def main():
     if not cases or (args.case and set(args.case)-{c['id'] for c in cases}):
         parser.error('Unknown case; diverse100 uses d001..d100; fixed9 uses e.g. p16_g16')
     print(f'Dataset: {manifest["dataset"]}; {len(cases)} cases; '
-          f'{args.warmup} warmups + {args.repeats} measurements per case', flush=True)
+          f'{args.warmup} global warmups; {args.repeats} measurements per case', flush=True)
     probe = args.build_dir.resolve()/'bin/benchmark_probe'
     if not probe.is_file():
         parser.error(f'Missing {probe}; build with -DQWEN_BUILD_BENCHMARKS=ON')
@@ -78,13 +78,16 @@ def main():
             raise RuntimeError('diverse100 lengths must be strictly below 1024')
     output.mkdir(parents=True, exist_ok=True)
     plan = output/'plan.txt'
-    plan.write_text(''.join(f'{c["id"]} {json.dumps(str(dataset_root/inputs[c["input"]]["files"]["ids"]))} {c["output_tokens"]}\n' for c in cases))
+    representative = min(manifest['cases'], key=lambda c: (abs(c['prompt_tokens']-512)+abs(c['output_tokens']-512), c['id']))
+    planned = ([dict(representative, id='__warmup__')] if args.warmup else []) + cases
+    plan.write_text(''.join(f'{c["id"]} {json.dumps(str(dataset_root/inputs[c["input"]]["files"]["ids"]))} {c["output_tokens"]}\n' for c in planned))
     cache = args.build_dir.resolve()/'CMakeCache.txt'
     build_info = [line for line in cache.read_text().splitlines()
                   if line.startswith(('CMAKE_BUILD_TYPE:', 'CMAKE_CUDA_ARCHITECTURES:',
                                       'CMAKE_CUDA_COMPILER:', 'CMAKE_CXX_COMPILER:'))] if cache.exists() else []
     summary = {'status': 'RUNNING', 'numerical_acceptance': 'PENDING',
                'official_v0_baseline': False, 'batch_size': 1, 'warmup': args.warmup,
+               'warmup_scope': 'global', 'warmup_case': representative if args.warmup else None,
                'repeats': args.repeats, 'case_ids': [c['id'] for c in cases],
                'git_commit': capture(['git', 'rev-parse', 'HEAD']),
                'git_status': capture(['git', 'status', '--short']),
@@ -127,15 +130,21 @@ def main():
             monitor = threading.Thread(target=memory_monitor, daemon=True)
             monitor.start()
             rows = []
+            warmup_rows = []
             print('case          P/G       run   prefill(ms)   TTFT(ms)   TPOT(ms)   decode(tok/s)   total(ms)', flush=True)
             for line in process.stdout:
                 raw.write(line); raw.flush()
                 row = json.loads(line)
                 if row['event'] == 'loaded':
+                    if row.get('protocol') != 2:
+                        raise RuntimeError('Outdated probe: rebuild benchmark_probe for global warmup support')
                     summary['model_load_ms'] = row['model_load_ms']; save()
                     print(f'Model loaded: {row["model_load_ms"]:.2f} ms', flush=True)
                 elif row['event'] == 'request':
                     if row['warmup']:
+                        if row['case'] != '__warmup__' or len(row['generated_ids']) != representative['output_tokens']:
+                            raise RuntimeError('Invalid global warmup result')
+                        warmup_rows.append(row)
                         print(f'{row["case"]}: warmup {row["iteration"]+1}/{args.warmup}', flush=True)
                         continue
                     expected = next(c for c in cases if c['id'] == row['case'])
@@ -152,6 +161,8 @@ def main():
                     print(f'{row["case"]:14} {lengths:9} {row["iteration"]+1:2} {row["prefill_ms"]:12.2f} {row["ttft_ms"]:10.2f} {row["tpot_ms"]:10.3f} {row["decode_tokens_per_second"]:15.2f} {row["total_ms"]:11.2f}', flush=True)
             if process.wait() != 0:
                 raise RuntimeError('Engine failed; see stderr.log')
+            if sorted(r['iteration'] for r in warmup_rows) != list(range(args.warmup)):
+                raise RuntimeError('Missing or duplicate global warmups')
             for c in cases:
                 selected = [r for r in rows if r['case'] == c['id']]
                 if sorted(r['iteration'] for r in selected) != list(range(args.repeats)):
@@ -165,6 +176,17 @@ def main():
             with (output/'results.csv').open('w', newline='') as f:
                 writer = csv.DictWriter(f, fieldnames=['case', 'iteration', 'prompt_tokens', 'output_tokens', *METRICS], extrasaction='ignore')
                 writer.writeheader(); writer.writerows(rows)
+            total_decode_ms = sum(r['decode_ms'] for r in rows)
+            total_decode_tokens = sum(r['output_tokens']-1 for r in rows)
+            summary['aggregate'] = {
+                'measured_requests': len(rows),
+                'request_means': {k: statistics.mean(r[k] for r in rows)
+                                  for k in ('prefill_ms', 'ttft_ms', 'decode_ms', 'tpot_ms', 'total_ms')},
+                'total_decode_tokens': total_decode_tokens, 'total_decode_ms': total_decode_ms,
+                'token_weighted_tpot_ms': total_decode_ms/total_decode_tokens,
+                'overall_decode_tokens_per_second': 1000*total_decode_tokens/total_decode_ms,
+            }
+            (output/'aggregate.json').write_text(json.dumps(summary['aggregate'], indent=2)+'\n')
             summary['status'] = 'MEASUREMENTS_COMPLETE_NUMERICAL_REVIEW_REQUIRED'
     except BaseException as exc:
         summary['status'] = 'FAILED_OR_INTERRUPTED'; summary['error'] = str(exc)
@@ -185,9 +207,14 @@ def main():
             summary['memory']['unavailable_reason'] = 'No process memory samples available; see driver/tool support or run duration'
         summary['gpu_after'] = capture(['nvidia-smi', '--query-gpu=index,name,driver_version,temperature.gpu,clocks.sm,power.draw', '--format=csv,noheader'])
         save()
-    print('\nMedian summary:')
-    for c in summary['cases']:
-        print(f'{c["case"]}: TTFT={c["ttft_ms"]["median"]:.2f} ms, TPOT={c["tpot_ms"]["median"]:.3f} ms/token, decode={c["decode_tokens_per_second"]["median"]:.2f} token/s')
+    aggregate = summary['aggregate']
+    print(f'\nAggregate: {aggregate["measured_requests"]} measured requests (warmup excluded)')
+    for key, value in aggregate['request_means'].items():
+        print(f'Mean {key}: {value:.3f}')
+    print(f'Token-weighted TPOT: {aggregate["token_weighted_tpot_ms"]:.3f} ms/token')
+    print(f'Overall decode throughput: {aggregate["overall_decode_tokens_per_second"]:.2f} token/s')
+    print(f'Model load: {summary["model_load_ms"]:.2f} ms; observed process memory peak: '
+          f'{summary["memory"]["observed_peak_mib"]} MiB')
     print(f'Results: {output}\nNumerical acceptance is pending; these are not official V0 scores.')
 
 

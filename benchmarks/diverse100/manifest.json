@@ -37,8 +37,9 @@
     "fixed_output_tokens": true
   },
   "execution": {
-    "warmup_requests_per_case": 2,
-    "measured_requests_per_case": 5,
+    "global_warmup_requests": 1,
+    "measured_requests_per_case": 1,
+    "warmup_selection": "closest to P=512,G=512; tie by case id",
     "load_model_once": true,
     "reset_sequence_each_request": true,
     "case_order": "d001..d100"

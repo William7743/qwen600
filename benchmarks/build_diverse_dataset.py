@@ -79,7 +79,8 @@ def main():
                 'model':lock['model'], 'tokenizer_versions':versions, 'batch_size':1,
                 'concurrent_requests':1, 'chat_template':{'enable_thinking':False,'add_generation_prompt':True},
                 'sampling':{'mode':'greedy','ignore_eos':True,'fixed_output_tokens':True},
-                'execution':{'warmup_requests_per_case':2,'measured_requests_per_case':5,
+                'execution':{'global_warmup_requests':1,'measured_requests_per_case':1,
+                    'warmup_selection':'closest to P=512,G=512; tie by case id',
                     'load_model_once':True,'reset_sequence_each_request':True,'case_order':'d001..d100'},
                 'inputs':inputs,'cases':cases}
     files['manifest.json'] = (json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()

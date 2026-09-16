@@ -46,9 +46,10 @@ int main(int argc, char** argv) {
         CUDA_CHECK(cudaDeviceSynchronize());
         double load_ms = ms(load_start, Clock::now());
         std::cout << std::setprecision(12);
-        std::cout << "{\"event\":\"loaded\",\"model_load_ms\":" << load_ms << "}" << std::endl;
+        std::cout << "{\"event\":\"loaded\",\"protocol\":2,\"model_load_ms\":" << load_ms << "}" << std::endl;
         for (const auto& c : cases) {
-            for (int run = -warmup; run < repeats; ++run) {
+            const bool warmup_case = c.name == "__warmup__";
+            for (int run = warmup_case ? -warmup : 0; run < (warmup_case ? 0 : repeats); ++run) {
                 // Position restarts at zero. Every causal KV entry is overwritten before use.
                 // Output storage is allocated before the timed interval.
                 std::vector<int> generated(c.output);

@@ -37,7 +37,7 @@ cmake -S . -B build-benchmark -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTU
 cmake --build build-benchmark --target benchmark_probe -j 4
 ```
 
-一行运行默认 100 条，每条预热 2 次、测量 5 次（共 700 次请求执行）：
+一行运行默认 100 条：先统一做 1 次真实请求预热，再各测 1 次（共 101 次请求执行）：
 
 ```bash
 /home/msganzy/vllm-shared/base-env/bin/python benchmarks/run_benchmark.py --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --output build-benchmark/results-diverse100
@@ -45,16 +45,24 @@ cmake --build build-benchmark --target benchmark_probe -j 4
 
 `--build-dir` 默认是仓库的 `build-benchmark`。结果目录必须为空，避免覆盖历史成绩。
 只测试一条可添加 `--case d001`；多组选项可重复。切回原 9 组添加 `--dataset fixed9`，
-该集合使用 `--case p16_g16` 等旧名称。`--warmup`、`--repeats` 可调整，
+该集合使用 `--case p16_g16` 等旧名称。`--warmup` 表示全局预热次数，不再逐条预热；
+`--repeats` 表示每条正式测量次数。两者默认均为 1，可调整，
 但非默认次数只能作为调试结果，不能混入默认方案成绩。退出码 0 表示计时工作完成，
 并不表示数值正确性通过；引擎失败或结果不完整时非零退出并记录失败状态。
 
-终端逐次打印 Prefill、TTFT、TPOT、decode tokens/s、总耗时，最后打印中位数摘要。
+预热使用完整集合中距离 P=512、G=512 最近的一条（距离相同按 ID 排序），
+执行真实 prefill、decode、采样并丢弃计时结果；即使只选择部分用例，预热输入也固定。
+它不是空 kernel，也不保证覆盖所有形状的首次开销。正式请求从位置 0 重新开始。
+
+终端逐次打印 Prefill、TTFT、TPOT、decode tokens/s、总耗时，最后打印全体请求均值。
 输出文件：
 
 - `raw.jsonl`：所有预热及正式请求、逐次耗时、完整输出 token ID。
 - `results.csv`：正式请求的逐次指标（不含预热）。
 - `summary.json`：每组中位数/最小值/最大值、重复生成是否一致、环境及版本信息。
+- `aggregate.json`：正式请求的算术平均 Prefill、TTFT、TPOT、decode/总耗时，
+  以及总 decode 时间除以总 decode token 数得到的加权 TPOT、其倒数对应的整体吞吐。
+  不把各请求 tokens/s 的算术平均当作整体吞吐。所有汇总均排除预热。
 - `memory.jsonl`：本次引擎进程的显存采样；`stderr.log`：CUDA/引擎错误。
 - `plan.txt`：实际执行的固定工作量。
 
@@ -98,8 +106,8 @@ cmake --build build-benchmark --target benchmark_probe -j 4
 | 256 | 16、256、1024 |
 | 1024 | 16、256、1024 |
 
-全部为单 GPU、单实例、batch=1、单请求，无并发。模型加载一次，每组先完整预热
-2 次，再正式运行 5 次；每次重置位置与序列状态，不复用上次请求的逻辑历史。
+全部为单 GPU、单实例、batch=1、单请求，无并发。模型加载一次，全局真实预热
+1 次，再每条正式运行 1 次；每次重置位置与序列状态，不复用上次请求的逻辑历史。
 使用贪心采样，忽略 EOS，输出严格达到 G 个 token；不要求 V0/V1 强行使用相同
 输出，但正确性需要独立验收。计时期间禁止输出文本或运行 profiler/sanitizer。
 G 个输出中，第一个来自最后一次 prompt 前向，因此只有 G−1 次 decode 前向。
@@ -127,8 +135,9 @@ token ID 可用的时刻；t3 为完成后续 G−1 次前向及 argmax、最后
 | `model_load_ms` | CUDA 上下文初始化完成后，加载权重及分配状态到同步完成；单独记录 |
 | `memory.observed_peak_mib` | 整次运行的进程设备内存采样最大值，MiB=2^20 字节；方法与范围记录在 memory 中 |
 
-每组保存 5 次原始记录，再分别报告指标的中位数、最小值和最大值。吞吐先按每次
-测量计算，再汇总。显存峰值如通过采样得到，应标为“观测峰值”，可能漏掉短暂分配；
+默认每条保存 1 次原始记录，全体请求汇总均值；单次记录的最小/最大/中位数相同，
+不能据此评估波动。增加 repeats 后每组仍保留最小/最大/中位数。整体 TPOT 和吞吐
+按总 decode token 数及总 decode 时间计算。显存峰值标为“观测峰值”，可能漏掉短暂分配；
 工具无法获得进程级数据时填 null 和原因，不能用其他进程也占用的设备总量替代。
 当前 KV cache 预分配至 SEQ_LEN，短输入的显存占用不一定更低。
 
