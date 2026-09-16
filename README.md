@@ -2,7 +2,7 @@
 
 **正确性复现：**clone 后请按照 [tests/README.md](tests/README.md) 安装参考依赖、
 获取锁定版本的模型、构建测试并运行 `tests/validate.py`。
-验证范围为最多 1024 token；当前回归通过不等于前向数值已全面验收。
+验证范围为最多 8192 token 的指定用例；当前回归通过不等于前向数值已全面验收。
 
 ## 项目来源与致谢 / Attribution
 

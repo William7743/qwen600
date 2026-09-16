@@ -7,7 +7,7 @@
 #include <set>
 #include <sstream>
 
-constexpr int VALIDATION_MAX_TOKENS = 1024;
+constexpr int VALIDATION_MAX_TOKENS = SEQ_LEN;
 static_assert(SEQ_LEN >= VALIDATION_MAX_TOKENS, "Validation exceeds allocated context");
 
 static std::vector<int> read_ids(const char* path) {
@@ -20,7 +20,7 @@ static std::vector<int> read_ids(const char* path) {
         ids.push_back(id);
     }
     if (ids.empty() || ids.size() > VALIDATION_MAX_TOKENS)
-        throw std::runtime_error("Validation input must contain 1..1024 tokens");
+        throw std::runtime_error("Validation input must contain 1..SEQ_LEN tokens");
     return ids;
 }
 
@@ -50,21 +50,41 @@ int main(int argc, char** argv) {
             std::vector<bf16> hq(Q_DIM, __float2bfloat16(1.f));
             std::vector<bf16> hk(SEQ_LEN * KV_DIM, __float2bfloat16(1.f));
             std::vector<float> ha(N_HEADS * SEQ_LEN, -1234.f);
-            CUDA_CHECK(cudaMemcpy(q, hq.data(), hq.size()*sizeof(bf16), cudaMemcpyHostToDevice));
-            CUDA_CHECK(cudaMemcpy(k, hk.data(), hk.size()*sizeof(bf16), cudaMemcpyHostToDevice));
             bool failed = false;
-            for (int pos : {0, 127, 511, 1022, 1023}) {
-                std::fill(ha.begin(), ha.end(), -1234.f);
-                CUDA_CHECK(cudaMemcpy(att, ha.data(), ha.size()*sizeof(float), cudaMemcpyHostToDevice));
-                attention_qk_kernel<<<N_HEADS, std::min(1024, pos+1)>>>(att, q, k, pos);
-                CUDA_CHECK(cudaGetLastError());
-                CUDA_CHECK(cudaMemcpy(ha.data(), att, ha.size()*sizeof(float), cudaMemcpyDeviceToHost));
-                int bad = 0;
+            for (int variant = 0; variant < 2; ++variant) {
+                // Nonuniform, exactly representable values expose position/head indexing mistakes.
+                if (variant) {
+                    for (size_t i = 0; i < hq.size(); ++i)
+                        hq[i] = __float2bfloat16(float(int((i * 17 + 3) % 31) - 15) / 16.f);
+                    for (size_t i = 0; i < hk.size(); ++i)
+                        hk[i] = __float2bfloat16(float(int((i * 13 + i / KV_DIM * 7) % 37) - 18) / 16.f);
+                }
+                CUDA_CHECK(cudaMemcpy(q, hq.data(), hq.size()*sizeof(bf16), cudaMemcpyHostToDevice));
+                CUDA_CHECK(cudaMemcpy(k, hk.data(), hk.size()*sizeof(bf16), cudaMemcpyHostToDevice));
+                std::vector<float> expected(N_HEADS * SEQ_LEN);
                 for (int h = 0; h < N_HEADS; ++h)
-                    for (int t = 0; t <= pos; ++t)
-                        if (fabsf(ha[h*SEQ_LEN+t] - sqrtf(float(HEAD_DIM))) > 1e-4f) ++bad;
-                std::cout << "{\"position\":" << pos << ",\"incorrect_scores\":" << bad << "}\n";
-                failed |= bad != 0;
+                    for (int t = 0; t < SEQ_LEN; ++t) {
+                        double sum = 0;
+                        for (int i = 0; i < HEAD_DIM; ++i)
+                            sum += double(__bfloat162float(hq[h*HEAD_DIM+i])) *
+                                __bfloat162float(hk[t*KV_DIM+(h/(N_HEADS/N_KV_HEADS))*HEAD_DIM+i]);
+                        expected[h*SEQ_LEN+t] = float(sum / sqrt(double(HEAD_DIM)));
+                    }
+                for (int pos : {0, 127, 511, 1022, 1023, 1024, 1025, 2047, 2048, 4095, 4096, SEQ_LEN-1}) {
+                    std::fill(ha.begin(), ha.end(), -1234.f);
+                    CUDA_CHECK(cudaMemcpy(att, ha.data(), ha.size()*sizeof(float), cudaMemcpyHostToDevice));
+                    attention_qk_kernel<<<N_HEADS, std::min(1024, pos+1)>>>(att, q, k, pos);
+                    CUDA_CHECK(cudaGetLastError());
+                    CUDA_CHECK(cudaMemcpy(ha.data(), att, ha.size()*sizeof(float), cudaMemcpyDeviceToHost));
+                    int bad = 0;
+                    for (int h = 0; h < N_HEADS; ++h)
+                        for (int t = 0; t < SEQ_LEN; ++t) {
+                            float want = t <= pos ? expected[h*SEQ_LEN+t] : -1234.f;
+                            if (!std::isfinite(ha[h*SEQ_LEN+t]) || fabsf(ha[h*SEQ_LEN+t] - want) > 1e-4f) ++bad;
+                        }
+                    std::cout << "{\"variant\":" << variant << ",\"position\":" << pos << ",\"incorrect_scores\":" << bad << "}\n";
+                    failed |= bad != 0;
+                }
             }
             CUDA_CHECK(cudaFree(q)); CUDA_CHECK(cudaFree(k)); CUDA_CHECK(cudaFree(att));
             return failed ? 1 : 0;
@@ -74,7 +94,7 @@ int main(int argc, char** argv) {
             int generation_count = mode == "greedy" ? std::stoi(argv[5]) : 0;
             if (mode == "greedy" && (generation_count < 1 ||
                 ids.size() + size_t(generation_count) > VALIDATION_MAX_TOKENS))
-                throw std::runtime_error("Prompt plus generation must not exceed 1024 tokens");
+                throw std::runtime_error("Prompt plus generation must not exceed SEQ_LEN tokens");
             Transformer model;
             std::string weight_path = std::string(argv[2]) + "/model.safetensors";
             build_transformer(&model, weight_path.c_str());

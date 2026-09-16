@@ -38,7 +38,7 @@ def main():
     lock = json.loads((ROOT / "tests/reference.json").read_text())
     env = dict(os.environ, HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
     summary = {"status": "SETUP_IN_PROGRESS", "numerical_acceptance": "PENDING",
-               "scope": "at most 1024 tokens, defined regression corpus only", "steps": []}
+               "scope": "at most 8192 tokens, defined regression corpus only", "steps": []}
     summary["python"] = sys.version
     summary["platform"] = platform.platform()
 
@@ -121,7 +121,7 @@ def main():
         checks = [
             ("tokenizer", "run_tokenizer.py", probes["tokenizer"], 180),
             ("edges", "run_edges.py", probes["edges"], 180),
-            ("model", "run_correctness.py", probes["forward"], 900),
+            ("model", "run_correctness.py", probes["forward"], 1800),
         ]
         failed = False
         for name, script, probe, timeout in checks:

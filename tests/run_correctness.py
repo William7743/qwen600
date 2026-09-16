@@ -19,12 +19,12 @@ import torch
 import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-MAX_CONTEXT_TOKENS = 1024
+MAX_CONTEXT_TOKENS = 8192
 MAX_NEW_TOKENS = 24
 
 
 def command(args):
-    result = subprocess.run(list(map(str, args)), capture_output=True, text=True, timeout=180)
+    result = subprocess.run(list(map(str, args)), capture_output=True, text=True, timeout=900)
     if result.returncode:
         raise RuntimeError(f"Command failed ({result.returncode}): {args}\n{result.stdout}\n{result.stderr}")
     return result.stdout
@@ -75,7 +75,7 @@ def main():
         "reference_forward": "one token per step, KV cache enabled",
         "max_context_tokens": MAX_CONTEXT_TOKENS,
         "max_new_tokens": MAX_NEW_TOKENS,
-        "scope": "prompt plus generated tokens <= 1024; no out-of-range attention tests",
+        "scope": "prompt plus generated tokens <= 8192; selected boundary positions",
         "probe_sha256": hashlib.sha256(args.probe.read_bytes()).hexdigest(),
         "tokenizer_sha256": hashlib.sha256((args.model / "tokenizer.bin").read_bytes()).hexdigest(),
         "source_sha256": {str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in
@@ -139,7 +139,7 @@ def main():
             tokenize=False, add_generation_prompt=True, enable_thinking=False)
         ids = tokenizer.encode(text, add_special_tokens=False)
         if len(ids) + MAX_NEW_TOKENS > MAX_CONTEXT_TOKENS:
-            raise ValueError(f"{name}: prompt plus generation exceeds 1024 tokens")
+            raise ValueError(f"{name}: prompt plus generation exceeds {MAX_CONTEXT_TOKENS} tokens")
         src = args.output / (name+".reference.ids"); src.write_text("\n".join(map(str, ids)))
         positions = list(range(len(ids)))
         dest = args.output / (name+".logits.f32")
@@ -177,7 +177,7 @@ def main():
     # Use identical fixed IDs, bypassing tokenization, up to the supported boundary.
     seed = tokenizer.encode("The quick brown fox jumps over the lazy dog. ", add_special_tokens=False)
     ids = (seed * (MAX_CONTEXT_TOKENS//len(seed)+1))[:MAX_CONTEXT_TOKENS]
-    positions = [127, 511, 1022, 1023]
+    positions = [127, 511, 1022, 1023, 1024, 1025, 2047, 2048, 4095, 4096, 8191]
     src = args.output / "boundary.ids"; src.write_text("\n".join(map(str, ids)))
     dest = args.output / "boundary.logits.f32"
     command([args.probe, "forward", args.model, src, dest, " ".join(map(str, positions))])

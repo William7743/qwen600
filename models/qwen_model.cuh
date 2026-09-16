@@ -421,13 +421,12 @@ attention_qk_kernel(
     const bf16* k_cache,
     int pos)
 {
-    // grid: N_HEADS, block: pos + 1 (up to 1024)
+    // Each thread covers multiple positions when the context exceeds the block size.
     int h = blockIdx.x; 
-    int t = threadIdx.x;
 
     constexpr int kv_mul = N_HEADS / N_KV_HEADS;
 
-    if (t <= pos)
+    for (int t = threadIdx.x; t <= pos; t += blockDim.x)
     {
         const bf16* q_head = q + h * HEAD_DIM;
         int kv_head_idx = h / kv_mul;
