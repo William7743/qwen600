@@ -1,6 +1,7 @@
 # ShareGPT 单轮性能子集
 
-此目录补充现有负载，不替换 `diverse100`；计时器默认仍使用合成数据。
+此目录是当前默认性能负载，也为 ShareGPT logits 验证提供相同的输入与输出长度。
+正确性参考由冻结 V0 生成，原回复不作为数值答案；旧合成负载保留用于历史复现。
 本子集包含 100 条固定请求，输入包含完整 Qwen 聊天模板，输入/输出长度均严格小于
 1024。输出长度是原助手回复在 Qwen tokenizer 下的 token 数（不额外添加特殊 token）。
 参考回复只用于确定工作量，不用于要求模型逐字复现或判断答案质量。
@@ -17,7 +18,7 @@
 按上游顺序检查首两个消息，仅接受 human/gpt 角色、非空文本、输入 <1024、输出
 2～1023 token 的配对。按输入 ID 去重，选择前 100 条。没有截断文本、补写内容、
 独立随机指定输出长度，也没有进行语言比例平衡。前 163 条候选中 48 条因角色不符、
-15 条因长度不符而跳过，实际选中 prompt 范围 13～742、output 范围 6～788。
+15 条因长度不符而跳过，实际选中 prompt 范围 13～742、output 范围 6～788，最大 P+G 为 1133。
 
 `source_pairs.json` 是这 163 条候选的派生快照，仅保留源 ID、索引和前两条消息，
 省略后续对话；选择算法不依赖后续消息。`inputs/` 保存选中数据的用户文本、渲染后的
@@ -38,7 +39,7 @@ prompt、token ID 与原回复。源文本可能包含指令，它们全部是�
 去掉 `--check` 会从候选快照重新生成子集及 manifest。运行本子集：
 
 ```bash
-/home/msganzy/vllm-shared/base-env/bin/python benchmarks/run_benchmark.py --dataset sharegpt100 --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --output build-benchmark/results-sharegpt100
+/home/msganzy/vllm-shared/base-env/bin/python benchmarks/run_benchmark.py --dataset sharegpt100 --model /home/msganzy/vllm-shared/models/Qwen3-0.6B --output build-sharegpt/results-sharegpt100
 ```
 
 仍采用一次全局真实推理预热，再每条测一遍，保存逐条指标和总体平均/加权指标。

@@ -1,17 +1,18 @@
 {
-  "version": 2,
-  "scope": "Implementation-independent V0-relative acceptance; not HF accuracy certification",
+  "version": 3,
+  "scope": "ShareGPT sampled V0-relative logits acceptance for HPC exercise; not HF certification or exhaustive engine validation",
   "numeric_limits_source": "optimization_policy.json:logits",
-  "quick": "Six frozen cases; development gate only",
-  "full_logits": "All 34 frozen histories, including 8192 tokens; every sampled full-vocabulary vector must pass",
-  "hidden_states": "Optional diagnostics after failure, at meaningful layer boundaries",
-  "legacy_operator_checks": "Diagnostics for implementations that retain those operators; not a universal fusion requirement",
-  "release_also_requires": [
-    "Actual production prefill/decode paths exercised by the model probe",
-    "Tokenizer and sampling regressions with CPU AddressSanitizer enabled",
-    "CUDA memcheck on the actual optimized model path, including long context",
-    "Generated-token regression on fixed workloads",
-    "Matching model, workload and timing configuration for benchmark comparisons"
-  ],
-  "fusion": "Validate the output of the fused computation or full model; do not require nonexistent intermediate tensors"
+  "default_check": "sharegpt_check.py check: 100 histories, 600 full-vocabulary snapshots",
+  "quick": "--quick: six fixed ShareGPT histories, development only",
+  "reference_pin": "sharegpt_reference.json",
+  "fusion": "No independent operator or hidden-state interface requirement; test real production forward path",
+  "benchmark": "Same ShareGPT inputs/output budgets, timing protocol 3, batch=1, concurrency=1",
+  "archived_maintenance_contract": "acceptance_contract_v2_archive.json",
+  "not_covered_by_default": [
+    "Tokenizer special cases",
+    "Random sampling",
+    "All context boundaries",
+    "Memory safety",
+    "External Transformers numerical certification"
+  ]
 }

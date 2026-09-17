@@ -14,6 +14,14 @@ double ms(Clock::time_point a, Clock::time_point b) {
 }
 struct Case { std::string name; std::vector<int> ids; int output; };
 
+// Accept both the frozen V0 interface and candidates with a logits-output switch.
+template<class F>
+auto invoke_forward(F f, Transformer* model, int token, int pos, bool logits, int)
+    -> decltype(f(model, token, pos, logits)) { return f(model, token, pos, logits); }
+template<class F>
+auto invoke_forward(F f, Transformer* model, int token, int pos, bool, long)
+    -> decltype(f(model, token, pos)) { return f(model, token, pos); }
+
 int main(int argc, char** argv) {
     try {
         if (argc != 5) throw std::runtime_error("benchmark_probe MODEL_WEIGHTS PLAN WARMUP REPEATS");
@@ -46,26 +54,29 @@ int main(int argc, char** argv) {
         CUDA_CHECK(cudaDeviceSynchronize());
         double load_ms = ms(load_start, Clock::now());
         std::cout << std::setprecision(12);
-        std::cout << "{\"event\":\"loaded\",\"protocol\":2,\"model_load_ms\":" << load_ms << "}" << std::endl;
+        std::cout << "{\"event\":\"loaded\",\"protocol\":3,\"model_load_ms\":" << load_ms << "}" << std::endl;
         for (const auto& c : cases) {
             const bool warmup_case = c.name == "__warmup__";
             for (int run = warmup_case ? -warmup : 0; run < (warmup_case ? 0 : repeats); ++run) {
                 // Position restarts at zero. Every causal KV entry is overwritten before use.
                 // Output storage is allocated before the timed interval.
                 std::vector<int> generated(c.output);
+                std::vector<Clock::time_point> ready(c.output);
                 CUDA_CHECK(cudaDeviceSynchronize());
                 auto t0 = Clock::now();
                 float* logits = nullptr;
                 for (int pos = 0; pos < int(c.ids.size()); ++pos)
-                    logits = forward(&model, c.ids[pos], pos);
+                    logits = invoke_forward(&forward, &model, c.ids[pos], pos, pos + 1 == int(c.ids.size()), 0);
                 CUDA_CHECK(cudaGetLastError());
                 // forward's blocking device-to-host copy has made logits available.
                 auto t1 = Clock::now();
                 generated[0] = sample_argmax(logits);
                 auto t2 = Clock::now();
+                ready[0] = t2;
                 for (int i = 1; i < c.output; ++i) {
-                    logits = forward(&model, generated[i-1], int(c.ids.size())+i-1);
+                    logits = invoke_forward(&forward, &model, generated[i-1], int(c.ids.size())+i-1, true, 0);
                     generated[i] = sample_argmax(logits);
+                    ready[i] = Clock::now();
                 }
                 CUDA_CHECK(cudaGetLastError());
                 CUDA_CHECK(cudaDeviceSynchronize());
@@ -81,7 +92,10 @@ int main(int argc, char** argv) {
                     << ",\"decode_tokens_per_second\":" << 1000*(c.output-1)/decode
                     << ",\"total_ms\":" << ms(t0,t3) << ",\"generated_ids\":[";
                 for (int i=0; i<c.output; ++i) std::cout << (i ? "," : "") << generated[i];
-                std::cout << "]}" << std::endl;
+                std::cout << "],\"itl_ms\":[";
+                for (int i=1; i<c.output; ++i)
+                    std::cout << (i>1 ? "," : "") << ms(ready[i-1], ready[i]);
+                std::cout << "],\"decode_tail_ms\":" << ms(ready.back(),t3) << "}" << std::endl;
             }
         }
         free_transformer(&model);

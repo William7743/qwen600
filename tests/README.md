@@ -1,5 +1,7 @@
 # 从全新 clone 复现正确性回归
 
+> 历史/维护者流程：实习生默认入口已改为 ShareGPT logits 与 benchmark。见 [当前维护说明](../docs/MAINTAINER_VALIDATION.md)；下文的旧“默认”指历史版本。
+
 **默认入口已更新：**请先看 [融合兼容的测试流程](../docs/FAST_ITERATION.md)。`validate.py` 默认不运行独立 CUDA 算子或逐层诊断；以下旧流程通过 `--legacy-operators` 显式启用。数值阈值没有放宽。
 
 本流程对照本项目与 Hugging Face Transformers，限定输入与生成累计不超过

@@ -11,6 +11,8 @@ import subprocess
 import threading
 import time
 
+from metrics import aggregate_metrics, distribution, validate_timing
+
 ROOT = Path(__file__).resolve().parent
 METRICS = ('prefill_ms', 'ttft_ms', 'tpot_ms', 'decode_ms',
            'decode_tokens_per_second', 'total_ms')
@@ -35,11 +37,12 @@ def capture(command):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--model', required=True, type=Path)
-    parser.add_argument('--build-dir', type=Path, default=ROOT.parent/'build-benchmark')
+    parser.add_argument('--build-dir', type=Path, default=ROOT.parent/'build-sharegpt')
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--dataset', choices=('diverse100', 'fixed9', 'sharegpt100'), default='diverse100',
-                        help='Frozen workload collection; default diverse100')
+    parser.add_argument('--dataset', choices=('diverse100', 'fixed9', 'sharegpt100'), default='sharegpt100',
+                        help='Frozen workload collection; default sharegpt100')
     parser.add_argument('--case', action='append', help='Select case ID; repeat to select several; default entire dataset')
+    parser.add_argument('--quick', action='store_true', help='Six fixed ShareGPT cases, matching the quick logits check')
     parser.add_argument('--warmup', type=int, default=1, help='Global real-request warmups, not per case')
     parser.add_argument('--repeats', type=int, default=1)
     args = parser.parse_args()
@@ -47,6 +50,10 @@ def main():
         parser.error('warmup >= 0 and repeats >= 1 required')
     dataset_root = ROOT if args.dataset == 'fixed9' else ROOT/args.dataset
     manifest = json.loads((dataset_root/'manifest.json').read_text())
+    if args.quick:
+        if args.dataset != 'sharegpt100' or args.case:
+            parser.error('--quick requires sharegpt100 and cannot be combined with --case')
+        args.case = json.loads((ROOT.parent/'tests/sharegpt_reference.json').read_text())['quick_cases']
     cases = [c for c in manifest['cases'] if not args.case or c['id'] in args.case]
     if not cases or (args.case and set(args.case)-{c['id'] for c in cases}):
         parser.error('Unknown case; diverse100: d001..d100; sharegpt100: s001..s100; fixed9: e.g. p16_g16')
@@ -86,12 +93,15 @@ def main():
                   if line.startswith(('CMAKE_BUILD_TYPE:', 'CMAKE_CUDA_ARCHITECTURES:',
                                       'CMAKE_CUDA_COMPILER:', 'CMAKE_CXX_COMPILER:'))] if cache.exists() else []
     summary = {'status': 'RUNNING', 'numerical_acceptance': 'PENDING',
-               'official_v0_baseline': False, 'batch_size': 1, 'warmup': args.warmup,
+               'official_v0_baseline': False, 'batch_size': 1, 'concurrent_requests': 1,
+               'timing_protocol': 3, 'warmup': args.warmup,
                'warmup_scope': 'global', 'warmup_case': representative if args.warmup else None,
                'repeats': args.repeats, 'case_ids': [c['id'] for c in cases],
                'git_commit': capture(['git', 'rev-parse', 'HEAD']),
                'git_status': capture(['git', 'status', '--short']),
-               'probe_sha256': sha(probe), 'manifest_sha256': sha(dataset_root/'manifest.json'),
+               'probe_sha256': sha(probe),
+               'model_source_sha256': sha(ROOT.parent/'models/qwen_model.cuh'),
+               'timer_source_sha256': sha(ROOT/'benchmark_probe.cu'), 'manifest_sha256': sha(dataset_root/'manifest.json'),
                'dataset': manifest['dataset'], 'dataset_directory': str(dataset_root),
                'build_configuration': build_info, 'cuda_visible_devices': os.environ.get('CUDA_VISIBLE_DEVICES'),
                'nvcc': capture(['nvcc', '--version']),
@@ -136,8 +146,8 @@ def main():
                 raw.write(line); raw.flush()
                 row = json.loads(line)
                 if row['event'] == 'loaded':
-                    if row.get('protocol') != 2:
-                        raise RuntimeError('Outdated probe: rebuild benchmark_probe for global warmup support')
+                    if row.get('protocol') != 3:
+                        raise RuntimeError('Outdated probe: rebuild benchmark_probe for per-token ITL support (protocol 3)')
                     summary['model_load_ms'] = row['model_load_ms']; save()
                     print(f'Model loaded: {row["model_load_ms"]:.2f} ms', flush=True)
                 elif row['event'] == 'request':
@@ -156,6 +166,8 @@ def main():
                         raise RuntimeError('Invalid timing result')
                     if not math.isclose(row['total_ms'], row['ttft_ms']+row['decode_ms'], rel_tol=1e-8):
                         raise RuntimeError('Timing boundaries inconsistent')
+                    validate_timing(row)
+                    row['itl_mean_ms'] = statistics.mean(row['itl_ms'])
                     rows.append(row)
                     lengths = f'{row["prompt_tokens"]}/{row["output_tokens"]}'
                     print(f'{row["case"]:14} {lengths:9} {row["iteration"]+1:2} {row["prefill_ms"]:12.2f} {row["ttft_ms"]:10.2f} {row["tpot_ms"]:10.3f} {row["decode_tokens_per_second"]:15.2f} {row["total_ms"]:11.2f}', flush=True)
@@ -168,24 +180,20 @@ def main():
                 if sorted(r['iteration'] for r in selected) != list(range(args.repeats)):
                     raise RuntimeError('Missing or duplicate measured iterations')
                 summary['cases'].append({'case': c['id'], 'prompt_tokens': c['prompt_tokens'],
-                    'output_tokens': c['output_tokens'], **{key: {
-                    'median': statistics.median(r[key] for r in selected),
-                    'min': min(r[key] for r in selected), 'max': max(r[key] for r in selected)
-                } for key in METRICS}, 'generated_ids_repeatable': all(
+                    'output_tokens': c['output_tokens'], **{key: distribution([r[key] for r in selected])
+                       for key in METRICS},
+                    'itl_ms': distribution([x for r in selected for x in r['itl_ms']]), 'generated_ids_repeatable': all(
                     r['generated_ids'] == selected[0]['generated_ids'] for r in selected)})
             with (output/'results.csv').open('w', newline='') as f:
-                writer = csv.DictWriter(f, fieldnames=['case', 'iteration', 'prompt_tokens', 'output_tokens', *METRICS], extrasaction='ignore')
+                writer = csv.DictWriter(f, fieldnames=['case', 'iteration', 'prompt_tokens', 'output_tokens', *METRICS, 'itl_mean_ms'], extrasaction='ignore')
                 writer.writeheader(); writer.writerows(rows)
-            total_decode_ms = sum(r['decode_ms'] for r in rows)
-            total_decode_tokens = sum(r['output_tokens']-1 for r in rows)
-            summary['aggregate'] = {
-                'measured_requests': len(rows),
-                'request_means': {k: statistics.mean(r[k] for r in rows)
-                                  for k in ('prefill_ms', 'ttft_ms', 'decode_ms', 'tpot_ms', 'total_ms')},
-                'total_decode_tokens': total_decode_tokens, 'total_decode_ms': total_decode_ms,
-                'token_weighted_tpot_ms': total_decode_ms/total_decode_tokens,
-                'overall_decode_tokens_per_second': 1000*total_decode_tokens/total_decode_ms,
-            }
+            with (output/'itl.csv').open('w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(['case', 'iteration', 'output_token_index', 'itl_ms'])
+                for row in rows:
+                    writer.writerows((row['case'], row['iteration'], i, value)
+                                     for i, value in enumerate(row['itl_ms'], 1))
+            summary['aggregate'] = aggregate_metrics(rows)
             (output/'aggregate.json').write_text(json.dumps(summary['aggregate'], indent=2)+'\n')
             summary['status'] = 'MEASUREMENTS_COMPLETE_NUMERICAL_REVIEW_REQUIRED'
     except BaseException as exc:
@@ -209,10 +217,16 @@ def main():
         save()
     aggregate = summary['aggregate']
     print(f'\nAggregate: {aggregate["measured_requests"]} measured requests (warmup excluded)')
-    for key, value in aggregate['request_means'].items():
-        print(f'Mean {key}: {value:.3f}')
+    print('Latency (ms)                 mean          P50          P95          P99')
+    for key, stats in aggregate['latency_distributions_ms'].items():
+        print(f'{key:25} {stats["mean"]:12.3f} {stats["p50"]:12.3f} '
+              f'{stats["p95"]:12.3f} {stats["p99"]:12.3f} (n={stats["count"]})')
     print(f'Token-weighted TPOT: {aggregate["token_weighted_tpot_ms"]:.3f} ms/token')
-    print(f'Overall decode throughput: {aggregate["overall_decode_tokens_per_second"]:.2f} token/s')
+    for key in ('overall_decode_tokens_per_second', 'total_tokens_per_second',
+                'output_tokens_per_second', 'serial_requests_per_second'):
+        print(f'{key}: {aggregate[key]:.3f}')
+    print('Throughput denominator: summed timed engine requests; concurrency=1; '
+          'excludes warmup/load/I/O/gaps. Not concurrent service capacity.')
     print(f'Model load: {summary["model_load_ms"]:.2f} ms; observed process memory peak: '
           f'{summary["memory"]["observed_peak_mib"]} MiB')
     print(f'Results: {output}\nNumerical acceptance is pending; these are not official V0 scores.')

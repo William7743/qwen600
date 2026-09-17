@@ -11,3 +11,6 @@ qwenc/
 model.safetensors
 *.safetensors
 *.gguf
+
+# Local trusted ShareGPT package (may be a symlink).
+/build-sharegpt-reference

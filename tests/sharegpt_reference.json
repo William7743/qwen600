@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "manifest_sha256": "641f305b06871c0dc9c494dd9855e292816d1818ddb74b118367c996fac18e92",
+  "cases": 100,
+  "snapshots": 600,
+  "quick_cases": [
+    "s049",
+    "s099",
+    "s057",
+    "s055",
+    "s080",
+    "s093"
+  ],
+  "v0_source_commit": "b5c18694aa7ab2524974d32b142fa500149f41f2"
+}
