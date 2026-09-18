@@ -27,7 +27,7 @@
 ## 指标定义
 
 设第 i 条请求输入 P_i 个 token，输出 G_i 个 token。
-请求开始于输入就绪且此前 GPU 工作同步完成后；总耗时结束于最后 token ID 在 CPU 可用时；最终错误检查和兜底同步在计时之外。
+各指标由仓库提供的统一测试工具计算，正式验收命令与不可修改范围见[根 README](../README.md#性能完整请求)。
 记总耗时 T_i，decode 耗时 D_i，以下吞吐公式的时间单位为秒。
 
 | 类别 | 指标 / 字段 | 定义 |
@@ -45,16 +45,10 @@
 | 资源 | 显存观测峰值 / `memory.observed_peak_mib` | 独立 `--memory-only` 运行中 nvidia-smi 的进程显存观测峰值 |
 
 首 token 来自最后一次 prompt 前向，后续只有 G−1 次 decode 前向。
-ITL 是实际逐 token 时间戳之差，不能用重复的 TPOT 代替。protocol 4 的
-`sum(itl_ms) = decode_ms`，单个请求的 ITL 均值等于 TPOT；跨请求汇总的权重不同，均值仍可不同。
-兼容字段 `decode_tail_ms` 固定为 0。没有网络与响应传输层。所有记录缓冲区在整轮前分配，
-统计、JSON 输出及文件写入在全部推理结束后进行；ITL 打点本身的开销仍计入时间。
-
+ITL 是实际相邻 token ID 就绪的间隔，不能用重复的 TPOT 代替。
 请求计时包含推理内部数据传输与采样，排除模型加载、分词、文件读写、打印和请求间空隙。
-本项目吞吐使用各请求的引擎耗时之和，**不是整个脚本的墙钟运行时间**。
-请求吞吐表示 batch=1、并发=1 时当前固定负载的串行处理速度，不能当作多并发服务容量。
-V0 与候选必须使用相同负载和计时协议。当前为 protocol 4；请求结束点和监控方式已改变，
-不能与 protocol 2/3 的旧表混作严格对照，需重测双方。
+吞吐使用各请求耗时之和，不是整个脚本的运行时间。串行请求吞吐不代表多并发服务容量。
+正式验收使用根 README 的固定命令；其余可选模式仅供诊断，不能替代正式验收成绩。
 
 ## 分位数与结果文件
 
@@ -74,19 +68,6 @@ P50 为中位数；P95/P99 用于观察较慢的样本。分位数采用排序�
 默认延迟测试不启动显存轮询，显存字段为 null。使用独立 `--memory-only` 运行时约每秒查询一次，
 范围包含加载、预热及请求，可能漏掉瞬时峰值，不声称精确峰值。资源运行的时间只用于诊断。
 无法取得进程显存数据时填 null 并附原因。吞吐按计数总和除以时间总和，不能平均每条 token/s。
-
-## 显存与计时开销验证
-
-```bash
-# 与正式延迟测量分开运行；建议使用相同完整负载。
-"$QWEN_PYTHON" benchmarks/run_benchmark.py --model "$QWEN_MODEL_DIR" --output build-sharegpt/memory-001 --memory-only
-# 同一可执行文件，固定六条 ShareGPT，ABBA+BAAB，各进程每条三次。
-"$QWEN_PYTHON" benchmarks/check_timing_overhead.py --model "$QWEN_MODEL_DIR" --build-dir build-sharegpt --output build-sharegpt/timing-check-001
-```
-
-`--no-itl` 仅供对照校准，保留 Prefill/TTFT/请求结束时间，但不记录中间 token 时间戳。
-其 ITL 字段为 null，不输出虚构的 ITL 分位数；正式报告继续使用默认完整打点模式。
-计时边界及校准方法统一见 [根 README](../README.md#计时边界与开销)。
 
 ## 可选 fixed9 负载
 

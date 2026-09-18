@@ -81,7 +81,7 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
   --v1 build-sharegpt/bench-final --output build-sharegpt/comparison-final.json
 ```
 
-正式计时为 **protocol 4、ITL 开启、无显存轮询**，不同时运行 profiler 或 sanitizer。
+正式验收统一使用上述命令和仓库提供的测试工具，运行时不同时开启 profiler 或 sanitizer。
 只验收完整模型 logits 与完整请求性能，不要求独立算子通过测试或保留融合前的中间张量。
 
 ## 4. 验收规则
@@ -111,8 +111,8 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 ### 性能：完整请求
 
 默认负载为固定 ShareGPT100，输入和输出 token 数量不变。
-使用 **protocol 4、ITL 开启、不采显存**，每进程真实预热一次、每条正式测量一次。
-若追加重复测量，比较双方须使用相同重复次数和预热设置；小幅收益要说明波动，不能只挑最好的一次。
+正式验收使用仓库提供的 benchmark 工具和上述固定参数，不修改计时、统计逻辑或测试负载。
+工具实现与参数保持一致；小幅收益应考虑运行波动，不能只挑最好的一次。
 正式计时不与 Nsight 或 sanitizer 同跑，profiling 数据只用于分析原因。
 fixed9 可辅助研究长度敏感性，不是额外必交集合。
 
@@ -126,54 +126,8 @@ fixed9 可辅助研究长度敏感性，不是额外必交集合。
 
 不得修改模型权重、数值阈值、测试输入、输出预算或计时口径来获取成绩。
 不得缓存测试用例答案、识别固定用例走捷径，或把必要推理工作搬到计时区间外。
-若优化改变前向接口，可适配探针与计时器的调用入口，但须说明变更，并保持相同计时边界、工作量与真实计算路径。
-
-### 计时边界与开销
-
-使用 C++ `std::chrono::steady_clock` 测量 CPU 可见的请求延迟：
-
-| 时间点或指标 | 定义 |
-| --- | --- |
-| 请求开始 | 输入 IDs 就绪、此前 GPU 工作同步完成之后 |
-| Prefill 结束 | 最后输入位置的 logits 阻塞回传 CPU 后 |
-| TTFT 结束 | 首个输出 token ID 在 CPU 就绪；当前 V0 包含 CPU greedy argmax |
-| 请求结束 | 最后输出 token ID 在 CPU 就绪 |
-| Decode | 请求结束时间减去首 token 就绪时间 |
-| TPOT | Decode / (G−1) |
-| ITL | 相邻输出 token ID 就绪的时间差；正常打点模式下总和等于 Decode |
-
-GPU 计算、必要的数据传输和 token 选择均计入推理耗时。当前 forward 阻塞回传 logits；
-若改为异步实现，仍须确保消费结果时数据已就绪，不能提前结束计时。
-错误检查与兜底同步在最后 token 就绪之后执行，不计入请求延迟；报错的运行仍作废。
-
-全部请求的记录空间在整轮前分配并初始化，统计、格式化、打印与文件写入在整轮推理结束后执行。
-计时内保留推理、生成 ID 保存和必要时钟读取。Python 等待结果输出，不与后续请求并行解析。
-因此运行中不逐请求实时打印进度；中途异常终止时，未输出的测量不形成有效结果。
-
-正式延迟测量不启用显存轮询。可选的 `--memory-only` 独立运行中，时间仅作诊断，不能当作正式性能成绩。
-Nsight Systems、NCU 和 sanitizer 也不与正式计时同跑。
-
-<details>
-<summary>可选：ITL 打点开销校准</summary>
-
-[check_timing_overhead.py](benchmarks/check_timing_overhead.py) 在同一二进制上交错执行
-A=no-itl、B=full，顺序 ABBA+BAAB。两种模式使用相同预分配缓冲、模型、工作量、预热和推理路径，
-只切换中间 token 的时间戳读取与保存；通过模板在计时前选择，生成循环内不判断运行时模式。
-两种模式都保留开始、Prefill、首 token、最后 token 四个边界时间戳。
-
-工具使用固定六条 ShareGPT，每进程以 s038 预热一次、每条正式三次。
-八个进程共144次请求，每种模式每条12次。保留逐次时间、生成ID、源码与二进制哈希、GPU前后状态；
-检查生成ID一致，提供可信旧记录时也会核对其ID。
-
-主指标是六条请求各自 total_ms 中位数的均值，同时报告四组成对进程变化与同模式进程均值的相对极差。
-仅四对均增加、且最小增幅超过两个模式各自的相对极差时，工具标记为可分辨增加；
-否则标记为本次重复次数下无法稳定分辨。这不是统计显著性检验或开销上界。
-
-不会从正式成绩中扣除该差值，也不能将负差值解释为打点加速。
-两种模式共同保留的边界时钟、循环和ID保存开销不能由此单独识别，因此该对照不能证明工具零开销。
-历史校准记录保留在 `main` 分支，本题性能对照使用学生本机 V0 与候选的结果。
-
-</details>
+优化后的推理实现须与现有验收探针兼容，并执行真实计算路径。
+`benchmarks/` 下的 `benchmark_probe.cu`、`run_benchmark.py`、`metrics.py` 和 `compare_results.py` 为统一测量工具，不属于本题修改范围。
 
 ## 5. 提交要求
 
@@ -194,7 +148,7 @@ A=no-itl、B=full，顺序 ABBA+BAAB。两种模式使用相同预分配缓冲�
 数值阈值见 [optimization_policy.json](tests/optimization_policy.json) 的 logits 部分，
 正式验收范围见 [acceptance_contract.json](tests/acceptance_contract.json)。
 指标字段与输出文件格式见 [benchmark 说明](benchmarks/README.md)。
-题目规则、参考包要求和计时协议统一在本 README 维护。
+题目规则、参考包要求与统一测试要求在本 README 维护。
 本题目分支保留当前验收所需的文件；历史回归工具、旧报告和合成负载保留在 `main` 分支。
 
 本项目借鉴 [yassa9/qwen600](https://github.com/yassa9/qwen600)，保留上游历史与 [MIT 许可](LICENSE)。

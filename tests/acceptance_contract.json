@@ -16,5 +16,6 @@
   ],
   "reference_setup": "Student runs freeze on unchanged original V0 before optimization; keep the generated package and manifest pin fixed",
   "submission": "One optimization-process document with all optimization stages, correctness results and performance screenshots",
-  "operator_acceptance": false
+  "operator_acceptance": false,
+  "measurement_tools_policy": "Use repository-provided benchmark_probe.cu, run_benchmark.py, metrics.py and compare_results.py unchanged; official acceptance uses the README commands and fixed workload/parameters"
 }
