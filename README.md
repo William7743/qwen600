@@ -184,14 +184,10 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 | `tests/logit_metrics.py` | 计算四项数值误差指标 |
 | `tests/optimization_policy.json`、`tests/acceptance_contract.json` | 固定数值阈值和验收范围 |
 | `tests/reference.json` | 指定模型版本与文件哈希，附参考环境记录 |
-| `tests/test_benchmark_metrics.py` | 检查性能指标统计公式及计时协议兼容性 |
 | `benchmarks/benchmark_probe.cu` | 执行请求、采样并采集计时数据 |
 | `benchmarks/run_benchmark.py` | 校验负载、组织预热与正式测量、保存结果 |
 | `benchmarks/metrics.py`、`benchmarks/compare_results.py` | 汇总性能指标、比较优化前后结果 |
-| `benchmarks/check_timing_overhead.py` | 检查计时辅助操作的开销 |
-| `benchmarks/build_sharegpt_dataset.py` | 构建或校验固定 ShareGPT 子集的维护工具 |
 | `benchmarks/sharegpt100/` | 固定的 100 条输入、token ID、回复、请求清单、来源记录与许可；不得自行重新选样或改变输出数量 |
-| `tools/export.py` | 为交互程序导出分词器及提示词模板；默认 ShareGPT 验收不需要运行 |
 | 各级 `README.md`、`LICENSE` 及数据许可文件 | 题目规则、工具说明、来源与许可；个人补充说明写入自己的报告，不改写题目规则或删去归属信息 |
 
 ### 本机生成后固定的参考与结果
@@ -212,6 +208,7 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 正式验收范围见 [acceptance_contract.json](tests/acceptance_contract.json)。
 指标字段与输出文件格式见 [benchmark 说明](benchmarks/README.md)。
 题目规则、参考包要求与统一测试要求在本 README 维护。
-本题目分支保留当前验收所需的文件；历史回归工具、旧报告和合成负载保留在 `main` 分支。
+本题目分支保留当前验收所需的文件；数据集构建、计时校准、统计自检等维护工具，以及历史回归、旧报告和合成负载保留在 `main` 分支。
+交互程序如需生成分词器文件，可使用 [main 分支的导出工具](https://github.com/William7743/qwen600/blob/main/tools/export.py)；默认 ShareGPT 验收不需要该工具。
 
 本项目借鉴 [yassa9/qwen600](https://github.com/yassa9/qwen600)，保留上游历史与 [MIT 许可](LICENSE)。

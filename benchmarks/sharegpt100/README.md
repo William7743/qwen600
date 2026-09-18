@@ -28,21 +28,10 @@ prompt、token ID 与原回复。源文本可能包含指令，它们全部是�
 上游数据集页面声明 Apache-2.0；本目录附 `LICENSE-APACHE-2.0.txt`，并保留来源。
 本仓库的 MIT 代码许可证不用于替代这份第三方数据的来源及许可声明。
 
-## 离线重建与运行
+## 使用已保存的子集
 
-先按[根 README](../../README.md#1-领取并准备环境)配置本地环境与模型变量，再在仓库根目录验证已保存的子集（不自动下载或安装）：
-
-```bash
-"$QWEN_PYTHON" benchmarks/build_sharegpt_dataset.py --model "$QWEN_MODEL_DIR" --check
-```
-
-去掉 `--check` 会从候选快照重新生成子集及 manifest。运行本子集：
-
-```bash
-"$QWEN_PYTHON" benchmarks/run_benchmark.py --dataset sharegpt100 --model "$QWEN_MODEL_DIR" --output build-sharegpt/results-sharegpt100
-```
-
-仍采用一次全局真实推理预热，再每条测一遍，保存逐条指标和总体平均/加权指标。
-预热固定选择 s038（432 输入、362 输出），从统计中排除。只试一条可添加
-`--case s001`。完整数值验收仍待完成，测量不会自动成为正式 V0 基线。
+本题直接使用仓库中的固定数据，不需要重新构建或下载数据集。
+正确性验证与性能测试命令统一见[根 README](../../README.md#3-验收命令)。
+benchmark 启动前会核对 manifest 中记录的模型与输入文件哈希。
 原始 V0 与优化版本必须使用同一个固定 ShareGPT 子集比较。
+数据集重建工具保留在 `main` 分支，供维护时使用。

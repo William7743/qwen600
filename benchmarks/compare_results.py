@@ -18,7 +18,7 @@ def validate_runs(old, new):
     if any(x['status'] != 'MEASUREMENTS_COMPLETE_NUMERICAL_REVIEW_REQUIRED' for x in [old, new]):
         raise ValueError('Expected two completed runs')
     if old.get('timing_mode', 'full') != new.get('timing_mode', 'full'):
-        raise ValueError('Different ITL modes; use check_timing_overhead.py for calibration')
+        raise ValueError('Different ITL modes; rerun both versions with the README benchmark command')
     if any(x.get('measurement_role', 'latency') != 'latency' for x in [old,new]):
         raise ValueError('Resource passes cannot supply formal latency comparisons')
 
