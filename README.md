@@ -1,12 +1,12 @@
 # Qwen600 HPC 优化题目
 
 本分支 `problem` 是学生题目版。任务是优化 **Qwen/Qwen3-0.6B** 的单 GPU、单请求、batch=1 推理，
-在规定数值误差内提高完整请求的性能。原始 V0 推理实现为 `b5c1869`，本分支没有加入参考答案的优化。
+在规定数值误差内提高完整请求的性能。原始 V0 推理实现为 `b5c1869`。
 
 **学生使用自己的兼容硬件与软件环境，优化前自行生成本机 V0 logits 参考包。**
 优化效果只比较同一硬件和环境中的原始 V0 与候选，不与其他机器的绝对时间直接排名。
 最终提交一份包含各优化阶段、思路、验证结果及性能截图的过程文档，结构由学生自行组织。
-不规定必须优化哪个 kernel，也不要求采用与教师参考版相同的方法；批处理或多并发改造不计入本题。
+优化策略由学生自行决定；批处理或多并发改造不计入本题。
 
 ## 1. 领取并准备环境
 
@@ -59,39 +59,26 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 每位学生生成的参考哈希可能不同；生成后不能修改参考来让候选通过。命令拒绝覆盖非空参考目录。
 若换硬件、驱动或工具链，要在未优化的 V0 中重新建立对应参考及性能基线，并在同一新环境重测候选。
 文档记录 CPU/GPU、显存容量、驱动、CUDA、编译器、构建模式/架构、Python 版本，以及功耗/频率设置和其他 GPU 任务情况。
-编译选项若作为优化项调整，应写明前后差异。教师参考版在其他硬件上的现成成绩不作为本机性能门槛。
+编译选项若作为优化项调整，应写明前后差异。
 
-## 3. 开发迭代
+## 3. 验收命令
 
-每次修改后重新构建；固定六条 ShareGPT 快检用于节省迭代时间：
+提交前重新构建优化版本，执行完整100条检查与性能测试：
 
 ```bash
 cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 "$QWEN_PYTHON" tests/sharegpt_check.py check --model "$QWEN_MODEL_DIR" \
-  --build-dir build-sharegpt --quick --output build-sharegpt/check-stage1-quick
+  --build-dir build-sharegpt --output build-sharegpt/check-final
 "$QWEN_PYTHON" benchmarks/run_benchmark.py --model "$QWEN_MODEL_DIR" \
-  --build-dir build-sharegpt --quick --warmup 1 --repeats 1 --output build-sharegpt/bench-stage1-quick
-```
-
-后续更换输出目录名称。快速结果只能与相同六条负载比较，不能与完整100条基线直接计算加速比。
-
-## 4. 阶段验收命令
-
-阶段完成后执行完整100条检查与性能测试：
-
-```bash
-"$QWEN_PYTHON" tests/sharegpt_check.py check --model "$QWEN_MODEL_DIR" \
-  --build-dir build-sharegpt --output build-sharegpt/check-stage1-full
-"$QWEN_PYTHON" benchmarks/run_benchmark.py --model "$QWEN_MODEL_DIR" \
-  --build-dir build-sharegpt --warmup 1 --repeats 1 --output build-sharegpt/bench-stage1-full
+  --build-dir build-sharegpt --warmup 1 --repeats 1 --output build-sharegpt/bench-final
 "$QWEN_PYTHON" benchmarks/compare_results.py --v0 build-sharegpt/bench-v0 \
-  --v1 build-sharegpt/bench-stage1-full --output build-sharegpt/comparison-stage1.json
+  --v1 build-sharegpt/bench-final --output build-sharegpt/comparison-final.json
 ```
 
 正式计时为 **protocol 4、ITL 开启、无显存轮询**，不同时运行 profiler 或 sanitizer。
 只验收完整模型 logits 与完整请求性能，不要求独立算子通过测试或保留融合前的中间张量。
 
-## 5. 验收规则
+## 4. 验收规则
 
 ### 正确性：完整模型输出
 
@@ -106,7 +93,7 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 | softmax 概率总变差 TV | 0.02 |
 | V0 对候选 top-1 的分数损失 | 0.125 |
 
-开发时可用固定六条/36个位置；阶段完成及最终提交使用完整100条检查。
+最终验收使用完整100条检查。
 验收真实推理路径的最终 logits，不把独立算子或 hidden states 检查作为门槛。
 融合、布局变化和消除中间张量均可；算子、逐层或 sanitizer 检查仅供按需诊断，不单独计分。
 本题是相对本机 V0 的数值约束，不要求与不同平台逐位相同。
@@ -131,20 +118,18 @@ fixed9 可辅助研究长度敏感性，不是额外必交集合。
 不得缓存测试用例答案、识别固定用例走捷径，或把必要推理工作搬到计时区间外。
 若优化改变前向接口，可适配探针与计时器的调用入口，但须说明变更，并保持相同计时边界、工作量与真实计算路径。
 
-## 6. 提交要求
+## 5. 提交要求
 
-**只需提交一份优化过程文档，结构自由，不提供固定模板。** 可用 Word、PDF 或含完整截图的 Markdown，
+**只需提交一份优化过程文档，结构自由，不提供固定模板。** 可用 Word、PDF 或 Markdown，
 不额外要求提交代码仓库、权重或参考数组。
 
 文档应包含硬件软件环境、模型及V0版本、本机参考manifest哈希、未优化基线，
 以及各优化阶段的具体改动、优化思路、正确性结果、整体性能变化和最终总结。
-说明失败或退化方案的处理、实际收益与已知限制。代码版本号、关键代码片段或diff可放入文档辅助说明。
+可选补充失败或退化方案的处理、实际收益分析和已知限制；也可用代码版本号、关键代码片段或diff辅助说明。
 
-每个已采用阶段附正确性结果与整体benchmark截图；快检/短测标注“quick”，不能冒充完整验收。
-截图应对应阶段、执行命令/参数和结果，不裁掉失败项或混用不同版本。
-核心数值同时填写在汇总表中，不只贴图。最终评价完整推理结果与整体收益，不要求逐个证明kernel加速。
+文档附优化效果的性能测试结果截图，展示优化前后的整体性能。具体组织与展示方式由学生自行决定。
 
-老师根据文档审查优化思路、实现说明、测量条件、整体收益和退化情况。
+老师根据文档审查优化思路、实现说明、测量条件与整体收益。
 截图与文字属于学生提供的实验记录，不自动等同教师独立复测结论；学生可在本机保留源码和原始结果以便答辩说明。
 
 ## 规则与维护入口
