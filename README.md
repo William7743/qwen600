@@ -14,9 +14,7 @@
 解压项目压缩包，进入包含本 README 的目录即可。
 固定 ShareGPT100 已包含在包内，不需要自行下载数据集。运行仍需准备指定模型和兼容环境。
 
-```bash
-cd /absolute/path/to/extracted-qwen600
-```
+在终端中进入解压后的项目目录，后续命令均在该目录执行。
 
 模型为 **Qwen/Qwen3-0.6B**，使用原始 BF16 safetensors，
 指定版本 `c1899de289a04d12100db370d81485cdf75e47ca`，文件哈希见 [模型配置](tests/reference.json)。
