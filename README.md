@@ -128,17 +128,19 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 
 不得修改模型权重、数值阈值、测试输入、输出预算或计时口径来获取成绩。
 不得缓存测试用例答案、识别固定用例走捷径，或把必要推理工作搬到计时区间外。
-`benchmarks/` 下的 `benchmark_probe.cu`、`run_benchmark.py`、`metrics.py` 和 `compare_results.py` 为统一测量工具，不属于本题修改范围。
+`benchmarks/run_benchmark.py`、`benchmarks/metrics.py` 和 `benchmarks/compare_results.py` 保持固定；探针的修改范围见下文。
 
 ### 优化范围与接口
 
-**现有正确性探针和 benchmark 调用的模型级接口，是本题正式的兼容边界。**
-优化版本须保持现有工具可直接构建和调用，包括模型加载、前向推理、输出读取及资源释放；
-前向返回时，工具所需的完整 logits 必须可读取，且对应真实推理结果。
-正确性探针、参考比较逻辑和上述统一测量工具不属于优化范围，不得通过修改测试工具适配候选来改变验收要求。
+**固定计算任务、正确性标准和计时范围，允许自行调整推理接口。**
+允许调整内部算子、线程分工、数据布局、内存管理和融合方式，不要求保留原有 kernel 名称、
+独立算子接口或中间张量。接口变化时，可对正确性探针和 benchmark 的调用部分做必要适配，
+并在报告中说明修改内容、理由及相关代码差异。
 
-内部算子、线程分工、数据布局、内存管理和融合方式可以调整，不要求保留原有 kernel 名称、
-独立算子接口或中间张量。正确性验证与性能测试必须调用实际优化后的推理路径。
+不得改变测试输入、输出数量、参考数据、误差阈值、计时边界、预热与统计规则，
+不得将必要的请求处理移出计时区间；各计时边界对应的工作必须实际完成。
+正确性验证须覆盖性能测试实际采用的推理路径，并支持在指定位置取得完整 logits 进行对照。
+适配不得改变固定 token 历史、检查位置、检查数量或通过条件，也不能另设一条仅供正确性测试通过的计算路径。
 
 ## 5. 提交要求
 
@@ -169,21 +171,22 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 
 ## 6. 文件作用与修改范围
 
-下表中的“可修改”仍须遵守模型级接口、数值误差、固定负载与真实计算路径要求。
+下表中的“可修改”仍须遵守计算任务、数值误差、固定负载与真实计算路径要求。
 优化前先用未修改的 V0 生成参考包和性能基线，再修改推理实现。
 
 ### 可修改的实现与构建文件
 
 | 文件 | 作用 | 修改范围 |
 | --- | --- | --- |
-| `models/qwen_model.cuh` | 模型结构、运行状态、CUDA 内核、前向流程和资源管理 | 可修改内部实现，也可拆分或新增源码；保留现有工具调用的模型级接口 |
+| `models/qwen_model.cuh` | 模型结构、运行状态、CUDA 内核、前向流程和资源管理 | 可修改内部实现及推理接口，也可拆分或新增源码；必要的探针适配须在报告中说明 |
 | `utils/static_loader.h` | 读取模型权重、组织权重指针及 GPU 存储 | 可调整加载和内存布局；保留指定模型权重的数值与含义 |
 | `layers/sampler.h` | 从 logits 选择 token，包含贪心与随机采样 | 可优化实现；benchmark 使用 `sample_argmax`，须保持贪心选择及并列分数处理规则 |
 | `config.h` | 模型维度、数值常量和缓冲区容量等配置 | 可调整实现所需的缓冲区配置或新增调优参数；不能更改模型层数、维度、词表、RoPE 参数等模型定义，容量须满足完整测试负载 |
 | `engine/main.cu` | 交互式推理程序入口 | 可修改；默认验收直接调用模型接口，不通过此入口，入口自身的改动不计入 benchmark 收益 |
 | `utils/tokenizer.h` | 文本分词、token 解码与提示词模板处理 | 可修改实现并保持分词语义；默认测试读取固定 token ID，不计分词耗时 |
 | `CMakeLists.txt`、`cmake/TokenizerDependencies.cmake` | 构建目标、编译参数、链接库与分词依赖查找 | 可适配硬件、添加源码或调整编译选项；保留验收目标、可执行文件位置及真实测试路径，报告编译配置差异 |
-| 新增推理源码、个人分析脚本或报告 | 承载优化实现和实验记录 | 可以新增；不能替换统一验收工具或其结果 |
+| `tests/iteration_probe.cu`、`benchmarks/benchmark_probe.cu` | 正确性与性能测试的模型调用入口 | 仅允许推理接口所需的调用适配；不得改变检查要求、计时边界或统计规则，报告附适配差异说明 |
+| 新增推理源码、个人分析脚本或报告 | 承载优化实现和实验记录 | 可以新增；不得替换固定验收逻辑或伪造结果 |
 | `.gitignore` | 排除本机构建产物与大文件 | 可补充本地产物规则；不能借此省略报告中需要说明的实现改动 |
 
 ### 固定的测试工具、数据与规则
@@ -193,11 +196,9 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 | 文件或目录 | 作用 |
 | --- | --- |
 | `tests/sharegpt_check.py` | 生成原始 V0 参考包，或检查候选版 logits |
-| `tests/iteration_probe.cu` | 调用真实模型前向，导出指定位置的完整词表 logits |
 | `tests/logit_metrics.py` | 计算四项数值误差指标 |
 | `tests/optimization_policy.json`、`tests/acceptance_contract.json` | 固定数值阈值和验收范围 |
 | `tests/reference.json` | 指定模型版本与文件哈希，附参考环境记录 |
-| `benchmarks/benchmark_probe.cu` | 执行请求、采样并采集计时数据 |
 | `benchmarks/run_benchmark.py` | 校验负载、组织预热与正式测量、保存结果 |
 | `benchmarks/metrics.py`、`benchmarks/compare_results.py` | 汇总性能指标、比较优化前后结果 |
 | `benchmarks/sharegpt100/` | 固定的 100 条输入、token ID、回复、请求清单、来源记录与许可；不得自行重新选样或改变输出数量 |
