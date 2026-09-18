@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "scope": "V1 equivalence to frozen V0, not certification against Transformers",
+  "scope": "Whole-model equivalence to student-frozen original V0 on the same platform; hidden-state limits are optional archived diagnostics",
   "logits": {
     "mean_absolute_error_max": 0.05,
     "max_absolute_error_max": 0.5,
@@ -15,5 +15,5 @@
   },
   "all_sampled_positions_must_pass": true,
   "all_values_must_be_finite": true,
-  "operator_checks_must_pass": true
+  "operator_checks_must_pass": false
 }

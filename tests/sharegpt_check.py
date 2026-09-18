@@ -142,14 +142,16 @@ def freeze(args):
                 'cases': len(cases), 'snapshots': offset, 'quick_cases': quick,
                 'v0_source_commit': FROZEN_V0})
     print('FROZEN', args.baseline, 'manifest SHA256', sha(args.baseline/'manifest.json'))
-    print('Instructor: distribute this immutable reference package and commit the trusted pin:', PIN)
+    print('Keep this reference package and its pin fixed throughout optimization:', PIN)
 
 
 def check(args):
     started = time.perf_counter()
     pin = read(PIN)
+    if not pin.get('manifest_sha256'):
+        raise ValueError('Reference not initialized: run freeze on unchanged V0 before optimizing')
     if sha(args.baseline/'manifest.json') != pin['manifest_sha256']:
-        raise ValueError('Reference manifest differs from the instructor-pinned hash')
+        raise ValueError('Reference manifest differs from the locally frozen V0 hash')
     manifest = read(args.baseline/'manifest.json')
     policy = read(ROOT/'tests/optimization_policy.json')['logits']
     if manifest['logits_limits'] != policy or manifest['dataset_manifest_sha256'] != sha(DATA/'manifest.json'):

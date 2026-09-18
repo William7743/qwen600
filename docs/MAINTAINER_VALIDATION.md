@@ -1,7 +1,7 @@
 # 维护者：参考包与保留的回归工具
 
-实习生默认只使用项目 README 的 ShareGPT logits 检查和 benchmark。维护者负责准备可信参考，
-并在需要时使用旧回归工具定位问题；无需让实习生先理解全部历史测试。
+实习生默认只使用项目 README 的 ShareGPT logits 检查和 benchmark。本题由学生在自己的兼容硬件和环境中、优化前用原始V0生成参考；
+维护者在需要时使用旧回归工具定位问题。正式规则见[题目](../PROBLEM.md)。
 
 ## 一次性准备 ShareGPT 参考包
 
@@ -18,11 +18,12 @@ python tests/sharegpt_check.py freeze --model /path/to/Qwen3-0.6B
 模型只使用本地文件，不自动下载。命令拒绝覆盖非空参考目录。
 
 生成 `build-sharegpt-reference/manifest.json`、`logits.f32` 和 `histories/`；
-维护者分发时只需这三个项目。生成日志和 `generation/` 可另行保管，前者不是性能基线。
+学生应保存这三个项目及生成日志；`generation/` 的时间不作为性能基线，另行使用一次预热的benchmark建立基线。
 完整 logits 数组为 600 × 151936 × 4 = 364646400 字节（约 347.8 MiB）。
-`tests/sharegpt_reference.json` 固定 manifest 哈希，应由出题方保管并随测试工具分发。
+`tests/sharegpt_reference.json` 初始未设置manifest哈希，`freeze` 自动写入学生本机生成的哈希；
+学生将其记录在过程文档中，并在后续优化中保持参考与哈希不变。
 检查时同时校验参考 manifest、模型、历史、数组及误差阈值，拒绝被修改的参考包。
-构建编译器或 GPU 不同导致重新冻结时，应由出题方重新审查并更新可信哈希。
+不同学生的GPU和工具链可以不同，参考哈希也可能不同。若本人更换环境，应在未优化V0中重新建立参考和性能基线，再在相同新环境重测候选。
 
 `--quick` 固定取按 P+G 排序后下标 0、19、39、59、79、99 的 6 条，名单写入 manifest，
 不能因候选失败临时改选。全量验收始终运行 100 条；失败后报告具体用例、位置与误差。

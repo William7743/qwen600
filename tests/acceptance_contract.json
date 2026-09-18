@@ -1,12 +1,12 @@
 {
-  "version": 3,
-  "scope": "ShareGPT sampled V0-relative logits acceptance for HPC exercise; not HF certification or exhaustive engine validation",
+  "version": 4,
+  "scope": "Student HPC exercise: whole-model equivalence to locally frozen original V0; end-to-end performance on the same hardware and environment",
   "numeric_limits_source": "optimization_policy.json:logits",
   "default_check": "sharegpt_check.py check: 100 histories, 600 full-vocabulary snapshots",
   "quick": "--quick: six fixed ShareGPT histories, development only",
   "reference_pin": "sharegpt_reference.json",
   "fusion": "No independent operator or hidden-state interface requirement; test real production forward path",
-  "benchmark": "Same ShareGPT inputs/output budgets, timing protocol 3, batch=1, concurrency=1",
+  "benchmark": "Same ShareGPT100 inputs/output budgets, timing protocol 4, ITL enabled, no memory polling, batch=1, concurrency=1; baseline and candidate on the same hardware/environment",
   "archived_maintenance_contract": "acceptance_contract_v2_archive.json",
   "not_covered_by_default": [
     "Tokenizer special cases",
@@ -14,5 +14,8 @@
     "All context boundaries",
     "Memory safety",
     "External Transformers numerical certification"
-  ]
+  ],
+  "reference_setup": "Student runs freeze on unchanged original V0 before optimization; keep the generated package and manifest pin fixed",
+  "submission": "One optimization-process document with all optimization stages, correctness results and performance screenshots",
+  "operator_acceptance": false
 }
