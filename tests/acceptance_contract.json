@@ -7,7 +7,6 @@
   "reference_pin": "sharegpt_reference.json",
   "fusion": "No independent operator or hidden-state interface requirement; test real production forward path",
   "benchmark": "Same ShareGPT100 inputs/output budgets, timing protocol 4, ITL enabled, no memory polling, batch=1, concurrency=1; baseline and candidate on the same hardware/environment",
-  "archived_maintenance_contract": "acceptance_contract_v2_archive.json",
   "not_covered_by_default": [
     "Tokenizer special cases",
     "Random sampling",

@@ -1,7 +1,7 @@
-# 维护者：参考包与保留的回归工具
+# 本机 V0 参考包说明
 
-实习生默认只使用项目 README 的 ShareGPT logits 检查和 benchmark。本题由学生在自己的兼容硬件和环境中、优化前用原始V0生成参考；
-维护者在需要时使用旧回归工具定位问题。正式规则见[项目 README](../README.md)。
+学生在自己的兼容硬件和环境中、优化前用原始 V0 生成参考。
+构建配置、运行命令与验收规则统一见[项目 README](../README.md)。
 
 ## 一次性准备 ShareGPT 参考包
 
@@ -28,21 +28,8 @@ python tests/sharegpt_check.py freeze --model /path/to/Qwen3-0.6B
 `--quick` 固定取按 P+G 排序后下标 0、19、39、59、79、99 的 6 条，名单写入 manifest，
 不能因候选失败临时改选。全量验收始终运行 100 条；失败后报告具体用例、位置与误差。
 
-## 保留的工具
+## 检查范围
 
-| 工具 | 维护用途 |
-| --- | --- |
-| `tests/iterate.py full` | 旧 34 条固定历史 / 307 个位置，包含 8192 长历史 |
-| `tests/iterate.py diagnose` | 旧用例已有的层输出诊断；不直接接受 ShareGPT 用例 ID |
-| `tests/validate.py` | 旧模型/CPU 回归流程 |
-| `tests/validate.py --legacy-operators` | 原独立算子、逐层及外部参考诊断 |
-| `benchmarks/run_benchmark.py --dataset fixed9` / `diverse100` | 原性能负载复现 |
-
-旧命令依赖原有参考包和构建，完整说明保留在 [旧快速迭代文档](FAST_ITERATION.md) 与
-[旧正确性文档](../tests/README.md)。它们描述的是维护者流程，不是当前实习生必经步骤。
-旧参考包和原报告不能覆盖或当作可删除缓存。
-
-ShareGPT 检查不涵盖分词特殊字符、随机采样、内存越界或全部上下文长度。
-布局/索引/同步改动出现问题时，维护者可追加真实前向的 sanitizer 检查；
-融合后只检查仍有意义的接口，不能强制恢复已消除的独立算子。
-外部 Transformers 数值审查仍与 V0 相对等价性分开。
+本题目验收完整模型的最终 logits，不要求独立算子或逐层输出检查。
+ShareGPT 检查不覆盖分词特殊字符、随机采样、全部上下文边界或全部内存安全情形。
+旧回归工具和历史结果保留在 `main` 分支，需要诊断时可查阅。

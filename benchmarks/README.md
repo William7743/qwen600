@@ -11,12 +11,12 @@
 
 ## 构建与运行
 
-仓库根目录执行，工具链、模型与依赖均使用本地已有文件：
+先按[根 README 的环境与构建说明](../README.md#1-领取并准备环境)配置本机工具链、GPU架构，
+设置 `QWEN_PYTHON`、`QWEN_MODEL_DIR` 并完成构建。环境配置统一在根 README 维护。
+随后在仓库根目录执行：
 
 ```bash
-cmake -S . -B build-sharegpt -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=86 -DCMAKE_PREFIX_PATH=/opt/anaconda3 -DQWEN_BUILD_ITERATION=ON -DQWEN_BUILD_BENCHMARKS=ON
-cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
-python benchmarks/run_benchmark.py --model /path/to/Qwen3-0.6B --output build-sharegpt/bench-001
+"$QWEN_PYTHON" benchmarks/run_benchmark.py --model "$QWEN_MODEL_DIR" --output build-sharegpt/bench-001
 ```
 
 默认构建目录为 `build-sharegpt`，可用 `--build-dir` 指定。结果目录必须为空。
@@ -79,17 +79,16 @@ P50 为中位数；P95/P99 用于观察较慢的样本。分位数采用排序�
 
 ```bash
 # 与正式延迟测量分开运行；建议使用相同完整负载。
-python benchmarks/run_benchmark.py --model /path/to/Qwen3-0.6B --output build-sharegpt/memory-001 --memory-only
+"$QWEN_PYTHON" benchmarks/run_benchmark.py --model "$QWEN_MODEL_DIR" --output build-sharegpt/memory-001 --memory-only
 # 同一可执行文件，固定六条 ShareGPT，ABBA+BAAB，各进程每条三次。
-python benchmarks/check_timing_overhead.py --model /path/to/Qwen3-0.6B --build-dir build-sharegpt --output build-sharegpt/timing-check-001
+"$QWEN_PYTHON" benchmarks/check_timing_overhead.py --model "$QWEN_MODEL_DIR" --build-dir build-sharegpt --output build-sharegpt/timing-check-001
 ```
 
 `--no-itl` 仅供对照校准，保留 Prefill/TTFT/请求结束时间，但不记录中间 token 时间戳。
 其 ITL 字段为 null，不输出虚构的 ITL 分位数；正式报告继续使用默认完整打点模式。
 校准结论与限制见 [计时说明](../docs/TIMING_PROTOCOL.md)。
 
-## 历史负载
+## 可选 fixed9 负载
 
-`--dataset fixed9` 和 `--dataset diverse100` 仍可运行；文件与原 manifest 保留。
-前者是 P/G 分别取 16、256、1024 的九组组合；后者是 100 条固定合成文本。
-它们不属于新的默认验收。旧集合生成脚本继续保留，不运行新下载、不重新抽样。
+`--dataset fixed9` 使用 P/G 分别取 16、256、1024 的九组组合，可用于观察长度差异。
+它不属于默认 ShareGPT 验收。题目分支不再提供旧 `diverse100` 合成集合；历史文件保留在 `main` 分支。

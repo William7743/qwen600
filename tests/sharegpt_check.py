@@ -10,7 +10,7 @@ import time
 from pathlib import Path
 
 import numpy as np
-from check_optimization import logit_metrics
+from logit_metrics import logit_metrics
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT/'benchmarks/sharegpt100'

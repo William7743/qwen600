@@ -1,4 +1,0 @@
-Summarize these system design notes and identify the main tradeoffs.
-Record 41.1: The service receives requests through a queue. Workers read immutable configuration and write results to a separate store. A bounded queue limits memory use, but a small capacity can increase waiting time. Record latency and failures separately. Recovery must preserve completed work without processing the same item twice.
-Record 41.2: The service receives requests through a queue. Workers read immutable configuration and write results to a separate store. A bounded queue limits memory use, but a small capacity can increase waiting time. Record latency and failures separately. Recovery must preserve completed work without processing the same item twice.
-Record 41.3: The service receives requests

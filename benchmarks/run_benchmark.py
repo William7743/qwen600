@@ -39,7 +39,7 @@ def main():
     parser.add_argument('--model', required=True, type=Path)
     parser.add_argument('--build-dir', type=Path, default=ROOT.parent/'build-sharegpt')
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--dataset', choices=('diverse100', 'fixed9', 'sharegpt100'), default='sharegpt100',
+    parser.add_argument('--dataset', choices=('fixed9', 'sharegpt100'), default='sharegpt100',
                         help='Frozen workload collection; default sharegpt100')
     parser.add_argument('--case', action='append', help='Select case ID; repeat to select several; default entire dataset')
     parser.add_argument('--quick', action='store_true', help='Six fixed ShareGPT cases, matching the quick logits check')
@@ -58,7 +58,7 @@ def main():
         args.case = json.loads((ROOT.parent/'tests/sharegpt_reference.json').read_text())['quick_cases']
     cases = [c for c in manifest['cases'] if not args.case or c['id'] in args.case]
     if not cases or (args.case and set(args.case)-{c['id'] for c in cases}):
-        parser.error('Unknown case; diverse100: d001..d100; sharegpt100: s001..s100; fixed9: e.g. p16_g16')
+        parser.error('Unknown case; sharegpt100: s001..s100; fixed9: e.g. p16_g16')
     print(f'Dataset: {manifest["dataset"]}; {len(cases)} cases; '
           f'{args.warmup} global warmups; {args.repeats} measurements per case', flush=True)
     probe = args.build_dir.resolve()/'bin/benchmark_probe'

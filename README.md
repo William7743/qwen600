@@ -32,7 +32,7 @@ export QWEN_MODEL_DIR=/absolute/path/to/Qwen3-0.6B
 export QWEN_CUDA_ARCH=86
 cmake -S . -B build-sharegpt -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CUDA_ARCHITECTURES="$QWEN_CUDA_ARCH" \
-  -DQWEN_BUILD_ITERATION=ON -DQWEN_BUILD_BENCHMARKS=ON -DQWEN_BUILD_TESTS=OFF
+  -DQWEN_BUILD_ITERATION=ON -DQWEN_BUILD_BENCHMARKS=ON
 cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 ```
 
@@ -137,6 +137,7 @@ fixed9 可辅助研究长度敏感性，不是额外必交集合。
 数值阈值见 [optimization_policy.json](tests/optimization_policy.json) 的 logits 部分，
 正式验收范围见 [acceptance_contract.json](tests/acceptance_contract.json)。
 详细指标见 [benchmark 说明](benchmarks/README.md)，计时边界见 [protocol 4 说明](docs/TIMING_PROTOCOL.md)。
-旧逐层、独立算子和外部参考测试仅用于可选诊断，见 [维护说明](docs/MAINTAINER_VALIDATION.md)。
+参考包的生成、保存与校验细节见 [参考包说明](docs/MAINTAINER_VALIDATION.md)。
+本题目分支保留当前验收所需的文件；历史回归工具、旧报告和合成负载保留在 `main` 分支。
 
 本项目借鉴 [yassa9/qwen600](https://github.com/yassa9/qwen600)，保留上游历史与 [MIT 许可](LICENSE)。

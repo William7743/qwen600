@@ -19,7 +19,6 @@ target_compile_options(qwen600 PRIVATE
     $<$<COMPILE_LANGUAGE:CUDA>:--expt-relaxed-constexpr>
     $<$<COMPILE_LANGUAGE:CUDA>:-O3>)
 
-option(QWEN_BUILD_TESTS "Build the correctness probes" OFF)
 option(QWEN_BUILD_BENCHMARKS "Build the single-request benchmark probe" OFF)
 if (QWEN_BUILD_BENCHMARKS)
     add_executable(benchmark_probe benchmarks/benchmark_probe.cu)
@@ -28,11 +27,8 @@ if (QWEN_BUILD_BENCHMARKS)
     target_compile_options(benchmark_probe PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:-O3>)
     set_target_properties(benchmark_probe PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 endif()
-if (QWEN_BUILD_TESTS)
-    add_subdirectory(tests)
-endif()
 
-# Build independently of legacy per-kernel probes, including for fused implementations.
+# Model-output validation also supports fused implementations.
 option(QWEN_BUILD_ITERATION "Build model-boundary iteration probe" OFF)
 if (QWEN_BUILD_ITERATION)
     add_executable(iteration_probe tests/iteration_probe.cu)
