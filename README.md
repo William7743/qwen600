@@ -115,7 +115,6 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 正式验收使用仓库提供的 benchmark 工具和上述固定参数，不修改计时、统计逻辑或测试负载。
 工具实现与参数保持一致；小幅收益应考虑运行波动，不能只挑最好的一次。
 正式计时不与 Nsight 或 sanitizer 同跑，profiling 数据只用于分析原因。
-fixed9 可辅助研究长度敏感性，不是额外必交集合。
 
 主要结果是相同工作负载的总请求耗时与吞吐；同时记录 Prefill、TTFT、TPOT、ITL、
 请求总耗时的均值及 P50/P95/P99，以及输入输出合计、全请求输出、Decode、串行请求吞吐。

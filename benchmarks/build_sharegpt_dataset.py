@@ -1,10 +1,20 @@
 """Build the frozen ShareGPT subset offline from the checked-in first-pair snapshot."""
 import argparse
+import hashlib
+import os
 from collections import Counter
 from importlib.metadata import version
 import json
 from pathlib import Path
-from build_dataset import ROOT, digest, AutoTokenizer
+os.environ['HF_HUB_OFFLINE'] = '1'
+os.environ['TRANSFORMERS_OFFLINE'] = '1'
+from transformers import AutoTokenizer
+
+ROOT = Path(__file__).resolve().parent
+
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
 
 OUT = ROOT/'sharegpt100'
 
