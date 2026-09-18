@@ -1,0 +1,20 @@
+{
+  "started": "2026-09-17T11:33:12.943725+00:00",
+  "order": "ABBA/BAAB",
+  "A": "no-itl",
+  "B": "full",
+  "dataset": "sharegpt100 quick six fixed cases",
+  "warmup": 1,
+  "repeats": 3,
+  "primary": "mean of per-case total_ms medians across all 12 samples/mode/case",
+  "classification": "Resolved increase only if all 4 adjacent paired changes are positive and the smallest exceeds both within-mode process mean spreads. Otherwise unresolved; this is an engineering screen, not confidence interval or an upper bound.",
+  "probe_sha256": "951e53a17c2efbe297df69c12e87dceeff39c0c76c0fa8ff7f79e140008fdc99",
+  "source_sha256": "b8855a1f058a737291bf6d751ab3a6e7fd58024931c99655416c18b4db3f5132",
+  "tool_sha256": {
+    "benchmark_probe.cu": "43f2cf6623024e12c0f9d79231b4f76731ef6ebab8bad5e156ed7c60987391cf",
+    "run_benchmark.py": "c4e4c00a499b6d4702883ef821cc56fd0125239490442d77043411371c578155",
+    "metrics.py": "18fd1ad4229d2db0a95887c64c0ee3170d09ae5bb7dc04d32778e0374c997096",
+    "check_timing_overhead.py": "29dd6cd50a7926f3f6d80dd92819320273b9d65d085488a99a2c3a9ba32663fa"
+  },
+  "reference_raw_sha256": "e338697d7a70a1c24b202da10f625a3dd2b82cde67d8e40b28d0a215f2512796"
+}

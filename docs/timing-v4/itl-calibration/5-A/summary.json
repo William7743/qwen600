@@ -1,0 +1,535 @@
+{
+  "status": "MEASUREMENTS_COMPLETE_NUMERICAL_REVIEW_REQUIRED",
+  "numerical_acceptance": "PENDING",
+  "official_v0_baseline": false,
+  "batch_size": 1,
+  "concurrent_requests": 1,
+  "timing_protocol": 4,
+  "timing_mode": "no-itl",
+  "measurement_role": "latency",
+  "warmup": 1,
+  "warmup_scope": "global",
+  "warmup_case": {
+    "id": "s038",
+    "input": "s038",
+    "prompt_tokens": 432,
+    "output_tokens": 362,
+    "decode_forward_steps": 361,
+    "total_tokens": 794
+  },
+  "repeats": 3,
+  "case_ids": [
+    "s049",
+    "s055",
+    "s057",
+    "s080",
+    "s093",
+    "s099"
+  ],
+  "git_commit": "973087398b91bd661e4eac38f2963b0940b4abfe",
+  "git_status": "M benchmarks/README.md\n M benchmarks/benchmark_probe.cu\n M benchmarks/compare_results.py\n M benchmarks/metrics.py\n M benchmarks/run_benchmark.py\n M tests/test_benchmark_metrics.py\n?? benchmarks/check_timing_overhead.py\n?? docs/TIMING_PROTOCOL.md\n?? docs/timing-v4/",
+  "probe_sha256": "951e53a17c2efbe297df69c12e87dceeff39c0c76c0fa8ff7f79e140008fdc99",
+  "model_source_sha256": "b8855a1f058a737291bf6d751ab3a6e7fd58024931c99655416c18b4db3f5132",
+  "timer_source_sha256": "43f2cf6623024e12c0f9d79231b4f76731ef6ebab8bad5e156ed7c60987391cf",
+  "manifest_sha256": "ec502f48e7c1769cf38932f547d0cc7b5266e84776d10ea17c7422fe10562541",
+  "dataset": "qwen600-sharegpt100-v1",
+  "dataset_directory": "/home/msganzy/workspace/AI_inf/qwen600/benchmarks/sharegpt100",
+  "build_configuration": [
+    "CMAKE_BUILD_TYPE:STRING=Release",
+    "CMAKE_CUDA_ARCHITECTURES:UNINITIALIZED=86",
+    "CMAKE_CUDA_COMPILER:STRING=/usr/local/cuda/bin/nvcc",
+    "CMAKE_CXX_COMPILER:STRING=/opt/rh/devtoolset-8/root/usr/bin/g++"
+  ],
+  "cuda_visible_devices": null,
+  "nvcc": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2024 NVIDIA Corporation\nBuilt on Thu_Mar_28_02:18:24_PDT_2024\nCuda compilation tools, release 12.4, V12.4.131\nBuild cuda_12.4.r12.4/compiler.34097967_0",
+  "gpu_before": "0, NVIDIA GeForce RTX 3090, 550.54.15, 73, 1695 MHz, 119.18 W",
+  "memory": {
+    "enabled": false,
+    "method": "nvidia-smi process used_gpu_memory polling",
+    "interval_seconds": 1,
+    "scope": "whole run including load and warmups",
+    "observed_peak_mib": null,
+    "samples": 0,
+    "unavailable_reason": "Disabled during latency measurement; use a separate --memory-only run"
+  },
+  "cases": [
+    {
+      "case": "s049",
+      "prompt_tokens": 13,
+      "output_tokens": 9,
+      "prefill_ms": {
+        "count": 3,
+        "mean": 37.34273066666667,
+        "min": 37.330309,
+        "max": 37.362977,
+        "median": 37.334906,
+        "p50": 37.334906,
+        "p95": 37.3601699,
+        "p99": 37.362415580000004
+      },
+      "ttft_ms": {
+        "count": 3,
+        "mean": 37.48481866666667,
+        "min": 37.4724,
+        "max": 37.505092,
+        "median": 37.476964,
+        "p50": 37.476964,
+        "p95": 37.5022792,
+        "p99": 37.50452944
+      },
+      "tpot_ms": {
+        "count": 3,
+        "mean": 3.0615147916666667,
+        "min": 3.060353375,
+        "max": 3.063695375,
+        "median": 3.060495625,
+        "p50": 3.060495625,
+        "p95": 3.0633754,
+        "p99": 3.06363138
+      },
+      "decode_ms": {
+        "count": 3,
+        "mean": 24.492118333333334,
+        "min": 24.482827,
+        "max": 24.509563,
+        "median": 24.483965,
+        "p50": 24.483965,
+        "p95": 24.5070032,
+        "p99": 24.50905104
+      },
+      "decode_tokens_per_second": {
+        "count": 3,
+        "mean": 326.63577410966667,
+        "min": 326.403208413,
+        "max": 326.759650754,
+        "median": 326.744463162,
+        "p50": 326.744463162,
+        "p95": 326.7581319948,
+        "p99": 326.75934700216
+      },
+      "total_ms": {
+        "count": 3,
+        "mean": 61.976937,
+        "min": 61.956365,
+        "max": 62.014655,
+        "median": 61.959791,
+        "p50": 61.959791,
+        "p95": 62.009168599999995,
+        "p99": 62.013557719999994
+      },
+      "itl_ms": null,
+      "generated_ids_repeatable": true
+    },
+    {
+      "case": "s055",
+      "prompt_tokens": 32,
+      "output_tokens": 331,
+      "prefill_ms": {
+        "count": 3,
+        "mean": 93.196128,
+        "min": 93.18333,
+        "max": 93.212925,
+        "median": 93.192129,
+        "p50": 93.192129,
+        "p95": 93.2108454,
+        "p99": 93.21250908
+      },
+      "ttft_ms": {
+        "count": 3,
+        "mean": 93.33464766666667,
+        "min": 93.31625,
+        "max": 93.355165,
+        "median": 93.332528,
+        "p50": 93.332528,
+        "p95": 93.3529013,
+        "p99": 93.35471226
+      },
+      "tpot_ms": {
+        "count": 3,
+        "mean": 3.62962241919,
+        "min": 3.62936704545,
+        "max": 3.62980799091,
+        "median": 3.62969222121,
+        "p50": 3.62969222121,
+        "p95": 3.62979641394,
+        "p99": 3.6298056755159998
+      },
+      "decode_ms": {
+        "count": 3,
+        "mean": 1197.7753983333334,
+        "min": 1197.691125,
+        "max": 1197.836637,
+        "median": 1197.798433,
+        "p50": 1197.798433,
+        "p95": 1197.8328166000001,
+        "p99": 1197.8358729200002
+      },
+      "decode_tokens_per_second": {
+        "count": 3,
+        "mean": 275.510752126,
+        "min": 275.496666078,
+        "max": 275.530137205,
+        "median": 275.505453095,
+        "p50": 275.505453095,
+        "p95": 275.527668794,
+        "p99": 275.52964352280003
+      },
+      "total_ms": {
+        "count": 3,
+        "mean": 1291.110046,
+        "min": 1291.023653,
+        "max": 1291.191802,
+        "median": 1291.114683,
+        "p50": 1291.114683,
+        "p95": 1291.1840901,
+        "p99": 1291.19025962
+      },
+      "itl_ms": null,
+      "generated_ids_repeatable": true
+    },
+    {
+      "case": "s057",
+      "prompt_tokens": 24,
+      "output_tokens": 222,
+      "prefill_ms": {
+        "count": 3,
+        "mean": 69.51910033333333,
+        "min": 69.496757,
+        "max": 69.553238,
+        "median": 69.507306,
+        "p50": 69.507306,
+        "p95": 69.54864479999999,
+        "p99": 69.55231936
+      },
+      "ttft_ms": {
+        "count": 3,
+        "mean": 69.66411833333333,
+        "min": 69.646239,
+        "max": 69.69223,
+        "median": 69.653886,
+        "p50": 69.653886,
+        "p95": 69.68839559999999,
+        "p99": 69.69146312
+      },
+      "tpot_ms": {
+        "count": 3,
+        "mean": 3.4231436546,
+        "min": 3.42257555656,
+        "max": 3.4239871267,
+        "median": 3.42286828054,
+        "p50": 3.42286828054,
+        "p95": 3.423875242084,
+        "p99": 3.4239647497768
+      },
+      "decode_ms": {
+        "count": 3,
+        "mean": 756.5147476666666,
+        "min": 756.389198,
+        "max": 756.701155,
+        "median": 756.45389,
+        "p50": 756.45389,
+        "p95": 756.6764284999999,
+        "p99": 756.6962096999999
+      },
+      "decode_tokens_per_second": {
+        "count": 3,
+        "mean": 292.12914574266665,
+        "min": 292.057172821,
+        "max": 292.177625731,
+        "median": 292.152638676,
+        "p50": 292.152638676,
+        "p95": 292.1751270255,
+        "p99": 292.1771259899
+      },
+      "total_ms": {
+        "count": 3,
+        "mean": 826.178866,
+        "min": 826.035437,
+        "max": 826.355041,
+        "median": 826.14612,
+        "p50": 826.14612,
+        "p95": 826.3341489000001,
+        "p99": 826.35086258
+      },
+      "itl_ms": null,
+      "generated_ids_repeatable": true
+    },
+    {
+      "case": "s080",
+      "prompt_tokens": 27,
+      "output_tokens": 491,
+      "prefill_ms": {
+        "count": 3,
+        "mean": 78.36481266666667,
+        "min": 78.358213,
+        "max": 78.369334,
+        "median": 78.366891,
+        "p50": 78.366891,
+        "p95": 78.36908969999999,
+        "p99": 78.36928513999999
+      },
+      "ttft_ms": {
+        "count": 3,
+        "mean": 78.50370166666667,
+        "min": 78.497091,
+        "max": 78.508123,
+        "median": 78.505891,
+        "p50": 78.505891,
+        "p95": 78.5078998,
+        "p99": 78.50807836
+      },
+      "tpot_ms": {
+        "count": 3,
+        "mean": 3.88237462517,
+        "min": 3.88184349796,
+        "max": 3.8827072449,
+        "median": 3.88257313265,
+        "p50": 3.88257313265,
+        "p95": 3.8826938336750003,
+        "p99": 3.8827045626550003
+      },
+      "decode_ms": {
+        "count": 3,
+        "mean": 1902.3635663333334,
+        "min": 1902.103314,
+        "max": 1902.52655,
+        "median": 1902.460835,
+        "p50": 1902.460835,
+        "p95": 1902.5199785,
+        "p99": 1902.5252357
+      },
+      "decode_tokens_per_second": {
+        "count": 3,
+        "mean": 257.574321415,
+        "min": 257.552253344,
+        "max": 257.60956116,
+        "median": 257.561149741,
+        "p50": 257.561149741,
+        "p95": 257.6047200181,
+        "p99": 257.60859293162
+      },
+      "total_ms": {
+        "count": 3,
+        "mean": 1980.867268,
+        "min": 1980.611437,
+        "max": 1981.032441,
+        "median": 1980.957926,
+        "p50": 1980.957926,
+        "p95": 1981.0249895000002,
+        "p99": 1981.0309507000002
+      },
+      "itl_ms": null,
+      "generated_ids_repeatable": true
+    },
+    {
+      "case": "s093",
+      "prompt_tokens": 742,
+      "output_tokens": 391,
+      "prefill_ms": {
+        "count": 3,
+        "mean": 3044.427639666667,
+        "min": 3044.125245,
+        "max": 3044.721183,
+        "median": 3044.436491,
+        "p50": 3044.436491,
+        "p95": 3044.6927138,
+        "p99": 3044.7154891600003
+      },
+      "ttft_ms": {
+        "count": 3,
+        "mean": 3044.5754323333335,
+        "min": 3044.282274,
+        "max": 3044.863849,
+        "median": 3044.580174,
+        "p50": 3044.580174,
+        "p95": 3044.8354815,
+        "p99": 3044.8581755
+      },
+      "tpot_ms": {
+        "count": 3,
+        "mean": 6.231610199143334,
+        "min": 6.23050891282,
+        "max": 6.23299681538,
+        "median": 6.23132486923,
+        "p50": 6.23132486923,
+        "p95": 6.232829620765,
+        "p99": 6.232963376457
+      },
+      "decode_ms": {
+        "count": 3,
+        "mean": 2430.327977666667,
+        "min": 2429.898476,
+        "max": 2430.868758,
+        "median": 2430.216699,
+        "p50": 2430.216699,
+        "p95": 2430.8035521,
+        "p99": 2430.85571682
+      },
+      "decode_tokens_per_second": {
+        "count": 3,
+        "mean": 160.47217262533334,
+        "min": 160.436468944,
+        "max": 160.50053278,
+        "median": 160.479516152,
+        "p50": 160.479516152,
+        "p95": 160.4984311172,
+        "p99": 160.50011244744
+      },
+      "total_ms": {
+        "count": 3,
+        "mean": 5474.90341,
+        "min": 5474.47865,
+        "max": 5475.732607,
+        "median": 5474.498973,
+        "p50": 5474.498973,
+        "p95": 5475.6092436,
+        "p99": 5475.70793432
+      },
+      "itl_ms": null,
+      "generated_ids_repeatable": true
+    },
+    {
+      "case": "s099",
+      "prompt_tokens": 42,
+      "output_tokens": 111,
+      "prefill_ms": {
+        "count": 3,
+        "mean": 123.622099,
+        "min": 123.600058,
+        "max": 123.653657,
+        "median": 123.612582,
+        "p50": 123.612582,
+        "p95": 123.64954949999999,
+        "p99": 123.6528355
+      },
+      "ttft_ms": {
+        "count": 3,
+        "mean": 123.76263933333333,
+        "min": 123.742217,
+        "max": 123.792644,
+        "median": 123.753057,
+        "p50": 123.753057,
+        "p95": 123.7886853,
+        "p99": 123.79185226
+      },
+      "tpot_ms": {
+        "count": 3,
+        "mean": 3.32160680303,
+        "min": 3.32097110909,
+        "max": 3.3221027,
+        "median": 3.3217466,
+        "p50": 3.3217466,
+        "p95": 3.32206709,
+        "p99": 3.322095578
+      },
+      "decode_ms": {
+        "count": 3,
+        "mean": 365.37674833333335,
+        "min": 365.306822,
+        "max": 365.431297,
+        "median": 365.392126,
+        "p50": 365.392126,
+        "p95": 365.42737989999995,
+        "p99": 365.43051357999997
+      },
+      "decode_tokens_per_second": {
+        "count": 3,
+        "mean": 301.05911973633334,
+        "min": 301.014173945,
+        "max": 301.116741806,
+        "median": 301.046443458,
+        "p50": 301.046443458,
+        "p95": 301.1097119712,
+        "p99": 301.11533583904
+      },
+      "total_ms": {
+        "count": 3,
+        "mean": 489.13938766666666,
+        "min": 489.049039,
+        "max": 489.18477,
+        "median": 489.184354,
+        "p50": 489.184354,
+        "p95": 489.1847284,
+        "p99": 489.18476168
+      },
+      "itl_ms": null,
+      "generated_ids_repeatable": true
+    }
+  ],
+  "model_load_ms": 522.973092,
+  "aggregate": {
+    "measured_requests": 18,
+    "total_prompt_tokens": 2640,
+    "total_output_tokens": 4665,
+    "total_request_ms": 30372.527744000003,
+    "total_decode_tokens": 4647,
+    "total_decode_ms": 20030.551669999997,
+    "request_means": {
+      "prefill_ms": 574.4120850555556,
+      "ttft_ms": 574.5542263333333,
+      "decode_ms": 1112.8084261111112,
+      "tpot_ms": 3.9249787488,
+      "total_ms": 1687.3626524444444
+    },
+    "latency_distributions_ms": {
+      "prefill_ms": {
+        "count": 18,
+        "mean": 574.4120850555556,
+        "min": 37.330309,
+        "max": 3044.721183,
+        "median": 85.776332,
+        "p50": 85.776332,
+        "p95": 3044.4791947999997,
+        "p99": 3044.67278536
+      },
+      "ttft_ms": {
+        "count": 18,
+        "mean": 574.5542263333333,
+        "min": 37.4724,
+        "max": 3044.863849,
+        "median": 85.91218649999999,
+        "p50": 85.91218649999999,
+        "p95": 3044.6227252500003,
+        "p99": 3044.81562425
+      },
+      "decode_ms": {
+        "count": 18,
+        "mean": 1112.8084261111112,
+        "min": 24.482827,
+        "max": 2430.868758,
+        "median": 977.19614,
+        "p50": 977.19614,
+        "p95": 2430.31450785,
+        "p99": 2430.75790797
+      },
+      "tpot_ms": {
+        "count": 18,
+        "mean": 3.9249787488,
+        "min": 3.060353375,
+        "max": 6.23299681538,
+        "median": 3.526677086075,
+        "p50": 3.526677086075,
+        "p95": 6.2315756611525,
+        "p99": 6.2327125845345
+      },
+      "total_ms": {
+        "count": 18,
+        "mean": 1687.3626524444444,
+        "min": 61.956365,
+        "max": 5475.732607,
+        "median": 1058.689347,
+        "p50": 1058.689347,
+        "p95": 5474.6840181,
+        "p99": 5475.52288922
+      }
+    },
+    "percentile_method": "linear interpolation at (n-1)*p; request latencies across requests; ITL across all token intervals",
+    "token_weighted_tpot_ms": 4.310426440714439,
+    "overall_decode_tokens_per_second": 231.99560733815778,
+    "total_tokens_per_second": 240.5134028215047,
+    "output_tokens_per_second": 153.59274800305536,
+    "serial_requests_per_second": 0.5926408283076091,
+    "throughput_scope": "concurrency=1; denominator=sum timed engine request durations (decode metric uses sum decode durations); excludes load, warmup, I/O and inter-request gaps; not server wall-clock throughput"
+  },
+  "gpu_after": "0, NVIDIA GeForce RTX 3090, 550.54.15, 76, 1695 MHz, 122.99 W"
+}

@@ -1,0 +1,84 @@
+{
+  "measured_requests": 18,
+  "total_prompt_tokens": 2640,
+  "total_output_tokens": 4665,
+  "total_request_ms": 30298.694235,
+  "total_decode_tokens": 4647,
+  "total_decode_ms": 19991.183702,
+  "request_means": {
+    "prefill_ms": 572.4951711111112,
+    "ttft_ms": 572.6394740555555,
+    "decode_ms": 1110.6213167777778,
+    "tpot_ms": 3.9175783352344444,
+    "total_ms": 1683.2607908333334
+  },
+  "latency_distributions_ms": {
+    "prefill_ms": {
+      "count": 18,
+      "mean": 572.4951711111112,
+      "min": 37.279765,
+      "max": 3033.94036,
+      "median": 85.6529795,
+      "p50": 85.6529795,
+      "p95": 3033.8511168,
+      "p99": 3033.92251136
+    },
+    "ttft_ms": {
+      "count": 18,
+      "mean": 572.6394740555555,
+      "min": 37.422117,
+      "max": 3034.082825,
+      "median": 85.793949,
+      "p50": 85.793949,
+      "p95": 3033.9934237,
+      "p99": 3034.06494474
+    },
+    "decode_ms": {
+      "count": 18,
+      "mean": 1110.6213167777778,
+      "min": 24.456194,
+      "max": 2422.685015,
+      "median": 975.9608109999999,
+      "p50": 975.9608109999999,
+      "p95": 2422.62883935,
+      "p99": 2422.67377987
+    },
+    "tpot_ms": {
+      "count": 18,
+      "mean": 3.9175783352344444,
+      "min": 3.05702425,
+      "max": 6.21201285897,
+      "median": 3.52234101977,
+      "p50": 3.52234101977,
+      "p95": 6.2118688188455,
+      "p99": 6.2119840509451
+    },
+    "total_ms": {
+      "count": 18,
+      "mean": 1683.2607908333334,
+      "min": 61.886746,
+      "max": 5456.701751,
+      "median": 1057.3130115,
+      "p50": 1057.3130115,
+      "p95": 5456.66852535,
+      "p99": 5456.69510587
+    },
+    "itl_ms": {
+      "count": 4647,
+      "mean": 4.301954745427158,
+      "min": 3.025183,
+      "max": 6.917689,
+      "median": 3.783762,
+      "p50": 3.783762,
+      "p95": 6.6900389,
+      "p99": 6.86622552
+    }
+  },
+  "percentile_method": "linear interpolation at (n-1)*p; request latencies across requests; ITL across all token intervals",
+  "token_weighted_tpot_ms": 4.301954745427157,
+  "overall_decode_tokens_per_second": 232.45246851166175,
+  "total_tokens_per_second": 241.09949898637936,
+  "output_tokens_per_second": 153.9670311802135,
+  "serial_requests_per_second": 0.5940850077693126,
+  "throughput_scope": "concurrency=1; denominator=sum timed engine request durations (decode metric uses sum decode durations); excludes load, warmup, I/O and inter-request gaps; not server wall-clock throughput"
+}

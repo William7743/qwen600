@@ -14,3 +14,6 @@ model.safetensors
 
 # Local trusted ShareGPT package (may be a symlink).
 /build-sharegpt-reference
+
+# Local historical timing spot-check; calibration evidence is tracked separately.
+/docs/timing-v4/protocol-single-pass/

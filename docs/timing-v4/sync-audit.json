@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "scope": "Archive arithmetic, row timing identities, cross-mode generation IDs, timer/model source hashes and recorded controller revision; no new GPU measurements",
+  "processes": [
+    {
+      "index": 0,
+      "mode": "A",
+      "raw_sha256": "ec03ccc8f568b17ef2e6b0982cbb77436e29406b75123e0eef87f10a70357ce3",
+      "requests": 18
+    },
+    {
+      "index": 1,
+      "mode": "B",
+      "raw_sha256": "196f32fd72a9ba26d399829f9bd38b8b168c779958b5f33fbd892a56a12da76e",
+      "requests": 18
+    },
+    {
+      "index": 2,
+      "mode": "B",
+      "raw_sha256": "6a4addbe0da2aeddc11a1a7880f580def7020d7205dbff80abf6906815946227",
+      "requests": 18
+    },
+    {
+      "index": 3,
+      "mode": "A",
+      "raw_sha256": "1b66aab969b9d9e68533105f0116eb3c7a6a2b351f57c31dda70a9a1e2b9574b",
+      "requests": 18
+    },
+    {
+      "index": 4,
+      "mode": "B",
+      "raw_sha256": "9a4d71324f599f1cc4c026b0ec3eb321af003b220fde5060abd81da20a1bf2df",
+      "requests": 18
+    },
+    {
+      "index": 5,
+      "mode": "A",
+      "raw_sha256": "515d227d6dd893715441487460611055da2d927f89320908de615cdb6fbc7a49",
+      "requests": 18
+    },
+    {
+      "index": 6,
+      "mode": "A",
+      "raw_sha256": "9b54999acebc9df45af3dc874ad16b6b3e546d5bce87002b06cd10d48d39b14a",
+      "requests": 18
+    },
+    {
+      "index": 7,
+      "mode": "B",
+      "raw_sha256": "150f47b6467c012f7d7000e7ca212ebf9f93ac9162ead728f8f2955e1d3af72a",
+      "requests": 18
+    }
+  ],
+  "requests": 144,
+  "report_sha256": "bab2b7e2f379073b427cf332aaba4b09a9d366d0d7f9c5ff4f6b1e1c32ce6a24",
+  "production_source_sha256": "b8855a1f058a737291bf6d751ab3a6e7fd58024931c99655416c18b4db3f5132",
+  "controller_sha256": "29dd6cd50a7926f3f6d80dd92819320273b9d65d085488a99a2c3a9ba32663fa",
+  "cpu_statistics_tests": "5 tests passed separately"
+}

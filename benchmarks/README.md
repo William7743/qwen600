@@ -27,14 +27,14 @@ python benchmarks/run_benchmark.py --model /path/to/Qwen3-0.6B --output build-sh
 ## 指标定义
 
 设第 i 条请求输入 P_i 个 token，输出 G_i 个 token。
-请求开始于输入就绪且此前 GPU 工作同步完成后；总耗时结束于最后 token ID 可用并完成最终同步后。
+请求开始于输入就绪且此前 GPU 工作同步完成后；总耗时结束于最后 token ID 在 CPU 可用时；最终错误检查和兜底同步在计时之外。
 记总耗时 T_i，decode 耗时 D_i，以下吞吐公式的时间单位为秒。
 
 | 类别 | 指标 / 字段 | 定义 |
 | --- | --- | --- |
 | 延迟 | Prefill / `prefill_ms` | 处理全部 prompt，到末位置 logits 在主机可用 |
 | 延迟 | TTFT / `ttft_ms` | 请求开始到首个输出 token ID 可用，含首次采样 |
-| 延迟 | Decode / `decode_ms` | 首个 token 可用到请求结束，含后续 G−1 步及最终同步检查 |
+| 延迟 | Decode / `decode_ms` | 首个 token 可用到请求结束，含后续 G−1 步，不含末尾兜底同步检查 |
 | 延迟 | TPOT / `tpot_ms` | D_i / (G_i−1) |
 | 延迟 | ITL / `itl_ms` | 相邻输出 token ID 在主机可用的时间差，每请求保存 G_i−1 个值 |
 | 延迟 | 请求总耗时 / `total_ms` | TTFT + decode 耗时 |
@@ -42,19 +42,19 @@ python benchmarks/run_benchmark.py --model /path/to/Qwen3-0.6B --output build-sh
 | 吞吐 | 全请求输出 / `output_tokens_per_second` | ∑G_i / ∑T_i |
 | 吞吐 | Decode / `overall_decode_tokens_per_second` | ∑(G_i−1) / ∑D_i |
 | 吞吐 | 串行请求 / `serial_requests_per_second` | 请求数 / ∑T_i，单位 request/s |
-| 资源 | 显存观测峰值 / `memory.observed_peak_mib` | nvidia-smi 对引擎进程显存轮询的最大值 |
+| 资源 | 显存观测峰值 / `memory.observed_peak_mib` | 独立 `--memory-only` 运行中 nvidia-smi 的进程显存观测峰值 |
 
 首 token 来自最后一次 prompt 前向，后续只有 G−1 次 decode 前向。
-ITL 是实际逐 token 时间戳之差，不能用重复的 TPOT 代替。最终同步检查耗时另存为
-`decode_tail_ms`，满足 `sum(itl_ms) + decode_tail_ms = decode_ms`。
-所以 ITL 均值与 TPOT 存在这一小段尾部开销的区别。没有网络与响应传输层。
-时间戳数组在请求开始前分配；逐 token 计时的少量观测开销包含在请求耗时中。
+ITL 是实际逐 token 时间戳之差，不能用重复的 TPOT 代替。protocol 4 的
+`sum(itl_ms) = decode_ms`，单个请求的 ITL 均值等于 TPOT；跨请求汇总的权重不同，均值仍可不同。
+兼容字段 `decode_tail_ms` 固定为 0。没有网络与响应传输层。所有记录缓冲区在整轮前分配，
+统计、JSON 输出及文件写入在全部推理结束后进行；ITL 打点本身的开销仍计入时间。
 
 请求计时包含推理内部数据传输与采样，排除模型加载、分词、文件读写、打印和请求间空隙。
 本项目吞吐使用各请求的引擎耗时之和，**不是整个脚本的墙钟运行时间**。
 请求吞吐表示 batch=1、并发=1 时当前固定负载的串行处理速度，不能当作多并发服务容量。
-V0 与候选必须使用相同负载和计时协议；protocol 3 新增逐 token 时钟采样，
-不要直接拿 protocol 2 的旧成绩作为严格对照，需重测双方。
+V0 与候选必须使用相同负载和计时协议。当前为 protocol 4；请求结束点和监控方式已改变，
+不能与 protocol 2/3 的旧表混作严格对照，需重测双方。
 
 ## 分位数与结果文件
 
@@ -69,10 +69,24 @@ P50 为中位数；P95/P99 用于观察较慢的样本。分位数采用排序�
 - `itl.csv`：每个正式输出间隔；`output_token_index` 为零基，1 表示第 1 到第 2 个输出 token 的间隔。
 - `aggregate.json`：延迟均值与分位数、所有吞吐、总 token 数与计时分母。
 - `summary.json`：汇总、每用例分布、模型加载时间、构建/版本/设备信息与显存观测。
-- `memory.jsonl`、`stderr.log`、`plan.txt`：显存采样、引擎日志和执行计划。
+- `stderr.log`、`plan.txt`：引擎日志和执行计划；`memory.jsonl` 仅在独立显存运行中生成。
 
-显存约每秒查询一次，范围包含加载、预热及正式请求，可能漏掉瞬时峰值，不声称精确峰值。
+默认延迟测试不启动显存轮询，显存字段为 null。使用独立 `--memory-only` 运行时约每秒查询一次，
+范围包含加载、预热及请求，可能漏掉瞬时峰值，不声称精确峰值。资源运行的时间只用于诊断。
 无法取得进程显存数据时填 null 并附原因。吞吐按计数总和除以时间总和，不能平均每条 token/s。
+
+## 显存与计时开销验证
+
+```bash
+# 与正式延迟测量分开运行；建议使用相同完整负载。
+python benchmarks/run_benchmark.py --model /path/to/Qwen3-0.6B --output build-sharegpt/memory-001 --memory-only
+# 同一可执行文件，固定六条 ShareGPT，ABBA+BAAB，各进程每条三次。
+python benchmarks/check_timing_overhead.py --model /path/to/Qwen3-0.6B --build-dir build-sharegpt --output build-sharegpt/timing-check-001
+```
+
+`--no-itl` 仅供对照校准，保留 Prefill/TTFT/请求结束时间，但不记录中间 token 时间戳。
+其 ITL 字段为 null，不输出虚构的 ITL 分位数；正式报告继续使用默认完整打点模式。
+校准结论与限制见 [计时说明](../docs/TIMING_PROTOCOL.md)。
 
 ## 历史负载
 

@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'benchmarks'))
 from metrics import aggregate_metrics, distribution, validate_timing
+from compare_results import validate_runs
 
 
 class MetricsTest(unittest.TestCase):
@@ -31,6 +32,29 @@ class MetricsTest(unittest.TestCase):
         self.assertAlmostEqual(itl['p95'],9.4)
         self.assertAlmostEqual(itl['p99'],9.88)
         self.assertEqual(result['token_weighted_tpot_ms'],6)
+
+    def test_protocol4_optional_itl_and_zero_tail(self):
+        full = self.row(10,[2,4],10,0)
+        full.update(timing_protocol=4, itl_enabled=True)
+        validate_timing(full)
+        off = dict(full, itl_enabled=False, itl_ms=None)
+        result = aggregate_metrics([off])
+        self.assertNotIn('itl_ms', result['latency_distributions_ms'])
+        self.assertEqual(result['total_request_ms'],16)
+        for wrong in [dict(off,itl_ms=[]), dict(full,decode_tail_ms=1),
+                      dict(off,timing_protocol=3),dict(off,itl_enabled='false')]:
+            with self.assertRaises(ValueError): validate_timing(wrong)
+        for rows in [[full,off],[full,self.row(10,[2,4],10,0)]]:
+            with self.assertRaises(ValueError): aggregate_metrics(rows)
+
+    def test_comparison_rejects_changed_timers_modes_and_resource_runs(self):
+        row = dict(manifest_sha256='same',case_ids=['s049'],batch_size=1,warmup=1,
+                   warmup_scope='global',repeats=3,timing_protocol=4,timing_mode='full',
+                   measurement_role='latency',status='MEASUREMENTS_COMPLETE_NUMERICAL_REVIEW_REQUIRED')
+        validate_runs(row,dict(row))
+        for key,value in [('timing_protocol',3),('timing_mode','no-itl'),
+                          ('measurement_role','memory_only'),('status','RUNNING')]:
+            with self.assertRaises(ValueError): validate_runs(row,dict(row,**{key:value}))
 
     def test_percentile_singleton_and_interpolation(self):
         self.assertEqual(distribution([4])['p99'],4)

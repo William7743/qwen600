@@ -45,6 +45,8 @@ def main():
     parser.add_argument('--quick', action='store_true', help='Six fixed ShareGPT cases, matching the quick logits check')
     parser.add_argument('--warmup', type=int, default=1, help='Global real-request warmups, not per case')
     parser.add_argument('--repeats', type=int, default=1)
+    parser.add_argument('--no-itl', action='store_true', help='Calibration only: omit interior token timestamps; ITL unavailable')
+    parser.add_argument('--memory-only', action='store_true', help='Separate resource pass with memory polling; timings are diagnostic, not latency baseline')
     args = parser.parse_args()
     if args.warmup < 0 or args.repeats < 1:
         parser.error('warmup >= 0 and repeats >= 1 required')
@@ -94,7 +96,9 @@ def main():
                                       'CMAKE_CUDA_COMPILER:', 'CMAKE_CXX_COMPILER:'))] if cache.exists() else []
     summary = {'status': 'RUNNING', 'numerical_acceptance': 'PENDING',
                'official_v0_baseline': False, 'batch_size': 1, 'concurrent_requests': 1,
-               'timing_protocol': 3, 'warmup': args.warmup,
+               'timing_protocol': 4, 'timing_mode': 'no-itl' if args.no_itl else 'full',
+               'measurement_role': 'memory_only' if args.memory_only else 'latency',
+               'warmup': args.warmup,
                'warmup_scope': 'global', 'warmup_case': representative if args.warmup else None,
                'repeats': args.repeats, 'case_ids': [c['id'] for c in cases],
                'git_commit': capture(['git', 'rev-parse', 'HEAD']),
@@ -106,7 +110,7 @@ def main():
                'build_configuration': build_info, 'cuda_visible_devices': os.environ.get('CUDA_VISIBLE_DEVICES'),
                'nvcc': capture(['nvcc', '--version']),
                'gpu_before': capture(['nvidia-smi', '--query-gpu=index,name,driver_version,temperature.gpu,clocks.sm,power.draw', '--format=csv,noheader']),
-               'memory': {'method': 'nvidia-smi process used_gpu_memory polling',
+               'memory': {'enabled': args.memory_only, 'method': 'nvidia-smi process used_gpu_memory polling',
                           'interval_seconds': 1, 'scope': 'whole run including load and warmups',
                           'observed_peak_mib': None, 'samples': 0}, 'cases': []}
     def save():
@@ -135,10 +139,11 @@ def main():
     try:
         with (output/'stderr.log').open('w') as err, (output/'raw.jsonl').open('w') as raw:
             process = subprocess.Popen([str(probe), str(args.model.resolve()/'model.safetensors'),
-                                        str(plan), str(args.warmup), str(args.repeats)],
+                                        str(plan), str(args.warmup), str(args.repeats), summary['timing_mode']],
                                        stdout=subprocess.PIPE, stderr=err, text=True)
-            monitor = threading.Thread(target=memory_monitor, daemon=True)
-            monitor.start()
+            if args.memory_only:
+                monitor = threading.Thread(target=memory_monitor, daemon=True)
+                monitor.start()
             rows = []
             warmup_rows = []
             print('case          P/G       run   prefill(ms)   TTFT(ms)   TPOT(ms)   decode(tok/s)   total(ms)', flush=True)
@@ -146,11 +151,13 @@ def main():
                 raw.write(line); raw.flush()
                 row = json.loads(line)
                 if row['event'] == 'loaded':
-                    if row.get('protocol') != 3:
-                        raise RuntimeError('Outdated probe: rebuild benchmark_probe for per-token ITL support (protocol 3)')
+                    if row.get('protocol') != 4 or row.get('timing_mode') != summary['timing_mode']:
+                        raise RuntimeError('Outdated or mismatched probe: rebuild benchmark_probe for protocol 4')
                     summary['model_load_ms'] = row['model_load_ms']; save()
                     print(f'Model loaded: {row["model_load_ms"]:.2f} ms', flush=True)
                 elif row['event'] == 'request':
+                    if row.get('timing_protocol') != 4 or row.get('itl_enabled') != (not args.no_itl):
+                        raise RuntimeError('Timing protocol/mode mismatch')
                     if row['warmup']:
                         if row['case'] != '__warmup__' or len(row['generated_ids']) != representative['output_tokens']:
                             raise RuntimeError('Invalid global warmup result')
@@ -167,7 +174,7 @@ def main():
                     if not math.isclose(row['total_ms'], row['ttft_ms']+row['decode_ms'], rel_tol=1e-8):
                         raise RuntimeError('Timing boundaries inconsistent')
                     validate_timing(row)
-                    row['itl_mean_ms'] = statistics.mean(row['itl_ms'])
+                    row['itl_mean_ms'] = statistics.mean(row['itl_ms']) if row['itl_ms'] is not None else None
                     rows.append(row)
                     lengths = f'{row["prompt_tokens"]}/{row["output_tokens"]}'
                     print(f'{row["case"]:14} {lengths:9} {row["iteration"]+1:2} {row["prefill_ms"]:12.2f} {row["ttft_ms"]:10.2f} {row["tpot_ms"]:10.3f} {row["decode_tokens_per_second"]:15.2f} {row["total_ms"]:11.2f}', flush=True)
@@ -182,7 +189,7 @@ def main():
                 summary['cases'].append({'case': c['id'], 'prompt_tokens': c['prompt_tokens'],
                     'output_tokens': c['output_tokens'], **{key: distribution([r[key] for r in selected])
                        for key in METRICS},
-                    'itl_ms': distribution([x for r in selected for x in r['itl_ms']]), 'generated_ids_repeatable': all(
+                    'itl_ms': None if args.no_itl else distribution([x for r in selected for x in r['itl_ms']]), 'generated_ids_repeatable': all(
                     r['generated_ids'] == selected[0]['generated_ids'] for r in selected)})
             with (output/'results.csv').open('w', newline='') as f:
                 writer = csv.DictWriter(f, fieldnames=['case', 'iteration', 'prompt_tokens', 'output_tokens', *METRICS, 'itl_mean_ms'], extrasaction='ignore')
@@ -192,10 +199,10 @@ def main():
                 writer.writerow(['case', 'iteration', 'output_token_index', 'itl_ms'])
                 for row in rows:
                     writer.writerows((row['case'], row['iteration'], i, value)
-                                     for i, value in enumerate(row['itl_ms'], 1))
+                                     for i, value in enumerate(row['itl_ms'] or [], 1))
             summary['aggregate'] = aggregate_metrics(rows)
             (output/'aggregate.json').write_text(json.dumps(summary['aggregate'], indent=2)+'\n')
-            summary['status'] = 'MEASUREMENTS_COMPLETE_NUMERICAL_REVIEW_REQUIRED'
+            summary['status'] = ('RESOURCE_MEASUREMENTS_COMPLETE' if args.memory_only else 'MEASUREMENTS_COMPLETE_NUMERICAL_REVIEW_REQUIRED')
     except BaseException as exc:
         summary['status'] = 'FAILED_OR_INTERRUPTED'; summary['error'] = str(exc)
         raise
@@ -212,9 +219,12 @@ def main():
         summary['memory']['samples'] = len(samples)
         summary['memory']['observed_peak_mib'] = max((s['mib'] for s in samples), default=None)
         if not samples:
-            summary['memory']['unavailable_reason'] = 'No process memory samples available; see driver/tool support or run duration'
+            summary['memory']['unavailable_reason'] = ('No process memory samples available; see driver/tool support or run duration' if args.memory_only else 'Disabled during latency measurement; use a separate --memory-only run')
         summary['gpu_after'] = capture(['nvidia-smi', '--query-gpu=index,name,driver_version,temperature.gpu,clocks.sm,power.draw', '--format=csv,noheader'])
         save()
+    if args.memory_only:
+        print(f'Resource pass complete: peak={summary["memory"]["observed_peak_mib"]} MiB; latency records are diagnostic only.')
+        return
     aggregate = summary['aggregate']
     print(f'\nAggregate: {aggregate["measured_requests"]} measured requests (warmup excluded)')
     print('Latency (ms)                 mean          P50          P95          P99')

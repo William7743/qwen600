@@ -9,13 +9,7 @@ def read(path):
     return json.loads(path.read_text())
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--v0', type=Path, required=True)
-    parser.add_argument('--v1', type=Path, required=True)
-    parser.add_argument('--output', type=Path, required=True)
-    args = parser.parse_args()
-    old, new = [read(p / 'summary.json') for p in [args.v0, args.v1]]
+def validate_runs(old, new):
     for key in ['manifest_sha256', 'case_ids', 'batch_size', 'warmup', 'warmup_scope', 'repeats']:
         if old[key] != new[key]:
             raise ValueError('Incompatible runs: ' + key)
@@ -23,6 +17,20 @@ def main():
         raise ValueError('Different timing protocols; rerun both versions with the same timer')
     if any(x['status'] != 'MEASUREMENTS_COMPLETE_NUMERICAL_REVIEW_REQUIRED' for x in [old, new]):
         raise ValueError('Expected two completed runs')
+    if old.get('timing_mode', 'full') != new.get('timing_mode', 'full'):
+        raise ValueError('Different ITL modes; use check_timing_overhead.py for calibration')
+    if any(x.get('measurement_role', 'latency') != 'latency' for x in [old,new]):
+        raise ValueError('Resource passes cannot supply formal latency comparisons')
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--v0', type=Path, required=True)
+    parser.add_argument('--v1', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    old, new = [read(p / 'summary.json') for p in [args.v0, args.v1]]
+    validate_runs(old, new)
     def records(path):
         with (path / 'results.csv').open() as f:
             return {(r['case'], int(r['iteration'])): r for r in csv.DictReader(f)}
@@ -56,8 +64,8 @@ def main():
               'overall_decode_tokens_per_second': {
                   'v0': aggs[0]['overall_decode_tokens_per_second'],
                   'v1': aggs[1]['overall_decode_tokens_per_second']}, 'requests': rows}
-    if old.get('timing_protocol') == 3:
-        result['timing_protocol'] = 3
+    if old.get('timing_protocol') in (3,4):
+        result['timing_protocol'] = old['timing_protocol']
         result['throughput'] = {key: {'v0': aggs[0][key], 'v1': aggs[1][key],
             'speedup': aggs[1][key]/aggs[0][key]} for key in (
             'total_tokens_per_second', 'output_tokens_per_second',

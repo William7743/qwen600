@@ -1,0 +1,74 @@
+{
+  "measured_requests": 18,
+  "total_prompt_tokens": 2640,
+  "total_output_tokens": 4665,
+  "total_request_ms": 30122.242972999997,
+  "total_decode_tokens": 4647,
+  "total_decode_ms": 19872.383706999997,
+  "request_means": {
+    "prefill_ms": 569.296079,
+    "ttft_ms": 569.4366258888889,
+    "decode_ms": 1104.0213170555555,
+    "tpot_ms": 3.894383588887222,
+    "total_ms": 1673.4579429444445
+  },
+  "latency_distributions_ms": {
+    "prefill_ms": {
+      "count": 18,
+      "mean": 569.296079,
+      "min": 36.983197,
+      "max": 3026.471941,
+      "median": 85.1800245,
+      "p50": 85.1800245,
+      "p95": 3013.6232866,
+      "p99": 3023.90221012
+    },
+    "ttft_ms": {
+      "count": 18,
+      "mean": 569.4366258888889,
+      "min": 37.122034,
+      "max": 3026.611005,
+      "median": 85.31967,
+      "p50": 85.31967,
+      "p95": 3013.7739786,
+      "p99": 3024.04359972
+    },
+    "decode_ms": {
+      "count": 18,
+      "mean": 1104.0213170555555,
+      "min": 24.225845,
+      "max": 2414.378705,
+      "median": 969.3944584999999,
+      "p50": 969.3944584999999,
+      "p95": 2402.8456432000003,
+      "p99": 2412.07209264
+    },
+    "tpot_ms": {
+      "count": 18,
+      "mean": 3.894383588887222,
+      "min": 3.028230625,
+      "max": 6.19071462821,
+      "median": 3.50024923546,
+      "p50": 3.50024923546,
+      "p95": 6.161142674871,
+      "p99": 6.1848002375422
+    },
+    "total_ms": {
+      "count": 18,
+      "mean": 1673.4579429444445,
+      "min": 61.37616,
+      "max": 5440.98971,
+      "median": 1050.177195,
+      "p50": 1050.177195,
+      "p95": 5416.37421745,
+      "p99": 5436.06661149
+    }
+  },
+  "percentile_method": "linear interpolation at (n-1)*p; request latencies across requests; ITL across all token intervals",
+  "token_weighted_tpot_ms": 4.276389865935011,
+  "overall_decode_tokens_per_second": 233.84210311735808,
+  "total_tokens_per_second": 242.51182113323432,
+  "output_tokens_per_second": 154.86894532327696,
+  "serial_requests_per_second": 0.5975650623406185,
+  "throughput_scope": "concurrency=1; denominator=sum timed engine request durations (decode metric uses sum decode durations); excludes load, warmup, I/O and inter-request gaps; not server wall-clock throughput"
+}

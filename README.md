@@ -76,7 +76,7 @@ Git 中的 [sharegpt_reference.json](tests/sharegpt_reference.json) 固定参考
 | 延迟 | Prefill、TTFT、TPOT、请求总耗时、逐 token ITL |
 | 延迟统计 | 均值及 P50 / P95 / P99；请求指标按请求统计，ITL 按实际 token 间隔统计 |
 | 吞吐 | 输入与输出合计 token/s、全请求输出 token/s、decode token/s、串行请求/s |
-| 资源 | 引擎进程显存观测峰值（1 秒轮询），模型加载时间另记 |
+| 资源 | 默认不测显存；可选独立 `--memory-only` 运行，模型加载时间另记 |
 
 本项目 **batch=1、并发请求数=1**。串行请求吞吐 = 请求数 / 各请求计时总和，表示当前负载下
 引擎逐条完成请求的速度，不能解释为并发服务承载能力。总 token 吞吐和全请求输出吞吐使用
@@ -86,7 +86,8 @@ Git 中的 [sharegpt_reference.json](tests/sharegpt_reference.json) 固定参考
 ITL 是主机上相邻 token ID 可用的间隔，不是网络流式响应间隔。
 结果保存于 `raw.jsonl`、`results.csv`、`itl.csv`、`aggregate.json` 和 `summary.json`。
 P99 是当前有限样本的分位数；不同长度请求间的差异不等于同一请求的重复运行波动。
-详细公式和统计边界见 [benchmark 说明](benchmarks/README.md)。
+当前计时为 protocol 4，默认开启 ITL、不采显存。详细公式见 [benchmark 说明](benchmarks/README.md)，
+边界及开销校准见 [计时方法](docs/TIMING_PROTOCOL.md)。
 
 ## 维护者工具与历史记录
 

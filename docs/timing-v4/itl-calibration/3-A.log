@@ -1,0 +1,40 @@
+Dataset: qwen600-sharegpt100-v1; 6 cases; 1 global warmups; 3 measurements per case
+Checking local model and input hashes...
+case          P/G       run   prefill(ms)   TTFT(ms)   TPOT(ms)   decode(tok/s)   total(ms)
+Model loaded: 531.89 ms
+__warmup__: warmup 1/1
+s049           13/9       1        37.38      37.52      3.064          326.32       62.04
+s049           13/9       2        37.35      37.49      3.058          326.96       61.96
+s049           13/9       3        37.38      37.52      3.063          326.51       62.03
+s055           32/331     1        93.27      93.41      3.630          275.46     1291.39
+s055           32/331     2        93.25      93.40      3.631          275.44     1291.50
+s055           32/331     3        93.25      93.39      3.631          275.44     1291.46
+s057           24/222     1        69.53      69.67      3.425          291.94      826.67
+s057           24/222     2        69.56      69.69      3.425          291.99      826.56
+s057           24/222     3        69.57      69.71      3.426          291.92      826.76
+s080           27/491     1        78.45      78.59      3.882          257.57     1980.98
+s080           27/491     2        78.42      78.56      3.883          257.52     1981.34
+s080           27/491     3        78.38      78.55      3.885          257.39     1982.24
+s093           742/391    1      3043.06    3043.20      6.225          160.64     5471.04
+s093           742/391    2      3043.54    3043.68      6.225          160.64     5471.40
+s093           742/391    3      3043.51    3043.65      6.224          160.68     5470.90
+s099           42/111     1       123.73     123.87      3.324          300.87      489.48
+s099           42/111     2       123.72     123.86      3.325          300.78      489.58
+s099           42/111     3       123.72     123.86      3.323          300.93      489.40
+
+Aggregate: 18 measured requests (warmup excluded)
+Latency (ms)                 mean          P50          P95          P99
+prefill_ms                     574.282       85.848     3043.516     3043.533 (n=18)
+ttft_ms                        574.424       85.991     3043.656     3043.677 (n=18)
+decode_ms                     1112.616      977.517     2427.732     2427.814 (n=18)
+tpot_ms                          3.925        3.528        6.225        6.225 (n=18)
+total_ms                      1687.041     1059.077     5471.092     5471.336 (n=18)
+Token-weighted TPOT: 4.310 ms/token
+overall_decode_tokens_per_second: 232.036
+total_tokens_per_second: 240.559
+output_tokens_per_second: 153.622
+serial_requests_per_second: 0.593
+Throughput denominator: summed timed engine requests; concurrency=1; excludes warmup/load/I/O/gaps. Not concurrent service capacity.
+Model load: 531.89 ms; observed process memory peak: None MiB
+Results: /home/msganzy/workspace/AI_inf/qwen600/docs/timing-v4/itl-calibration/3-A
+Numerical acceptance is pending; these are not official V0 scores.

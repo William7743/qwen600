@@ -1,0 +1,7 @@
+__warmup__ "/home/msganzy/workspace/AI_inf/qwen600/benchmarks/sharegpt100/inputs/s038.ids" 362
+s049 "/home/msganzy/workspace/AI_inf/qwen600/benchmarks/sharegpt100/inputs/s049.ids" 9
+s055 "/home/msganzy/workspace/AI_inf/qwen600/benchmarks/sharegpt100/inputs/s055.ids" 331
+s057 "/home/msganzy/workspace/AI_inf/qwen600/benchmarks/sharegpt100/inputs/s057.ids" 222
+s080 "/home/msganzy/workspace/AI_inf/qwen600/benchmarks/sharegpt100/inputs/s080.ids" 491
+s093 "/home/msganzy/workspace/AI_inf/qwen600/benchmarks/sharegpt100/inputs/s093.ids" 391
+s099 "/home/msganzy/workspace/AI_inf/qwen600/benchmarks/sharegpt100/inputs/s099.ids" 111
