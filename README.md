@@ -154,6 +154,58 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 老师根据文档审查优化思路、实现说明、测量条件与整体收益。
 截图与文字属于学生提供的实验记录，不自动等同教师独立复测结论；学生可在本机保留源码和原始结果以便答辩说明。
 
+## 6. 文件作用与修改范围
+
+下表中的“可修改”仍须遵守模型级接口、数值误差、固定负载与真实计算路径要求。
+优化前先用未修改的 V0 生成参考包和性能基线，再修改推理实现。
+
+### 可修改的实现与构建文件
+
+| 文件 | 作用 | 修改范围 |
+| --- | --- | --- |
+| `models/qwen_model.cuh` | 模型结构、运行状态、CUDA 内核、前向流程和资源管理 | 可修改内部实现，也可拆分或新增源码；保留现有工具调用的模型级接口 |
+| `utils/static_loader.h` | 读取模型权重、组织权重指针及 GPU 存储 | 可调整加载和内存布局；保留指定模型权重的数值与含义 |
+| `layers/sampler.h` | 从 logits 选择 token，包含贪心与随机采样 | 可优化实现；benchmark 使用 `sample_argmax`，须保持贪心选择及并列分数处理规则 |
+| `config.h` | 模型维度、数值常量和缓冲区容量等配置 | 可调整实现所需的缓冲区配置或新增调优参数；不能更改模型层数、维度、词表、RoPE 参数等模型定义，容量须满足完整测试负载 |
+| `engine/main.cu` | 交互式推理程序入口 | 可修改；默认验收直接调用模型接口，不通过此入口，入口自身的改动不计入 benchmark 收益 |
+| `utils/tokenizer.h` | 文本分词、token 解码与提示词模板处理 | 可修改实现并保持分词语义；默认测试读取固定 token ID，不计分词耗时 |
+| `CMakeLists.txt`、`cmake/TokenizerDependencies.cmake` | 构建目标、编译参数、链接库与分词依赖查找 | 可适配硬件、添加源码或调整编译选项；保留验收目标、可执行文件位置及真实测试路径，报告编译配置差异 |
+| 新增推理源码、个人分析脚本或报告 | 承载优化实现和实验记录 | 可以新增；不能替换统一验收工具或其结果 |
+| `.gitignore` | 排除本机构建产物与大文件 | 可补充本地产物规则；不能借此省略报告中需要说明的实现改动 |
+
+### 固定的测试工具、数据与规则
+
+以下文件不属于学生优化范围，不能修改或删除，也不能在构建时绕过其检查。
+
+| 文件或目录 | 作用 |
+| --- | --- |
+| `tests/sharegpt_check.py` | 生成原始 V0 参考包，或检查候选版 logits |
+| `tests/iteration_probe.cu` | 调用真实模型前向，导出指定位置的完整词表 logits |
+| `tests/logit_metrics.py` | 计算四项数值误差指标 |
+| `tests/optimization_policy.json`、`tests/acceptance_contract.json` | 固定数值阈值和验收范围 |
+| `tests/reference.json` | 指定模型版本与文件哈希，附参考环境记录 |
+| `tests/test_benchmark_metrics.py` | 检查性能指标统计公式及计时协议兼容性 |
+| `benchmarks/benchmark_probe.cu` | 执行请求、采样并采集计时数据 |
+| `benchmarks/run_benchmark.py` | 校验负载、组织预热与正式测量、保存结果 |
+| `benchmarks/metrics.py`、`benchmarks/compare_results.py` | 汇总性能指标、比较优化前后结果 |
+| `benchmarks/check_timing_overhead.py` | 检查计时辅助操作的开销 |
+| `benchmarks/build_sharegpt_dataset.py` | 构建或校验固定 ShareGPT 子集的维护工具 |
+| `benchmarks/sharegpt100/` | 固定的 100 条输入、token ID、回复、请求清单、来源记录与许可；不得自行重新选样或改变输出数量 |
+| `tools/export.py` | 为交互程序导出分词器及提示词模板；默认 ShareGPT 验收不需要运行 |
+| 各级 `README.md`、`LICENSE` 及数据许可文件 | 题目规则、工具说明、来源与许可；个人补充说明写入自己的报告，不改写题目规则或删去归属信息 |
+
+### 本机生成后固定的参考与结果
+
+| 文件或目录 | 作用 | 使用规则 |
+| --- | --- | --- |
+| `tests/sharegpt_reference.json` | 记录本机 V0 参考包的 manifest 哈希 | 首次由 `freeze` 自动写入，此后固定；不手工修改以使候选通过 |
+| `build-sharegpt-reference/` | 保存 V0 logits、固定 token 历史与参考 manifest | 在未优化的 V0 上生成一次，各阶段复用；不能用候选输出覆盖 |
+| `build-sharegpt/bench-v0/` | 保存未优化 V0 的性能基线 | 同一比较环境下保留并复用，不用优化后的结果覆盖 |
+| `build-sharegpt/check-stage-*`、`bench-stage-*` 和比较结果 | 保存各阶段正确性及性能证据 | 由工具生成，每阶段使用独立目录；不得手工修改测量值或判定结果 |
+| `build-sharegpt/` 中的构建产物 | 编译缓存与可执行文件 | 可重新编译或清理构建产物，但不要误删同目录下保留的基线和阶段结果 |
+
+模型目录中的原始权重与分词器文件同样保持固定。更换比较环境时，按第 2 节重新建立参考与基线。
+
 ## 规则与维护入口
 
 数值阈值见 [optimization_policy.json](tests/optimization_policy.json) 的 logits 部分，
