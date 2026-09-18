@@ -37,7 +37,12 @@ cmake -S . -B build-sharegpt -DCMAKE_BUILD_TYPE=Release \
 cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 ```
 
-若依赖不在系统位置，可为 CMake 添加 `-DCMAKE_PREFIX_PATH=/your/dependency/prefix`；
+若 CMake 找不到 PCRE2、ICU 等依赖，可在上面的 `cmake -S . -B build-sharegpt ...` 配置命令中添加
+`-DCMAKE_PREFIX_PATH=/your/dependency/prefix`，告诉 CMake 去哪个安装目录查找依赖。
+`/your/dependency/prefix` 是占位示例，需要替换为实际路径；例如依赖安装在 `/opt/my-libs`，就填写
+`-DCMAKE_PREFIX_PATH=/opt/my-libs`，CMake 会在该目录下的 `include/`、`lib/` 等位置查找头文件和库。
+这个参数不会安装依赖；如果 CMake 已能自动找到依赖，就不需要添加。
+
 按需显式设置 CUDA/C++ 编译器。更换工具链使用新构建目录。
 
 ## 2. 优化前生成参考，并建立本机基线
