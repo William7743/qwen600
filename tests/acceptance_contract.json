@@ -17,5 +17,8 @@
   "reference_setup": "Student runs freeze on unchanged original V0 before optimization; keep the generated package and manifest pin fixed",
   "submission": "One optimization-process document with all optimization stages, correctness results and performance screenshots",
   "operator_acceptance": false,
-  "measurement_tools_policy": "Use repository-provided benchmark_probe.cu, run_benchmark.py, metrics.py and compare_results.py unchanged; official acceptance uses the README commands and fixed workload/parameters"
+  "measurement_tools_policy": "Use repository-provided benchmark_probe.cu, run_benchmark.py, metrics.py and compare_results.py unchanged; official acceptance uses the README commands and fixed workload/parameters",
+  "stage_acceptance": "Every reported optimization stage and the final version must run full ShareGPT100 correctness (600 full-vocabulary snapshots) and full ShareGPT100 benchmark on the same code version; retain separate stage results and use the same frozen original V0 reference",
+  "optimization_boundary": "Preserve the model-level calling contract consumed by the unchanged correctness probe and benchmark, including loading, forward execution, readable full logits on return and resource release; internal kernels, layouts and fusion are unrestricted subject to numerical and workload rules",
+  "correctness_tools_policy": "Keep the correctness probe and reference comparison logic unchanged; correctness and benchmark must exercise the actual optimized inference path"
 }

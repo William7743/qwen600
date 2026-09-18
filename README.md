@@ -70,16 +70,18 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 
 ## 3. 验收命令
 
-提交前重新构建优化版本，执行完整100条检查与性能测试：
+每个写入报告的优化阶段，以及最终提交版本，都须重新构建并执行完整 ShareGPT100 正确性验证和性能测试。
+同一阶段的正确性结果与性能结果必须来自同一个代码版本，不能用部分请求的结果代替完整测试。
+以下以 `stage-01` 为例；各阶段使用不同的输出目录，保留对应结果：
 
 ```bash
 cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 "$QWEN_PYTHON" tests/sharegpt_check.py check --model "$QWEN_MODEL_DIR" \
-  --build-dir build-sharegpt --output build-sharegpt/check-final
+  --build-dir build-sharegpt --output build-sharegpt/check-stage-01
 "$QWEN_PYTHON" benchmarks/run_benchmark.py --model "$QWEN_MODEL_DIR" \
-  --build-dir build-sharegpt --warmup 1 --repeats 1 --output build-sharegpt/bench-final
+  --build-dir build-sharegpt --warmup 1 --repeats 1 --output build-sharegpt/bench-stage-01
 "$QWEN_PYTHON" benchmarks/compare_results.py --v0 build-sharegpt/bench-v0 \
-  --v1 build-sharegpt/bench-final --output build-sharegpt/comparison-final.json
+  --v1 build-sharegpt/bench-stage-01 --output build-sharegpt/comparison-stage-01.json
 ```
 
 正式验收统一使用上述命令和仓库提供的测试工具，运行时不同时开启 profiler 或 sanitizer。
@@ -103,7 +105,7 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 | softmax 概率总变差 TV | 0.02 |
 | V0 对候选 top-1 的分数损失 | 0.125 |
 
-最终验收使用完整100条检查。
+各报告阶段和最终验收均使用完整 100 条检查，并与优化前冻结的同一份 V0 参考比较。
 验收真实推理路径的最终 logits，不把独立算子或 hidden states 检查作为门槛。
 融合、布局变化和消除中间张量均可；算子、逐层或 sanitizer 检查仅供按需诊断，不单独计分。
 本题是相对本机 V0 的数值约束，不要求与不同平台逐位相同。
@@ -126,8 +128,17 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 
 不得修改模型权重、数值阈值、测试输入、输出预算或计时口径来获取成绩。
 不得缓存测试用例答案、识别固定用例走捷径，或把必要推理工作搬到计时区间外。
-优化后的推理实现须与现有验收探针兼容，并执行真实计算路径。
 `benchmarks/` 下的 `benchmark_probe.cu`、`run_benchmark.py`、`metrics.py` 和 `compare_results.py` 为统一测量工具，不属于本题修改范围。
+
+### 优化范围与接口
+
+**现有正确性探针和 benchmark 调用的模型级接口，是本题正式的兼容边界。**
+优化版本须保持现有工具可直接构建和调用，包括模型加载、前向推理、输出读取及资源释放；
+前向返回时，工具所需的完整 logits 必须可读取，且对应真实推理结果。
+正确性探针、参考比较逻辑和上述统一测量工具不属于优化范围，不得通过修改测试工具适配候选来改变验收要求。
+
+内部算子、线程分工、数据布局、内存管理和融合方式可以调整，不要求保留原有 kernel 名称、
+独立算子接口或中间张量。正确性验证与性能测试必须调用实际优化后的推理路径。
 
 ## 5. 提交要求
 
