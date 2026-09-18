@@ -14,7 +14,7 @@
     "Memory safety",
     "External Transformers numerical certification"
   ],
-  "reference_setup": "Student runs freeze on unchanged original V0 before optimization; keep the generated package and manifest pin fixed",
+  "reference_setup": "Student runs freeze on unchanged original V0 before optimization; validate production sources against fixed v0_sources.json (no Git history required), then keep the generated package and manifest pin fixed",
   "submission": "One optimization-process document with all optimization stages, correctness results and performance screenshots",
   "operator_acceptance": false,
   "measurement_tools_policy": "Keep run_benchmark.py, metrics.py and compare_results.py unchanged. benchmark_probe.cu may adapt inference calls only; preserve timing boundaries and completion semantics, warmup, workload and statistics. Document adaptation rationale and code differences.",

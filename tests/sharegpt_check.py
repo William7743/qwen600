@@ -17,6 +17,9 @@ DATA = ROOT/'benchmarks/sharegpt100'
 VOCAB = 151936
 FROZEN_V0 = 'b5c18694aa7ab2524974d32b142fa500149f41f2'
 PIN = ROOT/'tests/sharegpt_reference.json'
+V0_SOURCES = ROOT/'tests/v0_sources.json'
+V0_SOURCE_FILES = frozenset(('config.h', 'layers/sampler.h', 'models/qwen_model.cuh',
+                             'utils/static_loader.h', 'utils/tokenizer.h'))
 
 
 def read(path):
@@ -73,21 +76,30 @@ def build_plan(cases, base, path):
         for c in cases))
 
 
-def freeze(args):
-    # Only the historical V0 production sources may provide the reference.
-    files = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', FROZEN_V0,
-                                     'models', 'layers', 'utils', 'config.h'], cwd=ROOT, text=True).splitlines()
-    if not files:
-        raise ValueError('Frozen V0 sources missing')
+def validate_v0_sources():
+    # The distributed lock was generated from FROZEN_V0; ZIP users need no Git history.
+    lock = read(V0_SOURCES)
+    expected = lock.get('sha256')
+    if (lock.get('version') != 1 or lock.get('v0_source_commit') != FROZEN_V0
+            or not isinstance(expected, dict) or set(expected) != V0_SOURCE_FILES):
+        raise ValueError('Invalid fixed V0 source hash file')
     source_hashes = {}
-    for name in files:
-        original = subprocess.check_output(['git', 'show', FROZEN_V0+':'+name], cwd=ROOT)
-        if (ROOT/name).read_bytes() != original:
+    for name, digest in expected.items():
+        path = ROOT/name
+        if not path.is_file():
+            raise ValueError('Frozen V0 source missing: '+name)
+        actual = sha(path)
+        if actual != digest:
             raise ValueError('Freeze requires unchanged V0 production sources: '+name)
-        source_hashes[name] = sha(ROOT/name)
+        source_hashes[name] = actual
+    return source_hashes
+
+
+def freeze(args):
+    source_hashes = validate_v0_sources()
     cache = args.build_dir/'CMakeCache.txt'
     if f'CMAKE_HOME_DIRECTORY:INTERNAL={ROOT}' not in cache.read_text().splitlines():
-        raise ValueError('Build directory does not belong to this V0 checkout')
+        raise ValueError('Build directory does not belong to this V0 source directory')
     fresh(args.baseline)
     print('Building trusted V0 probes...', flush=True)
     run(['cmake', '--build', str(args.build_dir), '--target', 'benchmark_probe', 'iteration_probe', '-j', '4'],

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "v0_source_commit": "b5c18694aa7ab2524974d32b142fa500149f41f2",
+  "sha256": {
+    "config.h": "29e98296a01abfd41e9db06dffbe7a8b8eae743334b6c1013498f1d4b788f140",
+    "layers/sampler.h": "79f8d62cfec948ffe04dbde0d9306e9cc858d6ebfb75559ce6521f2dd0c62273",
+    "models/qwen_model.cuh": "b8855a1f058a737291bf6d751ab3a6e7fd58024931c99655416c18b4db3f5132",
+    "utils/static_loader.h": "afa98e37245b580f44e639c9d2d235819b2bbf60216d4aa1c570709f803dc5a7",
+    "utils/tokenizer.h": "cb54a1cb120d60ab6205bd8dbb2d7d8ab36609a9d424719b6ad13ef74579fed7"
+  }
+}

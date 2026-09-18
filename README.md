@@ -11,12 +11,14 @@
 
 ## 1. 领取并准备环境
 
+从 GitHub 的 `problem` 分支下载 ZIP 并解压，进入包含本 README 的目录即可；也可以使用 Git clone，二者均支持参考生成。
+固定 ShareGPT100 已包含在包内，不需要自行下载数据集。运行仍需准备指定模型和兼容环境。
+
 ```bash
-git clone --branch problem https://github.com/William7743/qwen600.git
-cd qwen600
+cd /absolute/path/to/extracted-qwen600
 ```
 
-使用完整 clone，参考生成需要历史 V0 提交。模型为 **Qwen/Qwen3-0.6B**，使用原始 BF16 safetensors，
+模型为 **Qwen/Qwen3-0.6B**，使用原始 BF16 safetensors，
 指定版本 `c1899de289a04d12100db370d81485cdf75e47ca`，文件哈希见 [模型配置](tests/reference.json)。
 权重由学生自行准备，脚本只读取本地文件，不自动下载。不能替换模型、量化权重或修改测试 token 数量。
 
@@ -52,11 +54,12 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
   --build-dir build-sharegpt --warmup 1 --repeats 1 --output build-sharegpt/bench-v0
 ```
 
-`freeze` 核对 V0 生产源码、重新构建探针，生成固定后续历史与 600 个全词表 logits；
+`freeze` 按固定 SHA256 清单核对 V0 生产源码、重新构建探针，生成固定后续历史与 600 个全词表 logits；
 数组约 347.8 MiB，保存在 `build-sharegpt-reference`，并自动写入 `tests/sharegpt_reference.json` 的本机 manifest 哈希。
 生成参考时的时间不作为性能基线，性能基线是上面独立执行的 `bench-v0`。
 
-`freeze` 要求生产源码与原始 V0 提交 `b5c1869` 一致，拒绝用优化后的实现生成参考。
+`freeze` 使用 [v0_sources.json](tests/v0_sources.json) 校验生产源码，清单来自原始 V0 提交 `b5c1869`，无需 `.git` 或 Git 历史。
+任一受检文件缺失或哈希不符即拒绝生成参考；不要修改哈希清单来放行优化后的代码。此检查仅在 `freeze` 时执行，生成参考后可正常修改推理实现并运行 `check`。
 首次生成后应保存 `build-sharegpt-reference` 中的 `manifest.json`、`logits.f32`、`histories/` 和生成日志。
 `tests/sharegpt_reference.json` 初始未设置 manifest 哈希，由 `freeze` 自动填写；将该哈希记录在过程文档中。
 检查时会核对参考 manifest、模型文件、后续历史、logits 数组及误差阈值。
@@ -199,6 +202,7 @@ cmake --build build-sharegpt --target iteration_probe benchmark_probe -j 4
 | `tests/logit_metrics.py` | 计算四项数值误差指标 |
 | `tests/optimization_policy.json`、`tests/acceptance_contract.json` | 固定数值阈值和验收范围 |
 | `tests/reference.json` | 指定模型版本与文件哈希，附参考环境记录 |
+| `tests/v0_sources.json` | 原始 V0 的固定源码 SHA256 清单；参考生成时核对，不可修改 |
 | `benchmarks/run_benchmark.py` | 校验负载、组织预热与正式测量、保存结果 |
 | `benchmarks/metrics.py`、`benchmarks/compare_results.py` | 汇总性能指标、比较优化前后结果 |
 | `benchmarks/sharegpt100/` | 固定的 100 条输入、token ID、回复、请求清单、来源记录与许可；不得自行重新选样或改变输出数量 |
