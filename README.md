@@ -29,7 +29,7 @@ C++17 编译器、CMake ≥3.20、PCRE2 8-bit 与 ICU uc 开发库。检查脚�
 
 ```bash
 export QWEN_PYTHON=python3
-export QWEN_MODEL_DIR=/absolute/path/to/Qwen3-0.6B
+export QWEN_MODEL_DIR=/absolute/path/to/Qwen3-0.6B  # 替换为本机 Qwen3-0.6B 模型文件夹的绝对路径
 export QWEN_CUDA_ARCH=86
 cmake -S . -B build-sharegpt -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CUDA_ARCHITECTURES="$QWEN_CUDA_ARCH" \
